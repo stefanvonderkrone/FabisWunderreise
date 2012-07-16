@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<library name="FabisFonts" output="lib" format="1" static="true">
+	<font id="KomikaDisplayRegular" family="Arial" style="0" cs="0" type="1" path="../fonts/komika_display/KMKDSP__.ttf" ascff="false" autoId="false"/>
+	<font id="KomikaDisplayBold" family="Arial" style="0" cs="0" type="1" path="../fonts/komika_display/KMKDSPB_.ttf" ascff="false" autoId="false"/>
+</library>
