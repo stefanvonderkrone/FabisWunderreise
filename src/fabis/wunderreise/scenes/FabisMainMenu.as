@@ -42,6 +42,23 @@ package fabis.wunderreise.scenes {
 		}
 		
 		override protected function handleClick( evt : MouseEvent ) : void {
+			switch( evt.currentTarget ) {
+				case view._chichenItza:
+					break;
+				case view._chineseWall:
+					break;
+				case view._colosseum:
+					break;
+				case view._cristo:
+					break;
+				case view._machuPicchu:
+					gameCore.director.replaceScene( new FabisMachuPicchuMemory(), true );
+					break;
+				case view._petra:
+					break;
+				case view._tajMahal:
+					break;
+			}
 		}
 
 		override protected function handleMouseOut( evt : MouseEvent ) : void {

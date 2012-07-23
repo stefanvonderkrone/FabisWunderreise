@@ -1,6 +1,5 @@
 package fabis.wunderreise.core {
 
-	import com.junkbyte.console.Cc;
 	import fabis.wunderreise.scenes.FabisMainMenu;
 
 	import com.flashmastery.as3.game.core.FlashGraphicsCore;
@@ -9,8 +8,10 @@ package fabis.wunderreise.core {
 	import com.flashmastery.as3.game.interfaces.core.IGameCore;
 	import com.flashmastery.as3.game.interfaces.core.IInteractiveGameObject;
 	import com.flashmastery.as3.game.interfaces.delegates.IGameDelegate;
+	import com.greensock.plugins.ColorTransformPlugin;
 	import com.greensock.plugins.FramePlugin;
 	import com.greensock.plugins.TweenPlugin;
+	import com.junkbyte.console.Cc;
 
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
@@ -29,7 +30,7 @@ package fabis.wunderreise.core {
 
 		private function init( evt : Event = null ) : void {
 			removeEventListener( Event.ADDED_TO_STAGE, init );
-			TweenPlugin.activate( [ FramePlugin ] );
+			TweenPlugin.activate( [ FramePlugin, ColorTransformPlugin ] );
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			if ( _debugging ) {
