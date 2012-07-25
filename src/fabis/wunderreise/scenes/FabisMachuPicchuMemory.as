@@ -1,8 +1,8 @@
 package fabis.wunderreise.scenes {
 
-	import flash.filters.DropShadowFilter;
-	import fabis.wunderreise.games.memory.FabisMemoryGameOptions;
 	import fabis.wunderreise.games.memory.FabisMemoryGame;
+	import fabis.wunderreise.games.memory.FabisMemoryGameOptions;
+
 	import flash.events.Event;
 
 	/**
