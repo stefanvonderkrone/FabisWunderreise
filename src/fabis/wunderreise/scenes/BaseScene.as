@@ -1,5 +1,6 @@
 package fabis.wunderreise.scenes {
 
+	import flash.utils.getQualifiedClassName;
 	import com.flashmastery.as3.game.core.GameScene;
 	import com.junkbyte.console.Cc;
 
@@ -21,6 +22,7 @@ package fabis.wunderreise.scenes {
 			if ( _view == null )
 				_view = new Sprite();
 			Sprite( _view ).addEventListener( Event.ADDED_TO_STAGE, initView );
+			name = getQualifiedClassName( this ).split( "::" )[ 1 ];
 			log( "scene created!" );
 			super.handleCreation();
 		}
