@@ -37,7 +37,7 @@ package fabis.wunderreise.scenes {
 			initButton( view._machuPicchu );
 			initButton( view._petra );
 			initButton( view._tajMahal );
-			name = "FabisMainMenu";
+			//name = "FabisMainMenu";
 			super.handleCreation();
 		}
 		
@@ -59,6 +59,7 @@ package fabis.wunderreise.scenes {
 					gameCore.director.replaceScene( new FabisPetraWordsCapture(), true );
 					break;
 				case view._tajMahal:
+					gameCore.director.replaceScene( new FabisTajMahalMemory(), true );
 					break;
 			}
 		}

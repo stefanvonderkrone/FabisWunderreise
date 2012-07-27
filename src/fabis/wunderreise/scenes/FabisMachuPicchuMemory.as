@@ -40,7 +40,7 @@ package fabis.wunderreise.scenes {
 			_memory.initWithOptions( memoryOptions );
 			_memory.x = ( 900 - _memory.width ) >> 1;
 			_memory.y = ( 600 - _memory.height ) >> 1;
-			name = "FabisMachuPicchuMemory";
+			//name = "FabisMachuPicchuMemory";
 			super.handleCreation();
 		}
 		
