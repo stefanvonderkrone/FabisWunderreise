@@ -23,7 +23,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			_gameOptions.wrongPics = new Array( 1, 2, 3 );
 			_gameOptions.rightPics = new Array( 4, 5, 6, 7, 8 );
 			_gameOptions.feedbackOrder = new Array( 8, 7, 4, 6, 5 );
-			_gameOptions.feedbackTimes = new Array( 12, 16, 26, 36, 41, 50 );
+			_gameOptions.feedbackTimes = new Array( 11, 16, 26, 36, 41, 50 );
 			
 			_gameOptions.frameArray = _gameOptions.initFrameArray();
 			_gameField._gameOptions = _gameOptions;
@@ -34,8 +34,8 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		}
 		
 		override public function start() : void {
-			//_gameField.startIntro();
-			_gameField.start();
+			_gameField.startIntro();
+			//_gameField.start();
 		}
 		
 		override public function stop() : void {

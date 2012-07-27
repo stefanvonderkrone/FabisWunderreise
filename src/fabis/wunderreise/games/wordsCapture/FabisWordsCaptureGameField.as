@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.wordsCapture {
+	import com.greensock.TweenLite;
 	import flash.net.URLRequest;
 	import flash.media.Sound;
 	import flash.events.MouseEvent;
@@ -43,6 +44,7 @@ package fabis.wunderreise.games.wordsCapture {
 			_stone.init();
 			_stone.stone.gotoAndStop( _currentImageIndex + 1 );
 			_gameField.addChild( _stone.stone );
+			_gameField.swapChildren( _stone.stone, _basket.basket );
 			
 			_gameField.addEventListener(Event.ENTER_FRAME, handleEnterFrameDemo);
 		}

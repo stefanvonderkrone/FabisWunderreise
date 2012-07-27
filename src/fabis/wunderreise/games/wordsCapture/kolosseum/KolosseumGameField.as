@@ -26,6 +26,8 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		}
 		
 		override public function startIntro() : void{
+			gameField.addEventListener( MouseEvent.MOUSE_OVER, handleMouseOver );
+			gameField.addEventListener( MouseEvent.MOUSE_OUT, handleMouseOut );
 			super._stone = new KolosseumStone();
 			super.startIntro();			
 		}
@@ -37,8 +39,8 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		
 		override public function start() : void {
 			
-			gameField.addEventListener( MouseEvent.MOUSE_OVER, handleMouseOver );
-			gameField.addEventListener( MouseEvent.MOUSE_OUT, handleMouseOut );
+			//gameField.addEventListener( MouseEvent.MOUSE_OVER, handleMouseOver );
+			//gameField.addEventListener( MouseEvent.MOUSE_OUT, handleMouseOut );
 			super._stone = new KolosseumStone();
 			super.start();
 		}

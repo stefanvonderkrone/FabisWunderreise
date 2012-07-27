@@ -39,15 +39,23 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		
 		public function initPosition() : void{
 			_randomX = Math.floor(Math.random() * (_maxX - _minX + 1)) + _minX;
-			stone.x = this._randomX;
-			stone.y = 0 - stone.height;
+			stone.x = 330;
+			stone.y = 30;
+			stone.height = 0;
+			stone.width = 0;
+			//stone.x = this._randomX;
+			TweenLite.to(stone, 2, {width : 186, height : 135, y : 10});
+			TweenLite.to(stone, 2, {x : _randomX});
+			//stone.y = 0 - stone.height;
 			_currentSpeed = 0;
 		}
 		
 		public function initFallValues( currentTime : int ) : int{
 			
+			
 			// "fall-down" values 
 			var time : int = getTimer();
+			if( !currentTime ) currentTime = time;
 			var deltaTime : Number = ( time - currentTime ) / 1000;
 			_currentSpeed += _gravity * deltaTime;
 			return time;
@@ -107,7 +115,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			stone.filters = [myGlow];
 			if( stone.parent is BasketFront ){
 				stone.parent.setChildIndex( stone, stone.parent.numChildren-1 );
-				TweenLite.to( stone, 1, {width: 186, height: 135});
+				if( bRight ) TweenLite.to( stone, 1, {width: 186, height: 135});
 			}
 			if( stone.parent is KolosseumGameFieldView ){
 				TweenLite.to( stone, 1, {y: 400});
