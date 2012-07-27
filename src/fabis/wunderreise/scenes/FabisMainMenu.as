@@ -48,6 +48,7 @@ package fabis.wunderreise.scenes {
 				case view._chineseWall:
 					break;
 				case view._colosseum:
+					gameCore.director.replaceScene( new FabisKolosseumWordsCapture(), true );
 					break;
 				case view._cristo:
 					break;
@@ -55,6 +56,7 @@ package fabis.wunderreise.scenes {
 					gameCore.director.replaceScene( new FabisMachuPicchuMemory(), true );
 					break;
 				case view._petra:
+					gameCore.director.replaceScene( new FabisPetraWordsCapture(), true );
 					break;
 				case view._tajMahal:
 					break;
