@@ -22,9 +22,7 @@ package com.flashmastery.as3.game.interfaces.sound {
 		function get bytesTotal() : int;
 		function get progress() : Number;
 				
-		function get soundLoaderContext() : SoundLoaderContext;
-		
-		function play( startTime : Number, loops : int = 0, soundTransform : SoundTransform = null ) : void;
+		function play( startTime : Number = 0, loops : int = 0, soundTransform : SoundTransform = null ) : void;
 		function stop() : void;
 
 		function get leftPeak() : Number;
