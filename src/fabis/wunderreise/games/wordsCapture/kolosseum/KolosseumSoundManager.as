@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.wordsCapture.kolosseum {
+	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureBasket;
 	import com.greensock.TweenLite;
 	import flash.system.System;
 	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGameOptions;
@@ -57,6 +58,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		
 		public function playFeedback( points : int ) : void {
 			_points = points;
+			
 			var _sound : Sound = new Sound();
 			_request = new URLRequest("../sounds/Kolosseum/Kolosseum_Auswertung.mp3");
 			_sound.load(_request);
@@ -64,8 +66,8 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			
 			_feedbackTime = _gameOptions.feedbackTimes.shift() * 60;
 			
-			_gameOptions.gameField.addEventListener(Event.ENTER_FRAME, handleFeedbackSound);
-			_channel.addEventListener(Event.SOUND_COMPLETE, handlePointsSound);
+			_gameOptions.gameField.addEventListener( Event.ENTER_FRAME, handleFeedbackSound );
+			_channel.addEventListener( Event.SOUND_COMPLETE, handlePointsSound );
 		}
 		
 		private function handleFeedbackSound( event: Event ) : void {
@@ -98,7 +100,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 						_stone.highlight();
 					}
 					TweenLite.delayedCall(2, removeWrongHighlights);
-					_gameOptions.gameField.removeEventListener(Event.ENTER_FRAME, handleFeedbackSound);
+					_gameOptions.gameField.removeEventListener( Event.ENTER_FRAME, handleFeedbackSound );
 				}
 			}
 		}
@@ -110,11 +112,12 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		}
 		
 		private function handlePointsSound( event: Event ) : void{
-			_channel.removeEventListener(Event.SOUND_COMPLETE, handlePointsSound);
+			_channel.removeEventListener( Event.SOUND_COMPLETE, handlePointsSound );
 			TweenLite.delayedCall(1, playPointsSound);
 		}
 		
 		private function playPointsSound() : void {
+			
 			var _sound : Sound = new Sound();
 			
 			switch( _points ) {
@@ -141,7 +144,21 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			}
 			_sound.load(_request);
 			_channel = _sound.play();
-			
+			_channel.addEventListener( Event.SOUND_COMPLETE, handleRemoveBasket );
 		}
+		
+		public function handleRemoveBasket(  event: Event ) : void {	
+			_channel.removeEventListener( Event.SOUND_COMPLETE, handleRemoveBasket );		
+			_gameOptions.gameField.removeBasketFront();
+		}
+		
+		public function playCompletion() : void {
+			var _sound : Sound = new Sound();
+			_request = new URLRequest("../sounds/Kolosseum/Abschluss_Bilder_fangen.mp3");
+			_sound.load(_request);
+			_sound.play();
+		}
+		
+		
 	}
 }

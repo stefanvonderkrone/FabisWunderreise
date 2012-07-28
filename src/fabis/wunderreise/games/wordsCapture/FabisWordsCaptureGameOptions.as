@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.wordsCapture {
+	import flash.display.MovieClip;
 	/**
 	 * @author Stefanie Drost
 	 */
@@ -7,6 +8,7 @@ package fabis.wunderreise.games.wordsCapture {
 		public var numStones : uint = 8;
 		public var numrightStones : uint = 5;
 		public var gameField : FabisWordsCaptureGameField;
+		public var background : MovieClip;
 		
 		public var catched : *;
 		public var frameArray : Array = new Array( numStones );
@@ -15,8 +17,11 @@ package fabis.wunderreise.games.wordsCapture {
 		public var rightPics : Array;
 		public var allPics : *;
 		public var wrongStones : *;
+		public var rightStones : *;
 		public var feedbackOrder : Array;
 		public var feedbackTimes : Array;
+		public var wallXCoordinates : Array;
+		public var wallYCoordinates : Array;
 		
 		public var soundManager : *;
 		

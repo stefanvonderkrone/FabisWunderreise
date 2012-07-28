@@ -44,7 +44,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			stone.height = 0;
 			stone.width = 0;
 			//stone.x = this._randomX;
-			TweenLite.to(stone, 2, {width : 186, height : 135, y : 10});
+			TweenLite.to(stone, 2, {width : 154, height : 100, y : 10});
 			TweenLite.to(stone, 2, {x : _randomX});
 			//stone.y = 0 - stone.height;
 			_currentSpeed = 0;
@@ -130,7 +130,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			myGlow.blurY = 10;
 			stone.filters = [myGlow];
 			if( stone.parent is BasketFront ){
-				TweenLite.to( stone, 1, {width: 80, height: 60});
+				TweenLite.to( stone, 1, {width: 55, height: 45});
 			}
 			if( stone.parent is KolosseumGameFieldView ){
 				TweenLite.to( stone, 1, {y: 500});

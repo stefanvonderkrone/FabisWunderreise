@@ -25,6 +25,7 @@ package fabis.wunderreise.scenes {
 	
 		override protected function handleCreation() : void {
 			_view = new FabisKolosseumView();
+			view._kolosseum.gotoAndStop( 1 );
 			
 			_gameField = new KolosseumGameField();
 			_gameField.init();
@@ -33,6 +34,8 @@ package fabis.wunderreise.scenes {
 			wordsCaptureOptions.catched = new Vector.<KolosseumStone>();
 			wordsCaptureOptions.allPics = new Vector.<KolosseumStone>();
 			wordsCaptureOptions.wrongStones = new Vector.<KolosseumStone>();
+			wordsCaptureOptions.rightStones = new Vector.<KolosseumStone>();
+			wordsCaptureOptions.background = view._kolosseum;
 			
 			wordsCaptureOptions.gameField = _gameField;
 			

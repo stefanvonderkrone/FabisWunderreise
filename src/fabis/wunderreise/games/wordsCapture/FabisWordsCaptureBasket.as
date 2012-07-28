@@ -1,5 +1,5 @@
 package fabis.wunderreise.games.wordsCapture {
-	
+	import fabis.wunderreise.games.wordsCapture.kolosseum.KolosseumGameField;
 	import fabis.wunderreise.games.wordsCapture.kolosseum.KolosseumStone;
 	import com.greensock.TweenLite;
 	import flash.display.MovieClip;
@@ -14,6 +14,7 @@ package fabis.wunderreise.games.wordsCapture {
 		protected var _leftBorder : int;
 		protected var _rightBorder : int;
 		public var _gameOptions : FabisWordsCaptureGameOptions;
+		protected var _tmpCatched : int = 0;
 		
 		private static const BASKET_FPS : uint = 20;
 		
@@ -49,7 +50,7 @@ package fabis.wunderreise.games.wordsCapture {
 			
 			_basketFront = new BasketFront();
 			_basketFront.x = 100;
-			_basketFront.y = 100;
+			_basketFront.y = 80;
 			_basketFront.gotoAndStop( 1 );
 			basket.parent.addChild( _basketFront );
 			
@@ -61,6 +62,37 @@ package fabis.wunderreise.games.wordsCapture {
 				
 			//var gameField :* = parent;
 			//gameField.startFeedback();
+		}
+		
+		public function removeBasketFront() : void {
+			
+			var _x : int = _basketFront.x;
+			var _y : int = _basketFront.y;
+			
+			const numFrames : uint = _basketFront.totalFrames - 1;
+			TweenLite.to( _basketFront, numFrames / BASKET_FPS, { frame: 1 } );
+			addStonesToGameField( _x, _y );
+			
+			
+		}
+		
+		private function addStonesToGameField( x : int, y : int ) : void {
+			
+			//var _gameField : * = _gameOptions.gameField;
+			var _stone : KolosseumStone;
+			
+			for each( _stone in _gameOptions.catched ){
+				
+				basket.parent.addChild( _stone.stone );
+				_stone.stone.x += x;
+				_stone.stone.y += y;
+				
+			}
+			basket.parent.removeChild, [ _basketFront ];
+			if( _gameOptions.catched.length > 0 ) 
+				stonesFallDown();
+			else 
+				_gameOptions.gameField.completeGame();
 		}
 		
 		private function printStones() : void {
@@ -75,8 +107,8 @@ package fabis.wunderreise.games.wordsCapture {
 				_basketFront.addChild( _stone.stone );
 				_stone.stone.x = xValue;
 				_stone.stone.y = yValue;
-				_stone.stone.width = 80;
-				_stone.stone.height = 60;
+				_stone.stone.width = 55;
+				_stone.stone.height = 45;
 				_stone.stone.visible = true;
 				number++;
 				
@@ -87,6 +119,22 @@ package fabis.wunderreise.games.wordsCapture {
 				else{
 					xValue += 60;
 				}
+			}
+		}
+		
+		private function stonesFallDown() : void {
+			var _stone : KolosseumStone;
+			
+			if( _tmpCatched < _gameOptions.catched.length ){
+				_stone = _gameOptions.catched[ _tmpCatched ];
+				TweenLite.to( _stone.stone, 1, { y: 500, width: 154, height: 100} );
+				_tmpCatched++;
+				TweenLite.delayedCall( (1/10), stonesFallDown);
+			}
+			else{
+				_gameOptions.gameField.completeGame();
+				//var _gameField : KolosseumGameField = KolosseumGameField( _gameOptions.gameField );
+				//TweenLite.delayedCall( 1, _gameField.completeGame );
 			}
 		}
 	}

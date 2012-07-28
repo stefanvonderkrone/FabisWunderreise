@@ -128,6 +128,7 @@ package fabis.wunderreise.games.wordsCapture {
 					//TODO: Audio-Ausgabe Punkte
 					_points++;
 				}
+				_gameOptions.rightStones.push( _stone );
 			}
 			else if( _gameOptions.wrongPics.indexOf( _stone.id ) != -1 ){
 				_stone.bRight = false;
@@ -156,9 +157,19 @@ package fabis.wunderreise.games.wordsCapture {
 		public function showFeedback() : void{
 			_basket.tweenOut();
 			_basket.showBasketFront( _gameOptions );
+			// TODO: add to game
 			_gameOptions.soundManager.playFeedback( _points );
+			//TweenLite.delayedCall(2, _basket.removeBasketFront );
+			//_gameOptions.soundManager.playCompletion();
+			//addStonesToWall();
 		}
 		
+		public function removeBasketFront() : void {
+			_basket.removeBasketFront();
+		}
 		
+		public function completeGame() : void {
+			_gameOptions.soundManager.playCompletion();
+		}
 	}
 }
