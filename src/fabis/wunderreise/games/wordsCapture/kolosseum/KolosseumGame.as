@@ -1,5 +1,5 @@
 package fabis.wunderreise.games.wordsCapture.kolosseum {
-	
+	import fabis.wunderreise.games.wordsCapture.FabiWordsCapture;
 	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGameOptions;
 	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGame;
 	
@@ -10,6 +10,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		
 		protected var _gameField : KolosseumGameField;
 		protected var _stone : KolosseumStone;
+		protected var _fabi : FabiWordsCapture;
 		//protected var _view : FabisKolosseumView;
 		
 		public function KolosseumGame() {
@@ -34,11 +35,14 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			_gameOptions.soundManager = new KolosseumSoundManager();
 			_gameOptions.soundManager.initWithOptions( _gameOptions );
 			
+			_fabi = _gameOptions.fabi;
+			
 		}
 		
 		override public function start() : void {
-			//_gameField.startIntro();
-			_gameField.start();
+			_gameField.startIntro();
+			//_gameField.start();
+			//_fabi.startSynchronization();
 		}
 		
 		override public function stop() : void {

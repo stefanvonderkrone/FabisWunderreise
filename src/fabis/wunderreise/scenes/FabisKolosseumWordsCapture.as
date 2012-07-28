@@ -1,4 +1,5 @@
 package fabis.wunderreise.scenes {
+	import fabis.wunderreise.games.wordsCapture.FabiWordsCapture;
 	import fabis.wunderreise.games.wordsCapture.kolosseum.KolosseumStone;
 	import fabis.wunderreise.games.wordsCapture.kolosseum.KolosseumGame;
 	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGameOptions;
@@ -14,6 +15,7 @@ package fabis.wunderreise.scenes {
 		
 		protected var _game : FabisWordsCaptureGame;
 		protected var _gameField : KolosseumGameField;
+		protected var _fabi : FabiWordsCapture;
 		
 		public function FabisKolosseumWordsCapture() {
 			super();
@@ -30,13 +32,17 @@ package fabis.wunderreise.scenes {
 			_gameField = new KolosseumGameField();
 			_gameField.init();
 			
+			_fabi = new FabiWordsCapture();
+			_fabi.view = view._fabi;
+			_fabi.init();
+			
 			const wordsCaptureOptions : FabisWordsCaptureGameOptions = new FabisWordsCaptureGameOptions();
 			wordsCaptureOptions.catched = new Vector.<KolosseumStone>();
 			wordsCaptureOptions.allPics = new Vector.<KolosseumStone>();
 			wordsCaptureOptions.wrongStones = new Vector.<KolosseumStone>();
 			wordsCaptureOptions.rightStones = new Vector.<KolosseumStone>();
 			wordsCaptureOptions.background = view._kolosseum;
-			
+			wordsCaptureOptions.fabi = _fabi;
 			wordsCaptureOptions.gameField = _gameField;
 			
 			_game = new KolosseumGame();
