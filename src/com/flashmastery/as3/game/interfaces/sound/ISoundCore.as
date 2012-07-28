@@ -1,5 +1,6 @@
 package com.flashmastery.as3.game.interfaces.sound {
 
+	import flash.media.SoundLoaderContext;
 	import com.flashmastery.as3.game.interfaces.core.IRecycable;
 
 	import flash.media.Sound;
@@ -11,8 +12,8 @@ package com.flashmastery.as3.game.interfaces.sound {
 	public interface ISoundCore extends IRecycable {
 
 		function registerSound( name : String, sound : Sound ) : ISoundItem;
-		function registerSoundFromURL( name : String, url : String ) : ISoundItem;
-		function registerEmptySound( name : String ) : ISoundItem;
+		function registerSoundFromURL( name : String, url : String, context : SoundLoaderContext = null ) : ISoundItem;
+		function registerEmptySound( name : String, context : SoundLoaderContext = null ) : ISoundItem;
 		function registerSoundItem( soundItem : ISoundItem ) : ISoundItem;
 		function getSoundByName( name : String ) : ISoundItem;
 		function getSoundByURL( url : String ) : ISoundItem;
@@ -21,7 +22,7 @@ package com.flashmastery.as3.game.interfaces.sound {
 		function removeSoundByURL( url : String ) : ISoundItem;
 		function removeSoundItem( soundItem : ISoundItem ) : ISoundItem;
 		function removeSound( sound : Sound ) : ISoundItem;
-		function removeAllSounds() : void;
+		function removeAllSounds( disposeAllSounds : Boolean = true ) : void;
 
 		function stopAllSounds() : void;
 
