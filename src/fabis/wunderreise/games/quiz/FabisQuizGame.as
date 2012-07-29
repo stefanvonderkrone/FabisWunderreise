@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.quiz {
+	import flash.display.MovieClip;
 	import com.greensock.TweenLite;
 	import flash.display.Sprite;
 	
@@ -10,6 +11,8 @@ package fabis.wunderreise.games.quiz {
 		protected var _view : FabisCloseView;
 		protected var _gameOptions : FabisQuizGameOptions;
 		protected var _soundManager : FabisQuizSoundManager;
+		protected var _imageContainer : FabisQuizImageContainer;
+		protected var _fabiClose : FabiQuizClose;
 		
 		public function FabisQuizGame() {
 			
@@ -23,14 +26,17 @@ package fabis.wunderreise.games.quiz {
 			_gameOptions = options;
 			
 			_view = new FabisCloseView();
+			_fabiClose = new FabiQuizClose();
+			_fabiClose._fabi = view._closeContainer._fabiClose;
+			_fabiClose.init();
+			
 			_soundManager = new FabisQuizSoundManager();
 			_soundManager.initWithOptions( _gameOptions );
+			_soundManager._game = this;
 		}
 		
 		public function start() : void {
 			startIntro();
-			//_gameField.start();
-			//_fabi.startSynchronization();
 		}
 		
 		public function stop() : void {
@@ -39,12 +45,26 @@ package fabis.wunderreise.games.quiz {
 		
 		public function switchToCloseView() : void {
 			_gameOptions.view.removeChild( _gameOptions.view._chichenItzaContainer );
-			_gameOptions.view.addChild( view );
+			_gameOptions.view.addChild( view._closeContainer );
 			//_view = new FabisCloseView();
 		}
 		
 		public function startIntro() : void {
 			_soundManager.playIntro();
+		}
+		
+		public function startGame() : void {
+			switchToCloseView();
+			initImageContainer();
+			_fabiClose.initNose();
+		}
+		
+		public function initImageContainer() : void {
+			_imageContainer = new FabisQuizImageContainer();
+			_imageContainer.x = 380;
+			_imageContainer.y = 90;
+			_imageContainer.gotoAndStop( 1 );
+			view._closeContainer.addChild( _imageContainer );
 		}
 	}
 }
