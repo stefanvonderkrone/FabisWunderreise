@@ -45,14 +45,14 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		
 		public function playStoneCatchedSound() : void {
 			var _sound : Sound = new Sound();
-			_request = new URLRequest("../../sounds/Kolosseum/sound11.mp3");
+			_request = new URLRequest("../../sounds/sound11.mp3");
 			_sound.load(_request);
 			_sound.play();
 		}
 		
 		public function playStoneFallSound() : void {
 			var _sound : Sound = new Sound();
-			_request = new URLRequest("../../sounds/Kolosseum/ploing.mp3");
+			_request = new URLRequest("../../sounds/ploing.mp3");
 			_sound.load(_request);
 			_sound.play();
 		}
@@ -160,7 +160,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		
 		public function playCompletion() : void {
 			var _sound : Sound = new Sound();
-			_request = new URLRequest("../../sounds/Kolosseum/Abschluss_Bilder_fangen.mp3");
+			_request = new URLRequest("../../sounds/Abschluss_Bilder_fangen.mp3");
 			_sound.load(_request);
 			_channel = _sound.play();
 			_gameOptions.fabi.startSynchronization();

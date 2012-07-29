@@ -44,6 +44,7 @@ package fabis.wunderreise.scenes {
 		override protected function handleClick( evt : MouseEvent ) : void {
 			switch( evt.currentTarget ) {
 				case view._chichenItza:
+					gameCore.director.replaceScene( new FabisChichenItzaQuiz(), true );
 					break;
 				case view._chineseWall:
 					break;

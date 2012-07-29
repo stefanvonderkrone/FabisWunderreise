@@ -1,4 +1,5 @@
 package fabis.wunderreise.scenes {
+	import fabis.wunderreise.games.wordsCapture.FabiWordsCapture;
 	import fabis.wunderreise.games.wordsCapture.petra.PetraStone;
 	import fabis.wunderreise.games.wordsCapture.petra.PetraGame;
 	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGameOptions;
@@ -13,6 +14,7 @@ package fabis.wunderreise.scenes {
 		
 		protected var _game : FabisWordsCaptureGame;
 		protected var _gameField : PetraGameField;
+		protected var _fabi : FabiWordsCapture;
 		
 		public function FabisPetraWordsCapture() {
 			super();
@@ -24,12 +26,22 @@ package fabis.wunderreise.scenes {
 	
 		override protected function handleCreation() : void {
 			_view = new FabisPetraView();
+			//view._petra.gotoAndStop( 1 );
+			
 			_gameField = new PetraGameField();
 			_gameField.init();
+			
+			_fabi = new FabiWordsCapture();
+			_fabi.view = view._fabi;
+			_fabi.init();
 			
 			const wordsCaptureOptions : FabisWordsCaptureGameOptions = new FabisWordsCaptureGameOptions();
 			wordsCaptureOptions.catched = new Vector.<PetraStone>();
 			wordsCaptureOptions.allPics = new Vector.<PetraStone>();
+			wordsCaptureOptions.wrongStones = new Vector.<PetraStone>();
+			wordsCaptureOptions.rightStones = new Vector.<PetraStone>();
+			//wordsCaptureOptions.background = view._petra;
+			wordsCaptureOptions.fabi = _fabi;
 			wordsCaptureOptions.gameField = _gameField;
 			
 			_game = new PetraGame();

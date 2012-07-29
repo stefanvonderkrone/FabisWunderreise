@@ -11,7 +11,6 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		protected var _gameField : KolosseumGameField;
 		protected var _stone : KolosseumStone;
 		protected var _fabi : FabiWordsCapture;
-		//protected var _view : FabisKolosseumView;
 		
 		public function KolosseumGame() {
 			
@@ -21,11 +20,14 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			_gameOptions = options;
 			_gameField = KolosseumGameField( _gameOptions.gameField );
 			
+			//number of frames in mc
 			_gameOptions.wrongPics = new Array( 1, 2, 3 );
 			_gameOptions.rightPics = new Array( 4, 5, 6, 7, 8 );
 			_gameOptions.feedbackOrder = new Array( 8, 7, 4, 6, 5 );
+			// time in seconds
 			_gameOptions.feedbackTimes = new Array( 11, 16, 26, 36, 41, 50 );
 			
+			// coordinates for adding stones
 			_gameOptions.wallXCoordinates = new Array( 158, 190, 220, 250, 280 );
 			_gameOptions.wallYCoordinates = new Array( 90, 85, 75, 60, 65 );
 			

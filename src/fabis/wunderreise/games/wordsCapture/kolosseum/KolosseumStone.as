@@ -16,7 +16,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		protected var _maxX : int = 460;
 		protected var _id : int;
 		protected var _bRight : Boolean;
-		protected var myGlow:GlowFilter = new GlowFilter();
+		protected var myGlow : GlowFilter = new GlowFilter();
 		
 		protected var _stone : KolosseumStoneView;
 		
@@ -43,15 +43,12 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			stone.y = 30;
 			stone.height = 0;
 			stone.width = 0;
-			//stone.x = this._randomX;
 			TweenLite.to(stone, 2, {width : 154, height : 100, y : 10});
 			TweenLite.to(stone, 2, {x : _randomX});
-			//stone.y = 0 - stone.height;
 			_currentSpeed = 0;
 		}
 		
 		public function initFallValues( currentTime : int ) : int{
-			
 			
 			// "fall-down" values 
 			var time : int = getTimer();
@@ -59,7 +56,6 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			var deltaTime : Number = ( time - currentTime ) / 1000;
 			_currentSpeed += _gravity * deltaTime;
 			return time;
-			
 		}
 		
 		public function fall() : void{

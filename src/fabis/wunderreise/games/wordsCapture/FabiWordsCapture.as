@@ -8,12 +8,10 @@ package fabis.wunderreise.games.wordsCapture {
 	 */
 	public class FabiWordsCapture extends MovieClip {
 		
-		protected var _fabi : MovieClip;
+		protected var _fabi : FabiView;
 		protected var _bytes : ByteArray; 
 		protected var _frameCounter : int = 0;
 		protected var _spec : Number = 0;
-		protected var _specAvgArray : Array = new Array();
-		protected var _specAvg : Number;
 		
 		public function FabiWordsCapture() {
 			
@@ -59,11 +57,11 @@ package fabis.wunderreise.games.wordsCapture {
 			}
 		}
 		
-		public function get view() : MovieClip {
-			return MovieClip( _fabi );
+		public function get view() : FabiView {
+			return FabiView( _fabi );
 		}
 		
-		public function set view( fabi : MovieClip ) : void {
+		public function set view( fabi : FabiView ) : void {
 			_fabi = fabi;
 		}
 	}

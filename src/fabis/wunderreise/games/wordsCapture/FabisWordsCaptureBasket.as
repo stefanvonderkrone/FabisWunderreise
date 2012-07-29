@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.wordsCapture {
+	import fabis.wunderreise.games.wordsCapture.petra.PetraStone;
 	import fabis.wunderreise.games.wordsCapture.kolosseum.KolosseumGameField;
 	import fabis.wunderreise.games.wordsCapture.kolosseum.KolosseumStone;
 	import com.greensock.TweenLite;
@@ -79,7 +80,14 @@ package fabis.wunderreise.games.wordsCapture {
 		private function addStonesToGameField( x : int, y : int ) : void {
 			
 			//var _gameField : * = _gameOptions.gameField;
-			var _stone : KolosseumStone;
+			var _stone : MovieClip;
+			
+			if( basket.parent is KolosseumGameFieldView ){
+				_stone = KolosseumStone( _stone );
+			}
+			if( basket.parent is PetraGameFieldView ){
+				_stone = PetraStone( _stone );
+			}
 			
 			for each( _stone in _gameOptions.catched ){
 				
@@ -96,8 +104,15 @@ package fabis.wunderreise.games.wordsCapture {
 		}
 		
 		private function printStones() : void {
+			var _stone : MovieClip;
 			
-			var _stone : KolosseumStone;
+			if( basket.parent is KolosseumGameFieldView ){
+				_stone = KolosseumStone( _stone );
+			}
+			if( basket.parent is PetraGameFieldView ){
+				_stone = PetraStone( _stone );
+			}
+			
 			var xValue : int = 70;
 			var yValue : int = 90;
 			var number : int = 0;
@@ -123,7 +138,14 @@ package fabis.wunderreise.games.wordsCapture {
 		}
 		
 		private function stonesFallDown() : void {
-			var _stone : KolosseumStone;
+			var _stone : MovieClip;
+			
+			if( basket.parent is KolosseumGameFieldView ){
+				_stone = KolosseumStone( _stone );
+			}
+			if( basket.parent is PetraGameFieldView ){
+				_stone = PetraStone( _stone );
+			}
 			
 			if( _tmpCatched < _gameOptions.catched.length ){
 				_stone = _gameOptions.catched[ _tmpCatched ];
