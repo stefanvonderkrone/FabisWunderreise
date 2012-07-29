@@ -1,11 +1,10 @@
 package com.flashmastery.as3.game.interfaces.sound {
 
-	import com.flashmastery.as3.game.interfaces.core.IRecycable;
 	import com.flashmastery.as3.collections.interfaces.IImmutableList;
+	import com.flashmastery.as3.game.interfaces.core.IRecycable;
 	import com.flashmastery.as3.game.interfaces.delegates.ISoundItemDelegate;
 
 	import flash.media.Sound;
-	import flash.media.SoundLoaderContext;
 	import flash.media.SoundTransform;
 	/**
 	 * @author Stefan von der Krone (2011)
@@ -17,16 +16,19 @@ package com.flashmastery.as3.game.interfaces.sound {
 		
 		function get sound() : Sound;
 		function get soundChannels() : IImmutableList;
+		function get maxNumChannels() : int;
+		function set maxNumChannels( maxNumChannels : int ) : void;
 		
 		function get bytesLoaded() : uint;
 		function get bytesTotal() : int;
-		function get progress() : Number;
+		function get loadProgress() : Number;
 				
 		function play( startTime : Number = 0, loops : int = 0, soundTransform : SoundTransform = null ) : void;
 		function stop() : void;
 
 		function get leftPeak() : Number;
 		function get position() : Number;
+		function get length() : Number;
 		function get rightPeak() : Number;
 		
 		function get soundTransform() : SoundTransform;

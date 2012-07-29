@@ -1,0 +1,171 @@
+FreeCommander - Inhalt des Ordners:  D:\Eigene Dateien\My Dropbox\sounds 29.07.2012 20:09
+
+  Datum    Uhrzeit  Attr.         Bytes        Dateiname
+---------- -------- ------   ----------------  --------
+
+D:\Eigene Dateien\My Dropbox\sounds
+29.07.2012 15:57:07 A-----            497.370  atmo.mp3
+29.07.2012 20:07:51 -D----                     games
+29.07.2012 20:08:55 -D----                     menu
+                          -------------------  
+                                      497.370  1 Dateien
+
+D:\Eigene Dateien\My Dropbox\sounds\games
+29.07.2012 20:08:55 -D----                     chichenItza
+29.07.2012 20:08:55 -D----                     chineseWall
+29.07.2012 20:08:55 -D----                     colosseum
+29.07.2012 20:08:55 -D----                     cristo
+29.07.2012 20:08:36 -D----                     endings
+29.07.2012 20:08:55 -D----                     machuPicchu
+29.07.2012 20:08:55 -D----                     petra
+29.07.2012 20:08:55 -D----                     tajMahal
+                          -------------------  
+                                            0  0 Dateien
+
+D:\Eigene Dateien\My Dropbox\sounds\games\chichenItza
+29.07.2012 15:57:11 A-----            200.966  intro.mp3
+29.07.2012 15:57:15 A-----             91.814  story1.mp3
+29.07.2012 15:57:14 A-----             85.190  story1Right.mp3
+29.07.2012 15:57:12 A-----             86.630  story1Wrong.mp3
+29.07.2012 15:57:19 A-----            124.646  story2.mp3
+29.07.2012 15:57:17 A-----             95.846  story2Right.mp3
+29.07.2012 15:57:16 A-----             80.582  story2Wrong.mp3
+29.07.2012 15:57:24 A-----            113.126  story3.mp3
+29.07.2012 15:57:22 A-----            109.670  story3Right.mp3
+29.07.2012 15:57:20 A-----            123.062  story3Wrong.mp3
+                          -------------------  
+                                    1.111.532  10 Dateien
+
+D:\Eigene Dateien\My Dropbox\sounds\games\chineseWall
+29.07.2012 15:57:27 A-----            232.646  intro.mp3
+29.07.2012 15:57:31 A-----            108.518  story1.mp3
+29.07.2012 15:57:29 A-----             82.886  story1Right.mp3
+29.07.2012 15:57:28 A-----             79.286  story1Wrong.mp3
+29.07.2012 15:57:35 A-----            118.883  story2.mp3
+29.07.2012 15:57:33 A-----             88.211  story2Right.mp3
+29.07.2012 15:57:32 A-----             84.614  story2Wrong.mp3
+29.07.2012 15:57:38 A-----             78.854  story3.mp3
+29.07.2012 15:57:37 A-----             70.070  story3Right.mp3
+29.07.2012 15:57:36 A-----             88.790  story3Wrong.mp3
+                          -------------------  
+                                    1.032.758  10 Dateien
+
+D:\Eigene Dateien\My Dropbox\sounds\games\colosseum
+29.07.2012 15:57:52 A-----            330.134  debriefing.mp3
+29.07.2012 15:57:55 A-----             44.582  feedback3AndLess.mp3
+29.07.2012 15:57:56 A-----             30.182  feedback4.mp3
+29.07.2012 15:57:56 A-----             27.734  feedback5.mp3
+29.07.2012 15:57:57 A-----             26.006  feedback6.mp3
+29.07.2012 15:57:57 A-----             27.014  feedback7.mp3
+29.07.2012 15:57:58 A-----             29.606  feedbackComplete.mp3
+29.07.2012 15:57:54 A-----            171.734  intro.mp3
+                          -------------------  
+                                      686.992  8 Dateien
+
+D:\Eigene Dateien\My Dropbox\sounds\games\cristo
+29.07.2012 15:57:47 A-----            111.686  carsExercise.mp3
+29.07.2012 15:57:48 A-----             28.022  carsFeedbackFirstAttemptTooLittle.mp3
+29.07.2012 15:57:48 A-----             41.270  carsFeedbackFirstAttemptTooMuch.mp3
+29.07.2012 15:57:46 A-----             46.166  carsFeedbackRight.mp3
+29.07.2012 15:57:49 A-----             62.294  carsFeedbackSecondAttemptWrong.mp3
+29.07.2012 15:57:40 A-----              9.158  flip.mp3
+29.07.2012 15:57:43 A-----            214.214  giraffesExercise.mp3
+29.07.2012 15:57:44 A-----             38.390  giraffesFeedbackFirstAttemptTooLittle.mp3
+29.07.2012 15:57:43 A-----             22.838  giraffesFeedbackFirstAttemptTooMuch.mp3
+29.07.2012 15:57:41 A-----             59.414  giraffesFeedbackRight.mp3
+29.07.2012 15:57:44 A-----             58.262  giraffesFeedbackSecondAttemptWrong.mp3
+29.07.2012 15:57:39 A-----             83.894  intro.mp3
+                          -------------------  
+                                      775.608  12 Dateien
+
+D:\Eigene Dateien\My Dropbox\sounds\games\endings
+29.07.2012 15:57:08 A-----             22.838  cristo.mp3
+29.07.2012 15:57:08 A-----             27.734  memory.mp3
+29.07.2012 15:57:09 A-----             32.342  rightWrong12.mp3
+29.07.2012 15:57:09 A-----             24.854  rightWrong34.mp3
+29.07.2012 15:57:07 A-----             33.350  wordsCapture.mp3
+                          -------------------  
+                                      141.118  5 Dateien
+
+D:\Eigene Dateien\My Dropbox\sounds\games\machuPicchu
+29.07.2012 15:57:59 A-----             59.414  image1.mp3
+29.07.2012 15:58:00 A-----             84.602  image2.mp3
+29.07.2012 15:58:01 A-----             64.886  image3.mp3
+29.07.2012 15:58:02 A-----             93.686  image4.mp3
+29.07.2012 15:58:03 A-----             50.486  image5.mp3
+29.07.2012 15:58:04 A-----             60.422  image6.mp3
+29.07.2012 15:58:06 A-----            148.694  intro.mp3
+                          -------------------  
+                                      562.190  7 Dateien
+
+D:\Eigene Dateien\My Dropbox\sounds\games\petra
+29.07.2012 15:58:08 A-----            245.174  debriefing.mp3
+29.07.2012 15:58:11 A-----             44.582  feedback3AndLess.mp3
+29.07.2012 15:58:12 A-----             30.182  feedback4.mp3
+29.07.2012 15:58:12 A-----             27.734  feedback5.mp3
+29.07.2012 15:58:13 A-----             26.006  feedback6.mp3
+29.07.2012 15:58:13 A-----             27.014  feedback7.mp3
+29.07.2012 15:58:14 A-----             29.462  feedbackComplete.mp3
+29.07.2012 15:58:10 A-----            153.878  intro.mp3
+                          -------------------  
+                                      584.032  8 Dateien
+
+D:\Eigene Dateien\My Dropbox\sounds\games\tajMahal
+29.07.2012 15:58:15 A-----             62.006  image1.mp3
+29.07.2012 15:58:16 A-----             67.478  image2.mp3
+29.07.2012 15:58:17 A-----             43.862  image3.mp3
+29.07.2012 15:58:18 A-----             92.822  image4.mp3
+29.07.2012 15:58:19 A-----             92.102  image5.mp3
+29.07.2012 15:58:20 A-----             90.662  image6.mp3
+29.07.2012 15:58:22 A-----            159.494  intro.mp3
+                          -------------------  
+                                      608.426  7 Dateien
+
+D:\Eigene Dateien\My Dropbox\sounds\menu
+29.07.2012 15:58:24 A-----            258.422  guide.mp3
+29.07.2012 20:08:55 -D----                     help
+29.07.2012 15:58:26 A-----            225.590  intro.mp3
+29.07.2012 20:08:36 -D----                     journeys
+29.07.2012 15:58:27 A-----             91.094  outro.mp3
+29.07.2012 20:08:37 -D----                     passport
+29.07.2012 15:58:28 A-----             38.822  timedHelpA.mp3
+29.07.2012 15:58:29 A-----             44.582  timedHelpB.mp3
+29.07.2012 15:58:29 A-----             29.462  timedHelpWW.mp3
+                          -------------------  
+                                      687.972  6 Dateien
+
+D:\Eigene Dateien\My Dropbox\sounds\menu\help
+29.07.2012 15:58:32 A-----            105.638  cristoCars.mp3
+29.07.2012 15:58:33 A-----            120.038  cristoGiraffe.mp3
+29.07.2012 15:58:35 A-----            139.910  help.mp3
+29.07.2012 15:58:36 A-----             51.638  memory.mp3
+29.07.2012 15:58:37 A-----             85.190  rightWrong.mp3
+29.07.2012 15:58:30 A-----             55.094  wordsCapture.mp3
+                          -------------------  
+                                      557.508  6 Dateien
+
+D:\Eigene Dateien\My Dropbox\sounds\menu\journeys
+29.07.2012 15:58:38 A-----             42.278  chichenItza.mp3
+29.07.2012 15:58:38 A-----             50.198  chineseWall.mp3
+29.07.2012 15:58:40 A-----             36.806  colosseum.mp3
+29.07.2012 15:58:39 A-----             66.182  cristo.mp3
+29.07.2012 15:58:41 A-----             54.230  machuPicchu.mp3
+29.07.2012 15:58:42 A-----             36.662  petra.mp3
+29.07.2012 15:58:43 A-----             59.846  tajMahal.mp3
+                          -------------------  
+                                      346.202  7 Dateien
+
+D:\Eigene Dateien\My Dropbox\sounds\menu\passport
+29.07.2012 15:58:44 A-----             69.782  stamp1.mp3
+29.07.2012 15:58:45 A-----             51.350  stamp2.mp3
+29.07.2012 15:58:46 A-----             54.086  stamp3.mp3
+29.07.2012 15:58:47 A-----             43.862  stamp4.mp3
+29.07.2012 15:58:48 A-----             46.454  stamp5.mp3
+29.07.2012 15:58:49 A-----             55.670  stamp6.mp3
+                          -------------------  
+                                      321.204  6 Dateien
+
+Summe D:\Eigene Dateien\My Dropbox\sounds
+  Ordner      =                 14
+  Dateien     =                 93
+  Bytes       =          7.912.912
