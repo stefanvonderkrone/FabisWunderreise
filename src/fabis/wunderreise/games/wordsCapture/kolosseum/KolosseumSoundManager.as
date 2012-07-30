@@ -31,7 +31,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		
 		public function playIntro() : void {
 			var _sound : Sound = new Sound();
-			_request = new URLRequest("../../sounds/Kolosseum/Kolosseum_Einleitung.mp3");
+			_request = new URLRequest("../sounds/games/colosseum/intro.mp3");
 			_sound.load(_request);
 			_channel = _sound.play();
 			_channel.addEventListener(Event.SOUND_COMPLETE, handleSoundComplete);
@@ -61,7 +61,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			_points = points;
 			
 			var _sound : Sound = new Sound();
-			_request = new URLRequest("../../sounds/Kolosseum/Kolosseum_Auswertung.mp3");
+			_request = new URLRequest("../sounds/games/colosseum/debriefing.mp3");
 			_sound.load(_request);
 			_channel = _sound.play();
 			_gameOptions.fabi.startSynchronization();
@@ -128,22 +128,22 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 				case 1:
 				case 2:
 				case 3:
-					_request = new URLRequest("../../sounds/Kolosseum/Kolosseum_Feedback_3_und_weniger_richtig.mp3");
+					_request = new URLRequest("../sounds/games/colosseum/feedback3AndLess.mp3");
 					break;
 				case 4:
-					_request = new URLRequest("../../sounds/Kolosseum/Kolosseum_Feedback_4_mal_richtig.mp3");
+					_request = new URLRequest("../sounds/games/colosseum/feedback4.mp3");
 					break;
 				case 5:
-					_request = new URLRequest("../../sounds/Kolosseum/Kolosseum_Feedback_5_mal_richtig.mp3");
+					_request = new URLRequest("../sounds/games/colosseum/feedback5.mp3");
 					break;
 				case 6:
-					_request = new URLRequest("../../sounds/Kolosseum/Kolosseum_Feedback_6_mal_richtig.mp3");
+					_request = new URLRequest("../sounds/games/colosseum/feedback6.mp3");
 					break;
 				case 7:
-					_request = new URLRequest("../../sounds/Kolosseum/Kolosseum_Feedback_7_mal_richtig.mp3");
+					_request = new URLRequest("../sounds/games/colosseum/feedback7.mp3");
 					break;
 				case 8:
-					_request = new URLRequest("../../sounds/Kolosseum/Kolosseum_Feedback_alles_richtig.mp3");
+					_request = new URLRequest("../sounds/games/colosseum/feedbackComplete.mp3");
 					break;
 			}
 			_sound.load(_request);
@@ -160,7 +160,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		
 		public function playCompletion() : void {
 			var _sound : Sound = new Sound();
-			_request = new URLRequest("../../sounds/Abschluss_Bilder_fangen.mp3");
+			_request = new URLRequest("../sounds/games/endings/wordsCapture.mp3");
 			_sound.load(_request);
 			_channel = _sound.play();
 			_gameOptions.fabi.startSynchronization();

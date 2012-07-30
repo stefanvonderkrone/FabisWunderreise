@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.quiz {
+	import com.greensock.TweenLite;
 	import flash.events.MouseEvent;
 	import flash.media.SoundMixer;
 	import flash.display.MovieClip;
@@ -12,8 +13,10 @@ package fabis.wunderreise.games.quiz {
 		protected var _bytes : ByteArray; 
 		protected var _frameCounter : int = 0;
 		protected var _spec : Number = 0;
+		protected var _answerIsTrue : int;
 		
 		public var _fabi : MovieClip;
+		public var _game : FabisQuizGame;
 		
 		public function FabiQuizClose() {
 			
@@ -25,15 +28,26 @@ package fabis.wunderreise.games.quiz {
 			_bytes = new ByteArray();
 		}
 		
-		public function initNose() : void {
+		public function initNose( answerTrue : int ) : void {
+			_answerIsTrue = answerTrue;
+			_fabi._nose.buttonMode = true;
 			_fabi.addEventListener( MouseEvent.CLICK, onClickNose );
 		}
 		
+		public function resetNose() : void {
+			TweenLite.to(_fabi, 0.5, {frame: 1});
+			_fabi._nose.buttonMode = false;
+			_fabi.removeEventListener( MouseEvent.CLICK, onClickNose );
+		}
+		
 		private function onClickNose( event : MouseEvent ) : void {
-			if( _fabi.currentFrame == _fabi.totalFrames ) 
-				_fabi.gotoAndStop( 1 );
-			else
-				_fabi.nextFrame();
+			_fabi.removeEventListener( MouseEvent.CLICK, onClickNose );
+			_game.resetTrueButton();
+			if( !_answerIsTrue ){
+				TweenLite.to(_fabi, 0.5, {frame: _fabi.totalFrames});
+			}
+			_fabi._nose.buttonMode = false;
+			_game.checkAnswer( false );
 		}
 		
 		public function startSynchronization() : void {

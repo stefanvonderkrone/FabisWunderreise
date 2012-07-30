@@ -1,4 +1,5 @@
 package fabis.wunderreise.scenes {
+	import flash.display.MovieClip;
 	import fabis.wunderreise.games.wordsCapture.FabiWordsCapture;
 	import fabis.wunderreise.games.wordsCapture.petra.PetraStone;
 	import fabis.wunderreise.games.wordsCapture.petra.PetraGame;
@@ -15,6 +16,7 @@ package fabis.wunderreise.scenes {
 		protected var _game : FabisWordsCaptureGame;
 		protected var _gameField : PetraGameField;
 		protected var _fabi : FabiWordsCapture;
+		protected var _fabiView : FabiView;
 		
 		public function FabisPetraWordsCapture() {
 			super();
@@ -31,8 +33,13 @@ package fabis.wunderreise.scenes {
 			_gameField = new PetraGameField();
 			_gameField.init();
 			
+			_fabiView = new FabiView();
+			_fabiView.x = 110;
+			_fabiView.y = 260;
+			view.addChild( _fabiView );
+			
 			_fabi = new FabiWordsCapture();
-			_fabi.view = view._fabi;
+			_fabi.view = _fabiView;
 			_fabi.init();
 			
 			const wordsCaptureOptions : FabisWordsCaptureGameOptions = new FabisWordsCaptureGameOptions();

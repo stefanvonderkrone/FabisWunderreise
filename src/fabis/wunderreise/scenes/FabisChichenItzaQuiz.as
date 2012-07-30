@@ -43,6 +43,10 @@ package fabis.wunderreise.scenes {
 			wordsCaptureOptions.background = view._kolosseum;*/
 			quizOptions.fabi = _fabi;
 			quizOptions.view = view;
+			quizOptions.switchTime = 20;
+			quizOptions.questionNumber = 3;
+			// right answers of questions -> 0 for false, 1 for true
+			quizOptions.answers = new Array( 0, 1, 1);
 			
 			_game = new FabisQuizGame();
 			_game.initWithOptions( quizOptions );
