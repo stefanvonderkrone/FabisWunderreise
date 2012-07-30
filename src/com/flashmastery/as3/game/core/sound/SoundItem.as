@@ -76,6 +76,7 @@ package com.flashmastery.as3.game.core.sound {
 
 		public function play( startTime : Number = 0, loops : int = 0, soundTransform : SoundTransform = null ) : void {
 			_soundTransform = soundTransform != null ? soundTransform : _soundTransform;
+			// TODO handle soundChannel complete
 			_soundChannels.push( _sound.play( startTime, loops, _soundTransform ) );
 			if ( _soundChannels.length > _maxNumChannels )
 				deminishSoundChannelVector();
@@ -183,6 +184,10 @@ package com.flashmastery.as3.game.core.sound {
 			_maxNumChannels = maxNumChannels;
 			if ( _soundChannels.length > _maxNumChannels )
 				deminishSoundChannelVector();
+		}
+		
+		public function toString() : String {
+			return "[SoundItem | name=\"" + _name + "\"]";
 		}
 	}
 }

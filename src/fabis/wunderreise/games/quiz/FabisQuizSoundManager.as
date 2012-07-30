@@ -29,7 +29,8 @@ package fabis.wunderreise.games.quiz {
 		
 		public function playIntro() : void {
 			var _sound : Sound = new Sound();
-			_request = new URLRequest("../../sounds/Chichen_Itza/Chichen_Itza_Einleitung.mp3");
+//			_request = new URLRequest("../../sounds/Chichen_Itza/Chichen_Itza_Einleitung.mp3");
+			_request = new URLRequest("sounds/games/chichenItza/intro.mp3");
 			_sound.load(_request);
 			_channel = _sound.play();
 			_channel.addEventListener( Event.SOUND_COMPLETE, handleStopIntro );
