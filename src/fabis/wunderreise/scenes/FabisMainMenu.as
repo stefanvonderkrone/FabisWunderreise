@@ -1,9 +1,13 @@
 package fabis.wunderreise.scenes {
 
-	import flash.display.MovieClip;
+	import flash.utils.setInterval;
+	import flash.utils.clearInterval;
+	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
 	import com.greensock.TweenLite;
-	import flash.events.MouseEvent;
+
+	import flash.display.MovieClip;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 
 	/**
 	 * @author Stefan von der Krone (2012)
@@ -12,6 +16,10 @@ package fabis.wunderreise.scenes {
 		
 		private static const MOUSE_OUT_FPS : uint = 120;
 		private static const MOUSE_OVER_FPS : uint = 90;
+		private static const PLAY_HELP_SOUND_DELAY : Number = 15000;
+		
+		protected var _timedHelpSounds : Vector.<ISoundItem>;
+		protected var _timedHeldInterval : uint;
 
 		public function FabisMainMenu() {
 			super();
@@ -37,7 +45,6 @@ package fabis.wunderreise.scenes {
 			initButton( view._machuPicchu );
 			initButton( view._petra );
 			initButton( view._tajMahal );
-			//name = "FabisMainMenu";
 			super.handleCreation();
 		}
 		
@@ -104,18 +111,33 @@ package fabis.wunderreise.scenes {
 		
 		override protected function initView( evt : Event ) : void {
 			super.initView( evt );
+			_timedHelpSounds = Vector.<ISoundItem>( [
+					_gameCore.soundCore.getSoundByName( "menuTimedHelpA" ),
+					_gameCore.soundCore.getSoundByName( "menuTimedHelpB" ),
+					_gameCore.soundCore.getSoundByName( "menuTimedHelpWW" )
+				] );
 		}
 		
 		override protected function handleStop() : void {
 			super.handleStop();
+			var numSounds : int = _timedHelpSounds.length;
+			while ( --numSounds >= 0 )
+				_timedHelpSounds[ int( numSounds ) ].stop();
+			clearInterval( _timedHeldInterval );
 		}
 		
 		override protected function handleStart() : void {
 			super.handleStart();
+			_timedHeldInterval = setInterval( playHelpSound, PLAY_HELP_SOUND_DELAY );
+		}
+
+		protected function playHelpSound() : void {
+			_timedHelpSounds[ int( Math.random() * _timedHelpSounds.length ) ].play();
 		}
 		
 		override protected function handleDisposal() : void {
 			super.handleDisposal();
+			_timedHelpSounds = null;
 		}
 	}
 }

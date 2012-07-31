@@ -1,7 +1,11 @@
 package fabis.wunderreise.core {
 
-	import com.greensock.events.LoaderEvent;
+	import com.greensock.loading.MP3Loader;
 	import com.greensock.loading.SWFLoader;
+	import com.greensock.events.LoaderEvent;
+	import com.greensock.loading.LoaderMax;
+	import com.greensock.loading.XMLLoader;
+
 	import flash.display.Sprite;
 	import flash.events.Event;
 
@@ -11,8 +15,8 @@ package fabis.wunderreise.core {
 	public class FabisLoader extends Sprite {
 		
 		private var _view : FabisLoaderView;
-		private var _loader : SWFLoader;
-		private var _gameURL : String = "FabisWunderreise.swf";
+		private var _loader : XMLLoader;
+		private var _resourcesURL : String = "resources.xml";
 
 		public function FabisLoader() {
 			if ( stage ) init();
@@ -21,11 +25,12 @@ package fabis.wunderreise.core {
 
 		private function init( evt : Event = null ) : void {
 			removeEventListener( Event.ADDED_TO_STAGE, init );
+			LoaderMax.activate( [ SWFLoader, MP3Loader ] );
 			_view = FabisLoaderView( addChild( new FabisLoaderView() ) );
 			_view._bar.width = 0;
-			if ( stage.loaderInfo.parameters.gameURL )
-				_gameURL = stage.loaderInfo.parameters.gameURL;
-			_loader = new SWFLoader( _gameURL, { onProgress: handleLoaderProgress, onComplete: handleLoaderComplete } );
+			if ( stage.loaderInfo.parameters.resourcesXML )
+				_resourcesURL = stage.loaderInfo.parameters.resourcesXML;
+			_loader = new XMLLoader( _resourcesURL, { onProgress: handleLoaderProgress, onComplete: handleLoaderComplete } );
 			_loader.load();
 		}
 		
@@ -35,7 +40,7 @@ package fabis.wunderreise.core {
 		
 		private function handleLoaderComplete( evt : LoaderEvent ) : void {
 			removeChild( _view );
-			addChild( _loader.rawContent );
+			addChild( LoaderMax.getContent( "FabisWunderreise" ) );
 		}
 	}
 }
