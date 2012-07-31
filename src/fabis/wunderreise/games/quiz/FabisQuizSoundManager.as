@@ -12,6 +12,7 @@ package fabis.wunderreise.games.quiz {
 		private var _request : URLRequest;
 		public var _game : FabisQuizGame;
 		protected var _frameNumber : int = 0;
+		protected var _frameCounter : int = 0;
 		/*private var _feedbackNumber : int = 0;
 		private var _frameNumber : int = 0;
 		public var _feedbackTime : int;
@@ -35,6 +36,7 @@ package fabis.wunderreise.games.quiz {
 			_channel = _sound.play();
 			_channel.addEventListener( Event.SOUND_COMPLETE, handleStopIntro );
 			_gameOptions.fabi.addEventListener( Event.ENTER_FRAME, handleSwitchViews );
+			_gameOptions.fabi.addEventListener( Event.ENTER_FRAME, handleTrueButtonView );
 			_gameOptions.fabi.startSynchronization();
 		}
 		
@@ -47,7 +49,17 @@ package fabis.wunderreise.games.quiz {
 			_frameNumber++;
 			
 			if( _frameNumber == (_gameOptions.switchTime * 60) ){
+				_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleSwitchViews );
 				_game.switchToCloseView();
+			}
+		}
+		
+		public function handleTrueButtonView( event : Event ) : void {
+			_frameCounter++;
+			
+			if( _frameCounter == (_gameOptions.trueButtonStartTime * 60) ){
+				_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleTrueButtonView );
+				_game.initTrueButton();
 			}
 		}
 		

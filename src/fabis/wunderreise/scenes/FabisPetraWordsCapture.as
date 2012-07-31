@@ -50,6 +50,7 @@ package fabis.wunderreise.scenes {
 			//wordsCaptureOptions.background = view._petra;
 			wordsCaptureOptions.fabi = _fabi;
 			wordsCaptureOptions.gameField = _gameField;
+			wordsCaptureOptions.demoStartTime = 10;
 			
 			_game = new PetraGame();
 			_game.initWithOptions( wordsCaptureOptions );

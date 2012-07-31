@@ -47,6 +47,7 @@ package fabis.wunderreise.scenes {
 			quizOptions.questionNumber = 3;
 			// right answers of questions -> 0 for false, 1 for true
 			quizOptions.answers = new Array( 0, 1, 1);
+			quizOptions.trueButtonStartTime = 27;
 			
 			_game = new FabisQuizGame();
 			_game.initWithOptions( quizOptions );

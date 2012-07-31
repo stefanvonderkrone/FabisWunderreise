@@ -17,6 +17,7 @@ package fabis.wunderreise.games.wordsCapture {
 		protected var _gameField :*;
 		protected var _gameFieldObject :*;
 		protected var _stone :*;
+		protected var _frameCounter : int = 0;
 		
 		
 		protected var _currentImageIndex : int;
@@ -39,8 +40,19 @@ package fabis.wunderreise.games.wordsCapture {
 		}
 		
 		public function startIntro() : void{
-					
 			_gameOptions.soundManager.playIntro();
+			addEventListener( Event.ENTER_FRAME, handleDemoStart );
+		}
+		
+		private function handleDemoStart( event : Event ) : void {
+			_frameCounter++;
+			if( _frameCounter == (_gameOptions.demoStartTime * 60) ){
+				startDemo();
+			}
+		}
+		
+		private function startDemo() : void {
+			removeEventListener( Event.ENTER_FRAME, handleDemoStart );
 			_stone.init();
 			_stone.stone.gotoAndStop( _currentImageIndex + 1 );
 			_gameField.addChild( _stone.stone );

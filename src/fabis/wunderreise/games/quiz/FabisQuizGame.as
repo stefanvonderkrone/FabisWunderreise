@@ -48,9 +48,10 @@ package fabis.wunderreise.games.quiz {
 		
 		public function start() : void {
 			//TODO: add Intro
-			startIntro();
-			//switchToCloseView();
-			//startQuestion();
+			//startIntro();
+			switchToCloseView();
+			startQuestion();
+			initTrueButton();
 		}
 		
 		public function stop() : void {
@@ -76,7 +77,7 @@ package fabis.wunderreise.games.quiz {
 			
 			if( _currentQuestionNumber <= _gameOptions.questionNumber ){
 				initImageContainer( _currentQuestionNumber );
-				initTrueButton();
+				//initTrueButton();
 				_rightSymbol.visible = false;
 				_wrongSymbol.visible = false;
 				
@@ -99,10 +100,12 @@ package fabis.wunderreise.games.quiz {
 				_imageContainer = new FabisQuizImageContainer();
 				_rightSymbol = new RightSymbolView();
 				_wrongSymbol = new WrongSymbolView();
-				_rightSymbol.y = -30;
-				_wrongSymbol.y = -30;
-				_imageContainer.x = 380;
-				_imageContainer.y = 90;
+				_rightSymbol.y = -5;
+				_rightSymbol.x = 20;
+				_wrongSymbol.y = -5;
+				_wrongSymbol.x = 30;
+				_imageContainer.x = 350;
+				_imageContainer.y = 30;
 				_imageContainer.addChild( _rightSymbol );
 				_imageContainer.addChild( _wrongSymbol );
 				
@@ -112,9 +115,9 @@ package fabis.wunderreise.games.quiz {
 			_imageContainer.gotoAndStop( frameNumber );
 		}
 		
-		private function initTrueButton() : void {
+		public function initTrueButton() : void {
 			_trueButton = new TrueButtonView();
-			_trueButton.x = 415;
+			_trueButton.x = 450;
 			_trueButton.y = 425;
 			view._closeContainer.addChild( _trueButton );
 		}
@@ -138,12 +141,12 @@ package fabis.wunderreise.games.quiz {
 			
 			if( _rightAnswer ){
 				_soundManager.playRightOrWrongEffect( true );
-				_imageContainer.setChildIndex( _rightSymbol, 2);
+				_imageContainer.setChildIndex( _rightSymbol, 3);
 				_rightSymbol.visible = true;
 			}
 			else{
 				_soundManager.playRightOrWrongEffect( false );
-				_imageContainer.setChildIndex( _rightSymbol, 2);
+				_imageContainer.setChildIndex( _rightSymbol, 3);
 				_wrongSymbol.visible = true;
 			}
 				

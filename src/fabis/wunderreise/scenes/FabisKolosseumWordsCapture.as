@@ -44,6 +44,7 @@ package fabis.wunderreise.scenes {
 			wordsCaptureOptions.background = view._kolosseum;
 			wordsCaptureOptions.fabi = _fabi;
 			wordsCaptureOptions.gameField = _gameField;
+			wordsCaptureOptions.demoStartTime = 12;
 			
 			_game = new KolosseumGame();
 			_game.initWithOptions( wordsCaptureOptions );

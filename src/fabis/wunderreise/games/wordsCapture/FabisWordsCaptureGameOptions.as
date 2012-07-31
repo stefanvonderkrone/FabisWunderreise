@@ -24,6 +24,8 @@ package fabis.wunderreise.games.wordsCapture {
 		public var wallXCoordinates : Array;
 		public var wallYCoordinates : Array;
 		
+		public var demoStartTime : int;
+		
 		public var soundManager : *;
 		
 		

@@ -52,6 +52,7 @@ package fabis.wunderreise.scenes {
 					gameCore.director.replaceScene( new FabisKolosseumWordsCapture(), true );
 					break;
 				case view._cristo:
+					gameCore.director.replaceScene( new FabisCristoEstimate(), true );
 					break;
 				case view._machuPicchu:
 					gameCore.director.replaceScene( new FabisMachuPicchuMemory(), true );

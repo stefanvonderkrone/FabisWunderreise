@@ -1,5 +1,4 @@
 package fabis.wunderreise.games.quiz {
-	import flash.display.MovieClip;
 	/**
 	 * @author Stefanie Drost
 	 */
@@ -12,5 +11,7 @@ package fabis.wunderreise.games.quiz {
 		public var questionNumber : int;
 		
 		public var answers : Array;
+		
+		public var trueButtonStartTime : int;
 	}
 }
