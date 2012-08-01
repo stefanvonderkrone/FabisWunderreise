@@ -16,7 +16,7 @@ package fabis.wunderreise.scenes {
 		
 		private static const MOUSE_OUT_FPS : uint = 120;
 		private static const MOUSE_OVER_FPS : uint = 90;
-		private static const PLAY_HELP_SOUND_DELAY : Number = 15000;
+		private static const PLAY_HELP_SOUND_DELAY : Number = 30000;
 		
 		protected var _timedHelpSounds : Vector.<ISoundItem>;
 		protected var _timedHeldInterval : uint;
