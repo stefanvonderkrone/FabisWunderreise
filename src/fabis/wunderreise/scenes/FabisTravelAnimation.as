@@ -1,10 +1,10 @@
 package fabis.wunderreise.scenes {
 
-	import flash.display.StageQuality;
 	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
 	import com.greensock.TweenLite;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
+	import flash.display.StageQuality;
 	import flash.events.Event;
 	import flash.geom.Point;
 
@@ -33,17 +33,27 @@ package fabis.wunderreise.scenes {
 			FabisMachuPicchuMemory,
 			FabisPetraWordsCapture,
 			FabisTajMahalMemory ] );
+		protected static const TARGET_COLORS : Vector.<uint> = Vector.<uint>( [
+			0xE91C1C,
+			0xFA2BEE,
+			0x774183,
+			0xFFF000,
+			0x3D22E3,
+			0x3FB627,
+			0xFF5700
+		] );
 		protected static const TARGET_MC_ANIMATION : Number = 90;
 		
 		protected var _targets : Vector.<MovieClip>;
 		protected var _targetSound : ISoundItem;
 		protected var _lineContainer : Sprite;
-		protected var _vehicleContainer : Sprite;
+		protected var _vehicle : FabisTravelVehicle;
 		protected var _startPosition : Point;
 		protected var _targetPosition : Point;
 		protected var _currentPosition : Point;
 		protected var _start : int;
 		protected var _target : int;
+		protected var _angle : Number;
 
 		public function FabisTravelAnimation( start : int, target : int ) {
 			_start = start;
@@ -62,7 +72,7 @@ package fabis.wunderreise.scenes {
 		override protected function handleCreation() : void {
 			_view = new FabisTravelAnimationView();
 			_lineContainer = Sprite( view._worldMap.addChild( new Sprite() ) );
-			_vehicleContainer = Sprite( view._worldMap.addChild( new Sprite() ) );
+			_vehicle = FabisTravelVehicle( view._worldMap.addChild( new FabisTravelVehicle() ) );
 			view._worldMap._chichenItza.gotoAndStop( 1 );
 			view._worldMap._chineseWall.gotoAndStop( 1 );
 			view._worldMap._colosseum.gotoAndStop( 1 );
@@ -84,8 +94,24 @@ package fabis.wunderreise.scenes {
 			_startPosition = new Point( _targets[ _start ].x, _targets[ _start ].y );
 			_targetPosition = new Point( _targets[ _target ].x, _targets[ _target ].y );
 			_currentPosition = _startPosition.clone();
+			_angle = getAngle();
+			if ( _angle < 0 ) {
+				_vehicle.scaleX = -1/3;
+				_vehicle.rotation = _angle + 90;
+			} else {
+				_vehicle.scaleX = 1/3;
+				_vehicle.rotation = _angle - 90;
+			}
+			_vehicle.scaleY = 1/3;
+			_vehicle.gotoAndStop( _target + 1 );
 			view._worldMap.cacheAsBitmap = true;
 			super.handleCreation();
+		}
+
+		protected function getAngle() : Number {
+			const a : Number = _targetPosition.x - _startPosition.x;
+			const b : Number = _targetPosition.y - _startPosition.y;
+			return Math.acos( a / Math.sqrt( a*a + b*b ) ) * 180 / Math.PI - 90;
 		}
 
 		override protected function handleStart() : void {
@@ -96,8 +122,8 @@ package fabis.wunderreise.scenes {
 			TweenLite.to(
 				view._worldMap,
 				ZOOM_DURATION_RATIO * _targetSound.length, {
-					scaleX: 4,
-					scaleY: 4,
+					scaleX: 3,
+					scaleY: 3,
 					onUpdate: updateWorldMapPosition,
 					onComplete: startTravelAnimation
 				}
@@ -136,9 +162,11 @@ package fabis.wunderreise.scenes {
 		protected function updateTravelling() : void {
 			updateWorldMapPosition();
 			_lineContainer.graphics.clear();
-			_lineContainer.graphics.lineStyle( 3, 0xFF0000 );
+			_lineContainer.graphics.lineStyle( 3, TARGET_COLORS[ _target ] );
 			_lineContainer.graphics.moveTo( _startPosition.x, _startPosition.y );
 			_lineContainer.graphics.lineTo( _currentPosition.x, _currentPosition.y );
+			_vehicle.x = _currentPosition.x;
+			_vehicle.y = _currentPosition.y;
 		}
 		
 		protected function showNextScene() : void {
@@ -146,8 +174,12 @@ package fabis.wunderreise.scenes {
 			const mc : MovieClip = _targets[ _target ];
 			const tweenProps : Object = { frame: mc.totalFrames };
 			if ( FabisTravelAnimation.TARGET_SCENES[ _target ] ) {
-				tweenProps.onComplete = gameCore.director.replaceScene;
-				tweenProps.onCompleteParams = [ new TARGET_SCENES[ _target ](), true ];
+				tweenProps.onComplete = TweenLite.delayedCall;
+				tweenProps.onCompleteParams = [
+					0.5,
+					gameCore.director.replaceScene,
+					[ new TARGET_SCENES[ _target ](), true ]
+				];
 			}
 			TweenLite.to(
 				mc,

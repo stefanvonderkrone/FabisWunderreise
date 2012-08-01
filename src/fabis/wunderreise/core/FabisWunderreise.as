@@ -1,20 +1,20 @@
 package fabis.wunderreise.core {
-	import fabis.wunderreise.scenes.FabisCristoEstimate;
-	import com.greensock.plugins.ScalePlugin;
-	import com.greensock.loading.MP3Loader;
-	import com.greensock.loading.LoaderMax;
-	import com.flashmastery.as3.game.core.sound.SoundCore;
-	import com.flashmastery.as3.game.interfaces.sound.ISoundCore;
-	import fabis.wunderreise.scenes.FabisMainMenu;
+
+	import fabis.wunderreise.scenes.FabisIntro;
 
 	import com.flashmastery.as3.game.core.FlashGraphicsCore;
 	import com.flashmastery.as3.game.core.GameCore;
 	import com.flashmastery.as3.game.core.KeyboardHandler;
+	import com.flashmastery.as3.game.core.sound.SoundCore;
 	import com.flashmastery.as3.game.interfaces.core.IGameCore;
 	import com.flashmastery.as3.game.interfaces.core.IInteractiveGameObject;
 	import com.flashmastery.as3.game.interfaces.delegates.IGameDelegate;
+	import com.flashmastery.as3.game.interfaces.sound.ISoundCore;
+	import com.greensock.loading.LoaderMax;
+	import com.greensock.loading.MP3Loader;
 	import com.greensock.plugins.ColorTransformPlugin;
 	import com.greensock.plugins.FramePlugin;
+	import com.greensock.plugins.ScalePlugin;
 	import com.greensock.plugins.TweenPlugin;
 	import com.junkbyte.console.Cc;
 
@@ -51,7 +51,7 @@ package fabis.wunderreise.core {
 			_gameCore.setupWithGraphicsCore( new FlashGraphicsCore() );
 			_gameCore.setupWithKeyboardHandler( new KeyboardHandler() );
 			_gameCore.setupWithSoundCore( getSoundCore() );
-			_gameCore.director.runWithScene( new FabisMainMenu() );
+			_gameCore.director.runWithScene( new FabisIntro() );
 			_gameCore.graphicsCore.setSize( stage.stageWidth, stage.stageHeight );
 			_gameCore.start();
 			_gameCore.soundCore.getSoundByName( "atmo" ).play( 0, int.MAX_VALUE );

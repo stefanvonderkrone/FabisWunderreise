@@ -1,5 +1,6 @@
 package com.flashmastery.as3.game.core.sound {
 
+	import flash.events.Event;
 	import com.flashmastery.as3.collections.interfaces.IImmutableList;
 	import com.flashmastery.as3.collections.interfaces.ImmutableVector;
 	import com.flashmastery.as3.game.interfaces.delegates.ISoundItemDelegate;
@@ -46,6 +47,14 @@ package com.flashmastery.as3.game.core.sound {
 				handleDisposal();
 				_delegate = null;
 				_created = false;
+				_sound = null;
+				_soundTransform = null;
+				_volume = 1;
+				_soundChannels = null;
+				_name = null;
+				_muted = false;
+				_delegate = null;
+				_maxNumChannels = 1;
 			}
 		}
 
@@ -57,7 +66,7 @@ package com.flashmastery.as3.game.core.sound {
 		
 		protected function updateChannelsBySoundTransform() : void {
 			var numChannels : int = _soundChannels.length;
-			var channel :SoundChannel;
+			var channel : SoundChannel;
 			while ( --numChannels >= 0 ) {
 				channel = _soundChannels[ int( numChannels ) ];
 				channel.soundTransform = _soundTransform;
@@ -70,14 +79,24 @@ package com.flashmastery.as3.game.core.sound {
 			while ( numChannels > _maxNumChannels ) {
 				channel = _soundChannels.shift();
 				channel.stop();
+				channel.removeEventListener( Event.SOUND_COMPLETE, handleChannelComplete );
 				numChannels--;
 			}
 		}
 
+		protected function handleChannelComplete( evt : Event ) : void {
+			const channel : SoundChannel = SoundChannel( evt.target );
+			_soundChannels.splice( _soundChannels.indexOf( channel ), 1 );
+			channel.removeEventListener( Event.SOUND_COMPLETE, handleChannelComplete );
+			if ( _delegate )
+				_delegate.reactOnSoundItemSoundComplete( this );
+		}
+
 		public function play( startTime : Number = 0, loops : int = 0, soundTransform : SoundTransform = null ) : void {
 			_soundTransform = soundTransform != null ? soundTransform : _soundTransform;
-			// TODO handle soundChannel complete
-			_soundChannels.push( _sound.play( startTime, loops, _soundTransform ) );
+			const channel : SoundChannel = _sound.play( startTime, loops, _soundTransform );
+			channel.addEventListener( Event.SOUND_COMPLETE, handleChannelComplete );
+			_soundChannels.push( channel );
 			if ( _soundChannels.length > _maxNumChannels )
 				deminishSoundChannelVector();
 		}
@@ -88,6 +107,7 @@ package com.flashmastery.as3.game.core.sound {
 			while ( --numChannels >= 0 ) {
 				channel = _soundChannels.pop();
 				channel.stop();
+				channel.removeEventListener( Event.SOUND_COMPLETE, handleChannelComplete );
 			}
 		}
 
