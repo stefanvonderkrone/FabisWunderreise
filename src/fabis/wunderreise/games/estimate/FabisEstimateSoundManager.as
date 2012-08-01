@@ -14,6 +14,7 @@ package fabis.wunderreise.games.estimate {
 		public var _game : FabisEstimateGame;
 		//protected var _frameNumber : int = 0;
 		protected var _frameCounter : int = 0;
+		private var _currentGame : *;
 		/*private var _feedbackNumber : int = 0;
 		private var _frameNumber : int = 0;
 		public var _feedbackTime : int;
@@ -32,7 +33,7 @@ package fabis.wunderreise.games.estimate {
 		
 		public function playIntro() : void {
 			var _sound : Sound = new Sound();
-			_request = new URLRequest("../sounds/games/cristo/intro.mp3");
+			_request = new URLRequest("sounds/games/cristo/intro.mp3");
 			_sound.load(_request);
 			_channel = _sound.play();
 			_gameOptions.fabiSmall.startSynchronization();
@@ -46,7 +47,7 @@ package fabis.wunderreise.games.estimate {
 			if( _frameCounter == _gameOptions.flipTime * 60 ){
 				_gameOptions.fabiSmall.removeEventListener( Event.ENTER_FRAME, handleFlip );
 				_gameOptions.fabiSmall.stopSynchronization();
-				TweenLite.to( _gameOptions.fabiSmall.view, 1, {frame: _gameOptions.fabiSmall.view.totalFrames} );
+				TweenLite.to( _gameOptions.fabiSmall.view, 1/2, {frame: _gameOptions.fabiSmall.view.totalFrames} );
 				TweenLite.delayedCall( 1, _gameOptions.fabiCristoSmallContainer.parent.removeChild, [ _gameOptions.fabiCristoSmallContainer ] );
 				TweenLite.delayedCall( 1, _game.initFabi );
 				_frameCounter = 0;
@@ -57,125 +58,104 @@ package fabis.wunderreise.games.estimate {
 		public function playExercise( exerciseNumber : int ) : void {
 			var _sound : Sound = new Sound();
 			
+			
 			switch( exerciseNumber ) {
 				case 1 :
-					_request = new URLRequest("../sounds/games/cristo/giraffesExercise.mp3");
+					_request = new URLRequest("sounds/games/cristo/giraffesExercise.mp3");
+					_currentGame = FabisEstimateGiraffesExercise( _game.giraffesGame );
 					break;
 				case 2 :
-					_request = new URLRequest("../sounds/games/cristo/carsExercise.mp3");
+					_request = new URLRequest("sounds/games/cristo/carsExercise.mp3");
+					_currentGame = FabisEstimateCarsExercise( _game.carsGame );
 					break;
 			}
 			
 			_sound.load(_request);
 			_channel = _sound.play();
-			_channel.addEventListener( Event.SOUND_COMPLETE, handleExerciseAnswer );
-			_gameOptions.fabi.addEventListener( Event.ENTER_FRAME, handleGameInstructions );
-		}
-		
-		private function handleGameInstructions( event : Event ) : void {
-			_frameCounter++;
-			
-			if( _frameCounter == _gameOptions.showGiraffesTime * 60  ){
-				_game.initGiraffes();
-			}
-			
-			if( _frameCounter == _gameOptions.removeStatueTime * 60  ){
-				_gameOptions.fabi.flip();
-				TweenLite.delayedCall(1, _game.removeStatue );
-			}
-			
-			if( _frameCounter == _gameOptions.showSockelTime * 60  ){
-				_game.initGiraffesSockel();
-			}
-			
-			if( _frameCounter == _gameOptions.showDoneButtonTime * 60  ){
-				_game.initDoneButton();
-				_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleGameInstructions );
-			}
-		}
-		
-		private function handleExerciseAnswer( event : Event ) : void {
-			_channel.addEventListener( Event.SOUND_COMPLETE, handleExerciseAnswer );
-			_game.initDrag();
-		}
-		
-		/*private function handleEndOfQuestion( event : Event ) : void {
-			_channel.removeEventListener( Event.SOUND_COMPLETE, handleEndOfQuestion );
-			_game.initEndOfQuestion();
-		}
-		
-		public function playFeedback( answerTrue : int, choosedAnswerTrue : Boolean, questionNumber : int ) : void {
-			var _sound : Sound = new Sound();
-			
-			switch( questionNumber ){
-				case 1:
-				
-					if( !answerTrue && !choosedAnswerTrue)
-						_request = new URLRequest("../sounds/games/chichenItza/story1Right.mp3");
-					else
-						_request = new URLRequest("../sounds/games/chichenItza/story1Wrong.mp3");
-					break;
-					
-				case 2:
-				
-					if( answerTrue && choosedAnswerTrue)
-						_request = new URLRequest("../sounds/games/chichenItza/story2Right.mp3");
-					else
-						_request = new URLRequest("../sounds/games/chichenItza/story2Wrong.mp3");
-					break;
-					
-				case 3:
-				
-					if( answerTrue && choosedAnswerTrue)
-						_request = new URLRequest("../sounds/games/chichenItza/story3Right.mp3");
-					else
-						_request = new URLRequest("../sounds/games/chichenItza/story3Wrong.mp3");
-					break;
-			}
-			
-			_sound.load(_request);
-			_channel = _sound.play();
-			_channel.addEventListener( Event.SOUND_COMPLETE, handleNextQuestion );
-		}
-		
-		private function handleNextQuestion( event : Event ) : void {
-			_channel.removeEventListener( Event.SOUND_COMPLETE, handleNextQuestion );
-			_game.startQuestion();
-		}
-		
-		public function playPoints( points : int ) : void {
-			var _sound : Sound = new Sound();
-			
-			switch( points ){
-				case 0:
-				case 1:
-					_request = new URLRequest("../sounds/games/endings/rightWrong12.mp3");
-					break;
-					
-				case 2:
-				case 3:
-					_request = new URLRequest("../sounds/games/endings/rightWrong34.mp3");
-					break;
-			}
-			
-			_sound.load(_request);
-			_channel = _sound.play();
-			//_channel.addEventListener( Event.SOUND_COMPLETE, handleNextQuestion );
-		}
-		
-		public function playRightOrWrongEffect( boolean : Boolean ) : void {
-			var _sound : Sound = new Sound();
-			if( boolean ) _request = new URLRequest("../sounds/games/effects/magicChime01.mp3");
-			else _request = new URLRequest("../sounds/games/effects/magicChime01.mp3");
-			_sound.load(_request);
-			_sound.play();
+			_channel.addEventListener( Event.SOUND_COMPLETE, handleExerciseBegin );
+			_gameOptions.fabi.addEventListener( Event.ENTER_FRAME, _currentGame.handleGameInstructions );
 		}
 		
 		public function playButtonClicked() : void {
 			var _sound : Sound = new Sound();
-			_request = new URLRequest("../sounds/games/effects/InterfaceSound56.mp3");
+			_request = new URLRequest("sounds/games/effects/InterfaceSound56.mp3");
 			_sound.load(_request);
 			_sound.play();
-		}*/
+		}
+		
+		private function handleExerciseBegin( event : Event ) : void {
+			_channel.removeEventListener( Event.SOUND_COMPLETE, handleExerciseBegin );
+			_game.initDrag();
+		}
+		
+		public function playFeedback( exerciseNumber : int, pushedItemsNumber : int, attempt : int ) : void {
+			var _sound : Sound = new Sound();
+			var _tryAgain : Boolean = false;
+			
+			switch( exerciseNumber ){
+				case 1:
+					
+					if( attempt == 2 ){
+						if( pushedItemsNumber == _gameOptions.correctItemNumber )
+							_request = new URLRequest("sounds/games/cristo/giraffesFeedbackRight.mp3");
+						else
+							_request = new URLRequest("sounds/games/cristo/giraffesFeedbackSecondAttemptWrong.mp3");
+							
+						TweenLite.delayedCall(5, _currentGame.showHeightBar );
+					}
+					else{
+						if( pushedItemsNumber > _gameOptions.correctItemNumber ){
+							_request = new URLRequest("sounds/games/cristo/giraffesFeedbackFirstAttemptTooMuch.mp3");
+							_tryAgain = true;
+						}
+						else if( pushedItemsNumber < _gameOptions.correctItemNumber ){
+							_request = new URLRequest("sounds/games/cristo/giraffesFeedbackFirstAttemptTooLittle.mp3");
+							_tryAgain = true;
+						}
+						else{
+							_request = new URLRequest("sounds/games/cristo/giraffesFeedbackRight.mp3");
+							TweenLite.delayedCall(5, _currentGame.showHeightBar );
+						}
+					}
+					break;
+					
+				case 2:
+				
+					if( attempt == 2 ){
+						if( pushedItemsNumber == _gameOptions.correctItemNumber )
+							_request = new URLRequest("sounds/games/cristo/carsFeedbackRight.mp3");
+						else
+							_request = new URLRequest("sounds/games/cristo/carsFeedbackSecondAttemptWrong.mp3");
+						
+						//TweenLite.delayedCall(1, _currentGame.showHeightBar );
+					}
+					else{
+						if( pushedItemsNumber > _gameOptions.correctItemNumber ){
+							_request = new URLRequest("sounds/games/cristo/carsFeedbackFirstAttemptTooMuch.mp3");
+							_tryAgain = true;
+						}
+						else if( pushedItemsNumber < _gameOptions.correctItemNumber ){
+							_request = new URLRequest("sounds/games/cristo/carsFeedbackFirstAttemptTooLittle.mp3");
+							_tryAgain = true;
+						}
+						else{
+							_request = new URLRequest("sounds/games/cristo/carsFeedbackRight.mp3");
+							//TweenLite.delayedCall(1, _currentGame.showHeightBar );
+						}
+					}
+					
+					break;
+			}
+			
+			_sound.load(_request);
+			_channel = _sound.play();
+			_game.secondTry = _tryAgain;
+			_channel.addEventListener( Event.SOUND_COMPLETE, handleExerciseEnd );
+		}
+		
+		private function handleExerciseEnd( event : Event ) : void {
+			_channel.removeEventListener( Event.SOUND_COMPLETE, handleExerciseEnd );
+			_game.endOfExercise();
+		}
 	}
 }

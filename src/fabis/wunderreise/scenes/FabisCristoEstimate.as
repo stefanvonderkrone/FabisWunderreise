@@ -13,8 +13,6 @@ package fabis.wunderreise.scenes {
 		
 		protected var _fabiCristoSmallContainer : FabiCristoSmallContainer;
 		protected var _fabiCristoContainer : FabiCristoContainer;
-		//protected var _gameField : KolosseumGameField;
-		//protected var _fabi : FabiQuiz;
 		
 		public function FabisCristoEstimate() {
 			super();
@@ -35,11 +33,20 @@ package fabis.wunderreise.scenes {
 			_fabiCristoSmallContainer.addChild( _fabiSmall.view );
 			
 			const estimateOptions : FabisEstimateGameOptions = new FabisEstimateGameOptions();
+			//TODO: set to 2
+			estimateOptions.exerciseNumber = 1;
 			estimateOptions.flipTime = 12;
+			
 			estimateOptions.showGiraffesTime = 6;
 			estimateOptions.removeStatueTime = 21;
 			estimateOptions.showSockelTime = 27;
 			estimateOptions.showDoneButtonTime = 32;
+			
+			estimateOptions.showRoadSign = 9;
+			estimateOptions.showCarsTime = 10;
+			estimateOptions.removeCarsStatueTime = 16;
+			
+			
 			estimateOptions.fabiCristoSmallContainer = _fabiCristoSmallContainer;
 			estimateOptions.fabiCristoContainer = _fabiCristoContainer;
 			estimateOptions.fabiSmall = _fabiSmall;

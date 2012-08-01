@@ -1,5 +1,6 @@
 package fabis.wunderreise.core {
-
+	import fabis.wunderreise.scenes.FabisCristoEstimate;
+	import com.greensock.plugins.ScalePlugin;
 	import com.greensock.loading.MP3Loader;
 	import com.greensock.loading.LoaderMax;
 	import com.flashmastery.as3.game.core.sound.SoundCore;
@@ -34,7 +35,7 @@ package fabis.wunderreise.core {
 
 		private function init( evt : Event = null ) : void {
 			removeEventListener( Event.ADDED_TO_STAGE, init );
-			TweenPlugin.activate( [ FramePlugin, ColorTransformPlugin ] );
+			TweenPlugin.activate( [ FramePlugin, ColorTransformPlugin, ScalePlugin ] );
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			if ( _debugging ) {
@@ -49,11 +50,11 @@ package fabis.wunderreise.core {
 			_gameCore.setupWithStage( stage );
 			_gameCore.setupWithGraphicsCore( new FlashGraphicsCore() );
 			_gameCore.setupWithKeyboardHandler( new KeyboardHandler() );
-			//_gameCore.setupWithSoundCore( getSoundCore() );
+			_gameCore.setupWithSoundCore( getSoundCore() );
 			_gameCore.director.runWithScene( new FabisMainMenu() );
 			_gameCore.graphicsCore.setSize( stage.stageWidth, stage.stageHeight );
 			_gameCore.start();
-			//_gameCore.soundCore.getSoundByName( "atmo" ).play( 0, int.MAX_VALUE );
+			_gameCore.soundCore.getSoundByName( "atmo" ).play( 0, int.MAX_VALUE );
 		}
 
 		protected function getSoundCore() : ISoundCore {

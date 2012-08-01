@@ -27,8 +27,7 @@ package fabis.wunderreise.games.quiz {
 		
 		public function playIntro() : void {
 			var _sound : Sound = new Sound();
-	//		_request = new URLRequest("sounds/games/chichenItza/intro.mp3");
-			_request = new URLRequest("../sounds/games/chichenItza/intro.mp3");
+			_request = new URLRequest("sounds/games/chichenItza/intro.mp3");
 			_sound.load(_request);
 			_channel = _sound.play();
 			_channel.addEventListener( Event.SOUND_COMPLETE, handleStopIntro );
@@ -65,13 +64,13 @@ package fabis.wunderreise.games.quiz {
 			
 			switch( questionNumber ) {
 				case 1 :
-					_request = new URLRequest("../sounds/games/chichenItza/story1.mp3");
+					_request = new URLRequest("sounds/games/chichenItza/story1.mp3");
 					break;
 				case 2 :
-					_request = new URLRequest("../sounds/games/chichenItza/story2.mp3");
+					_request = new URLRequest("sounds/games/chichenItza/story2.mp3");
 					break;
 				case 3 :
-					_request = new URLRequest("../sounds/games/chichenItza/story3.mp3");
+					_request = new URLRequest("sounds/games/chichenItza/story3.mp3");
 					break;
 			}
 			
@@ -92,25 +91,25 @@ package fabis.wunderreise.games.quiz {
 				case 1:
 				
 					if( !answerTrue && !choosedAnswerTrue)
-						_request = new URLRequest("../sounds/games/chichenItza/story1Right.mp3");
+						_request = new URLRequest("sounds/games/chichenItza/story1Right.mp3");
 					else
-						_request = new URLRequest("../sounds/games/chichenItza/story1Wrong.mp3");
+						_request = new URLRequest("sounds/games/chichenItza/story1Wrong.mp3");
 					break;
 					
 				case 2:
 				
 					if( answerTrue && choosedAnswerTrue)
-						_request = new URLRequest("../sounds/games/chichenItza/story2Right.mp3");
+						_request = new URLRequest("sounds/games/chichenItza/story2Right.mp3");
 					else
-						_request = new URLRequest("../sounds/games/chichenItza/story2Wrong.mp3");
+						_request = new URLRequest("sounds/games/chichenItza/story2Wrong.mp3");
 					break;
 					
 				case 3:
 				
 					if( answerTrue && choosedAnswerTrue)
-						_request = new URLRequest("../sounds/games/chichenItza/story3Right.mp3");
+						_request = new URLRequest("sounds/games/chichenItza/story3Right.mp3");
 					else
-						_request = new URLRequest("../sounds/games/chichenItza/story3Wrong.mp3");
+						_request = new URLRequest("sounds/games/chichenItza/story3Wrong.mp3");
 					break;
 			}
 			
@@ -130,12 +129,12 @@ package fabis.wunderreise.games.quiz {
 			switch( points ){
 				case 0:
 				case 1:
-					_request = new URLRequest("../sounds/games/endings/rightWrong12.mp3");
+					_request = new URLRequest("sounds/games/endings/rightWrong12.mp3");
 					break;
 					
 				case 2:
 				case 3:
-					_request = new URLRequest("../sounds/games/endings/rightWrong34.mp3");
+					_request = new URLRequest("sounds/games/endings/rightWrong34.mp3");
 					break;
 			}
 			
@@ -146,15 +145,15 @@ package fabis.wunderreise.games.quiz {
 		
 		public function playRightOrWrongEffect( boolean : Boolean ) : void {
 			var _sound : Sound = new Sound();
-			if( boolean ) _request = new URLRequest("../sounds/games/effects/magicChime01.mp3");
-			else _request = new URLRequest("../sounds/games/effects/magicChime01.mp3");
+			if( boolean ) _request = new URLRequest("sounds/games/effects/magicChime01.mp3");
+			else _request = new URLRequest("sounds/games/effects/magicChime01.mp3");
 			_sound.load(_request);
 			_sound.play();
 		}
 		
 		public function playButtonClicked() : void {
 			var _sound : Sound = new Sound();
-			_request = new URLRequest("../sounds/games/effects/InterfaceSound56.mp3");
+			_request = new URLRequest("sounds/games/effects/InterfaceSound56.mp3");
 			_sound.load(_request);
 			_sound.play();
 		}

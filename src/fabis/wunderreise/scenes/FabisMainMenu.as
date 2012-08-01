@@ -31,57 +31,92 @@ package fabis.wunderreise.scenes {
 
 		override protected function handleCreation() : void {
 			_view = new FabisMainMenuView();
-			view._chichenItza.gotoAndStop( 1 );
-			view._chineseWall.gotoAndStop( 1 );
-			view._colosseum.gotoAndStop( 1 );
-			view._cristo.gotoAndStop( 1 );
-			view._machuPicchu.gotoAndStop( 1 );
-			view._petra.gotoAndStop( 1 );
-			view._tajMahal.gotoAndStop( 1 );
-			initButton( view._chichenItza );
-			initButton( view._chineseWall );
-			initButton( view._colosseum );
-			initButton( view._cristo );
-			initButton( view._machuPicchu );
-			initButton( view._petra );
-			initButton( view._tajMahal );
+			view._worldMap._chichenItza.gotoAndStop( 1 );
+			view._worldMap._chineseWall.gotoAndStop( 1 );
+			view._worldMap._colosseum.gotoAndStop( 1 );
+			view._worldMap._cristo.gotoAndStop( 1 );
+			view._worldMap._machuPicchu.gotoAndStop( 1 );
+			view._worldMap._petra.gotoAndStop( 1 );
+			view._worldMap._tajMahal.gotoAndStop( 1 );
+			initButton( view._worldMap._chichenItza );
+			initButton( view._worldMap._chineseWall );
+			initButton( view._worldMap._colosseum );
+			initButton( view._worldMap._cristo );
+			initButton( view._worldMap._machuPicchu );
+			initButton( view._worldMap._petra );
+			initButton( view._worldMap._tajMahal );
 			super.handleCreation();
 		}
 		
 		override protected function handleClick( evt : MouseEvent ) : void {
 			switch( evt.currentTarget ) {
-				case view._chichenItza:
-					gameCore.director.replaceScene( new FabisChichenItzaQuiz(), true );
+				case view._worldMap._chichenItza:
+					gameCore.director.replaceScene(
+						new FabisTravelAnimation(
+							FabisTravelAnimationTarget.HOME,
+							FabisTravelAnimationTarget.CHICHEN_ITZA
+						), true
+					);
+//					gameCore.director.replaceScene( new FabisChichenItzaQuiz(), true );
 					break;
-				case view._chineseWall:
+				case view._worldMap._chineseWall:
 					break;
-				case view._colosseum:
-					gameCore.director.replaceScene( new FabisKolosseumWordsCapture(), true );
+				case view._worldMap._colosseum:
+					gameCore.director.replaceScene(
+						new FabisTravelAnimation(
+							FabisTravelAnimationTarget.HOME,
+							FabisTravelAnimationTarget.COLOSSEUM
+						), true
+					);
+//					gameCore.director.replaceScene( new FabisKolosseumWordsCapture(), true );
 					break;
-				case view._cristo:
-					gameCore.director.replaceScene( new FabisCristoEstimate(), true );
+				case view._worldMap._cristo:
+					gameCore.director.replaceScene(
+						new FabisTravelAnimation(
+							FabisTravelAnimationTarget.HOME,
+							FabisTravelAnimationTarget.CRISTO
+						), true
+					);
+//					gameCore.director.replaceScene( new FabisCristoEstimate(), true );
 					break;
-				case view._machuPicchu:
-					gameCore.director.replaceScene( new FabisMachuPicchuMemory(), true );
+				case view._worldMap._machuPicchu:
+					gameCore.director.replaceScene(
+						new FabisTravelAnimation(
+							FabisTravelAnimationTarget.HOME,
+							FabisTravelAnimationTarget.MACHU_PICCHU
+						), true
+					);
 					break;
-				case view._petra:
-					gameCore.director.replaceScene( new FabisPetraWordsCapture(), true );
+				case view._worldMap._petra:
+					gameCore.director.replaceScene(
+						new FabisTravelAnimation(
+							FabisTravelAnimationTarget.HOME,
+							FabisTravelAnimationTarget.PETRA
+						), true
+					);
+//					gameCore.director.replaceScene( new FabisPetraWordsCapture(), true );
 					break;
-				case view._tajMahal:
-					gameCore.director.replaceScene( new FabisTajMahalMemory(), true );
+				case view._worldMap._tajMahal:
+					gameCore.director.replaceScene(
+						new FabisTravelAnimation(
+							FabisTravelAnimationTarget.HOME,
+							FabisTravelAnimationTarget.TAJ_MAHAL
+						), true
+					);
+//					gameCore.director.replaceScene( new FabisTajMahalMemory(), true );
 					break;
 			}
 		}
 
 		override protected function handleMouseOut( evt : MouseEvent ) : void {
 			switch( evt.currentTarget ) {
-				case view._chichenItza:
-				case view._chineseWall:
-				case view._colosseum:
-				case view._cristo:
-				case view._machuPicchu:
-				case view._petra:
-				case view._tajMahal:
+				case view._worldMap._chichenItza:
+				case view._worldMap._chineseWall:
+				case view._worldMap._colosseum:
+				case view._worldMap._cristo:
+				case view._worldMap._machuPicchu:
+				case view._worldMap._petra:
+				case view._worldMap._tajMahal:
 					const numFrames : uint = MovieClip( evt.currentTarget ).currentFrame;
 					TweenLite.to( evt.currentTarget, numFrames / MOUSE_OUT_FPS, { frame: 1 } );
 					break;
@@ -92,17 +127,17 @@ package fabis.wunderreise.scenes {
 
 		override protected function handleMouseOver( evt : MouseEvent ) : void {
 			switch( evt.currentTarget ) {
-				case view._chichenItza:
-				case view._chineseWall:
-				case view._colosseum:
-				case view._cristo:
-				case view._machuPicchu:
-				case view._petra:
-				case view._tajMahal:
+				case view._worldMap._chichenItza:
+				case view._worldMap._chineseWall:
+				case view._worldMap._colosseum:
+				case view._worldMap._cristo:
+				case view._worldMap._machuPicchu:
+				case view._worldMap._petra:
+				case view._worldMap._tajMahal:
 					const mc : MovieClip = MovieClip( evt.currentTarget );
 					const numFrames : uint = mc.totalFrames - mc.currentFrame;
 					TweenLite.to( evt.currentTarget, numFrames / MOUSE_OVER_FPS, { frame: mc.totalFrames } );
-					view.setChildIndex( mc, view.numChildren - 2 );
+					view._worldMap.setChildIndex( mc, view._worldMap.numChildren - 2 );
 					break;
 				default:
 					break;

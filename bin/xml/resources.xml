@@ -50,6 +50,10 @@
 		<MP3Loader name="endingsRightWrong12" url="games/endings/rightWrong12.mp3" autoPlay="false" loops="0" />
 		<MP3Loader name="endingsRightWrong34" url="games/endings/rightWrong34.mp3" autoPlay="false" loops="0" />
 		<MP3Loader name="endingsWordsCapture" url="games/endings/wordsCapture.mp3" autoPlay="false" loops="0" />
+		<MP3Loader name="stoneFall" url="games/effects/ploing.mp3" autoPlay="false" loops="0" />
+		<MP3Loader name="stoneCatched" url="games/effects/sound11.mp3" autoPlay="false" loops="0" />
+		<MP3Loader name="wrightAnswer" url="games/effects/magicChime01.mp3" autoPlay="false" loops="0" />
+		<MP3Loader name="buttonClicked" url="games/effects/InterfaceSound56.mp3" autoPlay="false" loops="0" />
 		<MP3Loader name="machuPicchuImage1" url="games/machuPicchu/image1.mp3" autoPlay="false" loops="0" />
 		<MP3Loader name="machuPicchuImage2" url="games/machuPicchu/image2.mp3" autoPlay="false" loops="0" />
 		<MP3Loader name="machuPicchuImage3" url="games/machuPicchu/image3.mp3" autoPlay="false" loops="0" />
