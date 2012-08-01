@@ -19,6 +19,10 @@ package fabis.wunderreise.games.estimate {
 		
 		public function init() : void {
 			_fabi = new FabiSmall();
+			//_fabi.x = 343;
+			//_fabi.y = 500;
+			_fabi.width = 16;
+			_fabi.height = 50.5;
 			view.gotoAndStop( 1 );
 			_bytes = new ByteArray();
 		}

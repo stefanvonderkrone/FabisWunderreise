@@ -49,11 +49,11 @@ package fabis.wunderreise.core {
 			_gameCore.setupWithStage( stage );
 			_gameCore.setupWithGraphicsCore( new FlashGraphicsCore() );
 			_gameCore.setupWithKeyboardHandler( new KeyboardHandler() );
-			_gameCore.setupWithSoundCore( getSoundCore() );
+			//_gameCore.setupWithSoundCore( getSoundCore() );
 			_gameCore.director.runWithScene( new FabisMainMenu() );
 			_gameCore.graphicsCore.setSize( stage.stageWidth, stage.stageHeight );
 			_gameCore.start();
-			_gameCore.soundCore.getSoundByName( "atmo" ).play( 0, int.MAX_VALUE );
+			//_gameCore.soundCore.getSoundByName( "atmo" ).play( 0, int.MAX_VALUE );
 		}
 
 		protected function getSoundCore() : ISoundCore {

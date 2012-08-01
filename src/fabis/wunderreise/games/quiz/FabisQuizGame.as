@@ -48,10 +48,10 @@ package fabis.wunderreise.games.quiz {
 		
 		public function start() : void {
 			//TODO: add Intro
-			//startIntro();
-			switchToCloseView();
+			startIntro();
+			/*switchToCloseView();
 			startQuestion();
-			initTrueButton();
+			initTrueButton();*/
 		}
 		
 		public function stop() : void {

@@ -14,11 +14,6 @@ package fabis.wunderreise.games.quiz {
 		public var _game : FabisQuizGame;
 		protected var _frameNumber : int = 0;
 		protected var _frameCounter : int = 0;
-		/*private var _feedbackNumber : int = 0;
-		private var _frameNumber : int = 0;
-		public var _feedbackTime : int;
-		private var _currentFeedbackStone : KolosseumStone;
-		private var _points : int = 0;*/
 		
 		public var _gameOptions : FabisQuizGameOptions;
 		
@@ -32,9 +27,8 @@ package fabis.wunderreise.games.quiz {
 		
 		public function playIntro() : void {
 			var _sound : Sound = new Sound();
-//			_request = new URLRequest("../../sounds/Chichen_Itza/Chichen_Itza_Einleitung.mp3");
-			_request = new URLRequest("sounds/games/chichenItza/intro.mp3");
-//			_request = new URLRequest("../sounds/games/chichenItza/intro.mp3");
+	//		_request = new URLRequest("sounds/games/chichenItza/intro.mp3");
+			_request = new URLRequest("../sounds/games/chichenItza/intro.mp3");
 			_sound.load(_request);
 			_channel = _sound.play();
 			_channel.addEventListener( Event.SOUND_COMPLETE, handleStopIntro );

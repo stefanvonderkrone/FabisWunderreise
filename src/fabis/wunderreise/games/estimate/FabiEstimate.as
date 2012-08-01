@@ -20,6 +20,8 @@ package fabis.wunderreise.games.estimate {
 		
 		public function init() : void {
 			_fabi = new FabiCristo();
+			_fabi.width = 77;
+			_fabi.height = 243.15;
 			view.gotoAndStop( 1 );
 			_bytes = new ByteArray();
 		}

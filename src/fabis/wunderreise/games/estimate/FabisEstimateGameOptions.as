@@ -18,6 +18,7 @@ package fabis.wunderreise.games.estimate {
 		public var fabi : FabiEstimate;
 		
 		public var cristoGiraffesDragContainer : CristoGiraffesDragContainer;
+		public var giraffes : Vector.<CristoGiraffeView>;
 		
 		public function FabisEstimateGameOptions(){
 			

@@ -68,6 +68,7 @@ package fabis.wunderreise.games.estimate {
 			
 			_sound.load(_request);
 			_channel = _sound.play();
+			_channel.addEventListener( Event.SOUND_COMPLETE, handleExerciseAnswer );
 			_gameOptions.fabi.addEventListener( Event.ENTER_FRAME, handleGameInstructions );
 		}
 		
@@ -91,6 +92,11 @@ package fabis.wunderreise.games.estimate {
 				_game.initDoneButton();
 				_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleGameInstructions );
 			}
+		}
+		
+		private function handleExerciseAnswer( event : Event ) : void {
+			_channel.addEventListener( Event.SOUND_COMPLETE, handleExerciseAnswer );
+			_game.initDrag();
 		}
 		
 		/*private function handleEndOfQuestion( event : Event ) : void {
