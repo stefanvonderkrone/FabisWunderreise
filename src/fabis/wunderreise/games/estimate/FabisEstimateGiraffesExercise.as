@@ -120,7 +120,8 @@ package fabis.wunderreise.games.estimate {
 		}
 		
 		private function activateDoneButton() : void {
-			_doneButton.addEventListener( MouseEvent.CLICK, onClickDoneButton );
+			if ( _doneButton )
+				_doneButton.addEventListener( MouseEvent.CLICK, onClickDoneButton );
 		}
 		
 		private function onClickDoneButton( event: MouseEvent ) : void {

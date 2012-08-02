@@ -67,7 +67,8 @@ package fabis.wunderreise.games.wordsCapture {
 		}
 		
 		public function stopIntro() : void {
-			_gameField.removeChild( _stone.stone );
+			if ( _stone && _stone.stone )
+				_gameField.removeChild( _stone.stone );
 			_gameField.removeEventListener(Event.ENTER_FRAME, handleEnterFrameDemo);
 		}
 		

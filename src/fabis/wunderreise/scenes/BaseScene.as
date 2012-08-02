@@ -52,6 +52,11 @@ package fabis.wunderreise.scenes {
 		protected function handleClick( evt : MouseEvent ) : void {
 		}
 		
+		override public function update( deltaTime : Number ) : void {
+			if ( !( this is FabisMainMenu ) && gameCore.keyboardHandler.isKeyPressed( "c" ) )
+				gameCore.director.replaceScene( new FabisMainMenu(), true );
+		}
+		
 		protected function log( ...args ) : void {
 			Cc.logch.apply( undefined, [ name ].concat( args ) );
 		}

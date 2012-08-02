@@ -64,10 +64,14 @@ package fabis.wunderreise.scenes {
 
 		override protected function handleStop() : void {
 			super.handleStop();
+			_introSound.stop();
+			TweenLite.killDelayedCallsTo( gameCore.director.replaceScene );
+			TweenLite.killTweensOf( view._fabi );
 		}
 
 		override protected function handleDisposal() : void {
 			super.handleDisposal();
+			_introSound.delegate = null;
 			_introSound = null;
 			_spectrum = null;
 		}
@@ -91,10 +95,11 @@ package fabis.wunderreise.scenes {
 					_numFrames = 0;
 				}
 			}
-			if ( gameCore.keyboardHandler.isKeyPressed( "c" ) ) {
-				_introSound.stop();
-				gameCore.director.replaceScene( new FabisMainMenu(), true );
-			}
+			super.update(deltaTime);
+//			if ( gameCore.keyboardHandler.isKeyPressed( "c" ) ) {
+//				_introSound.stop();
+//				gameCore.director.replaceScene( new FabisMainMenu(), true );
+//			}
 		}
 
 		public function reactOnSoundItemProgressEvent( evt : ProgressEvent, soundItem : ISoundItem ) : void {

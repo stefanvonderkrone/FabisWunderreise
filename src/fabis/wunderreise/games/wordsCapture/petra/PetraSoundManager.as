@@ -44,14 +44,14 @@ package fabis.wunderreise.games.wordsCapture.petra {
 		
 		public function playStoneCatchedSound() : void {
 			var _sound : Sound = new Sound();
-			_request = new URLRequest("sounds/effcts/sound11.mp3");
+			_request = new URLRequest("sounds/effects/sound11.mp3");
 			_sound.load(_request);
 			_sound.play();
 		}
 		
 		public function playStoneFallSound() : void {
 			var _sound : Sound = new Sound();
-			_request = new URLRequest("sounds/effcts/ploing.mp3");
+			_request = new URLRequest("sounds/effects/ploing.mp3");
 			_sound.load(_request);
 			_sound.play();
 		}

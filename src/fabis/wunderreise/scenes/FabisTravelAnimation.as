@@ -139,6 +139,9 @@ package fabis.wunderreise.scenes {
 			super.handleDisposal();
 		}
 		
+		override public function update( deltaTime : Number ) : void {
+		}
+		
 		protected function updateWorldMapPosition() : void {
 			const stageWidth : int = view.stage.stageWidth;
 			const stageHeight : int = view.stage.stageHeight;
