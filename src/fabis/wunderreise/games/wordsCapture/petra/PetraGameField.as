@@ -1,5 +1,6 @@
 package fabis.wunderreise.games.wordsCapture.petra {
-	
+	import com.greensock.TweenLite;
+	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
 	import flash.ui.Mouse;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -8,6 +9,11 @@ package fabis.wunderreise.games.wordsCapture.petra {
 	 * @author Stefanie Drost
 	 */
 	public class PetraGameField extends FabisWordsCaptureGameField {
+		
+		protected var _introSound : ISoundItem;
+		protected var _introSoundStarted : Boolean = false;
+		private var _currentFeedbackStone : PetraStone;
+		private var _feedbackNumber : int = 0;
 		
 		public function PetraGameField() {
 			
@@ -28,7 +34,16 @@ package fabis.wunderreise.games.wordsCapture.petra {
 			gameField.addEventListener( MouseEvent.MOUSE_OVER, handleMouseOver );
 			gameField.addEventListener( MouseEvent.MOUSE_OUT, handleMouseOut );
 			super._stone = new PetraStone();
-			super.startIntro();			
+			//super.startIntro();
+			playIntro();
+			addEventListener( Event.ENTER_FRAME, handleDemoStart );			
+		}
+		
+		private function handleDemoStart( event : Event ) : void {
+			_frameCounter++;
+			if( _frameCounter == (_gameOptions.demoStartTime * 60) ){
+				startDemo();
+			}
 		}
 		
 		override public function stopIntro() : void {
@@ -98,6 +113,120 @@ package fabis.wunderreise.games.wordsCapture.petra {
 		
 		override public function removeBasketFront() : void {
 			super.removeBasketFront();
+		}
+		
+		override public function reactOnSoundItemSoundComplete( soundItem : ISoundItem ) : void {
+			if( _introSoundStarted ){
+				_introSoundStarted = false;
+				_gameOptions.fabi.stopSynchronization();
+				stopIntro();
+			}
+			/*if( _feedbackSoundStarted ){
+				_feedbackSoundStarted = false;
+				_gameOptions.fabi.stopSynchronization();
+				TweenLite.delayedCall(1, playPointsSound);
+			}
+			if( _pointsSoundStarted ){
+				_pointsSoundStarted = false;
+				removeBasketFront();
+				_gameOptions.fabi.stopSynchronization();
+			}*/
+		}
+		
+		public function playIntro() : void {
+			_introSound = soundCore.getSoundByName("petraIntro");
+			_introSoundStarted = true;
+			_introSound.delegate = this;
+			_introSound.play();
+			_gameOptions.fabi.startSynchronization();
+		}
+		
+		public function playFeedback( points : int ) : void {
+			_points = points;
+			
+			_feedbackSound = soundCore.getSoundByName("petraDebriefing");
+			_feedbackSound.delegate = this;
+			_feedbackSoundStarted = true;
+			_feedbackSound.play();
+			_gameOptions.fabi.startSynchronization();
+			
+			_feedbackTime = _gameOptions.feedbackTimes.shift() * 60;
+			
+			_gameField.addEventListener( Event.ENTER_FRAME, handleFeedbackSound );
+			//_channel.addEventListener( Event.SOUND_COMPLETE, handlePointsSound );
+			
+		}
+		
+		private function handleFeedbackSound( event: Event ) : void {
+			
+			_frameNumber++;
+			
+			if( _frameNumber == _feedbackTime ){
+			
+				var _stone : PetraStone;
+				if( _currentFeedbackStone ) _currentFeedbackStone.removeHighlight();
+				
+				if( _feedbackNumber < _gameOptions.numrightStones ){
+					
+					_feedbackNumber++;
+					var _stoneId : int;
+					_stoneId = _gameOptions.feedbackOrder.shift();
+					
+					for each( _stone in _gameOptions.allPics){
+						if( _stone.id == _stoneId ){
+							
+							_currentFeedbackStone = _stone;
+							_currentFeedbackStone.highlight();
+							_feedbackTime = _gameOptions.feedbackTimes.shift() * 60;
+							break;
+						}
+					}
+				}
+				else{
+					for each( _stone in _gameOptions.wrongStones ){
+						_stone.highlight();
+					}
+					TweenLite.delayedCall(2, removeWrongHighlights);
+					_gameOptions.gameField.removeEventListener( Event.ENTER_FRAME, handleFeedbackSound );
+				}
+			}
+		}
+		
+		protected function playPointsSound() : void {
+			
+			switch( _points ) {
+				case 1:
+				case 2:
+				case 3:
+					_pointsSound = soundCore.getSoundByName("petraFeedback3AndLess");
+					break;
+				case 4:
+					_pointsSound = soundCore.getSoundByName("petraFeedback4");
+					break;
+				case 5:
+					_pointsSound = soundCore.getSoundByName("petraFeedback5");
+					break;
+				case 6:
+					_pointsSound = soundCore.getSoundByName("petraFeedback6");
+					break;
+				case 7:
+					_pointsSound = soundCore.getSoundByName("petraFeedback7");
+					break;
+				case 8:
+					_pointsSound = soundCore.getSoundByName("petraFeedbackComplete");
+					break;
+			}
+			_pointsSoundStarted = true;
+			_pointsSound.delegate = this;
+			_pointsSound.play();
+			_gameOptions.fabi.startSynchronization();
+		}
+		
+		private function removeWrongHighlights() : void {
+			var _stone : PetraStone;
+			for each( _stone in _gameOptions.wrongStones ){
+				_stone.removeHighlight();
+			}
 		}
 	}
 }

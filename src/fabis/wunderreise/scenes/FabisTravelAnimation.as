@@ -26,8 +26,7 @@ package fabis.wunderreise.scenes {
 		] );
 		protected static const TARGET_SCENES : Vector.<Class> = Vector.<Class>( [
 			FabisChichenItzaQuiz,
-			// TODO create Scene for Chinese Wall
-			null,
+			FabisChineseWallQuiz,
 			FabisKolosseumWordsCapture,
 			FabisCristoEstimate,
 			FabisMachuPicchuMemory,

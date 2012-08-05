@@ -1,4 +1,5 @@
 package fabis.wunderreise.scenes {
+	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
 	import fabis.wunderreise.games.estimate.FabiEstimateSmall;
 	import flash.events.Event;
 	import fabis.wunderreise.games.estimate.FabisEstimateGame;
@@ -13,6 +14,8 @@ package fabis.wunderreise.scenes {
 		
 		protected var _fabiCristoSmallContainer : FabiCristoSmallContainer;
 		protected var _fabiCristoContainer : FabiCristoContainer;
+		
+		protected var _introSound : ISoundItem;
 		
 		public function FabisCristoEstimate() {
 			super();
@@ -34,7 +37,7 @@ package fabis.wunderreise.scenes {
 			
 			const estimateOptions : FabisEstimateGameOptions = new FabisEstimateGameOptions();
 			//TODO: set to 2
-			estimateOptions.exerciseNumber = 1;
+			estimateOptions.exerciseNumber = 2;
 			estimateOptions.flipTime = 12;
 			
 			estimateOptions.showGiraffesTime = 6;
@@ -45,7 +48,6 @@ package fabis.wunderreise.scenes {
 			estimateOptions.showRoadSign = 9;
 			estimateOptions.showCarsTime = 10;
 			estimateOptions.removeCarsStatueTime = 16;
-			
 			
 			estimateOptions.fabiCristoSmallContainer = _fabiCristoSmallContainer;
 			estimateOptions.fabiCristoContainer = _fabiCristoContainer;
@@ -59,6 +61,7 @@ package fabis.wunderreise.scenes {
 		
 		override protected function initView( evt : Event ) : void {
 			super.initView( evt );
+			_game.soundCore = gameCore.soundCore;
 		}
 		
 		override protected function handleStop() : void {

@@ -4,7 +4,7 @@ package fabis.wunderreise.games.quiz {
 	 */
 	public class FabisQuizGameOptions {
 		
-		public var view : FabisChichenItzaView;
+		public var view : *;
 		public var fabi : FabiQuiz;
 		
 		public var switchTime : int;

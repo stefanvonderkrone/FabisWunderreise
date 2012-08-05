@@ -55,6 +55,7 @@ package fabis.wunderreise.scenes {
 		
 		override protected function initView( evt : Event ) : void {
 			super.initView( evt );
+			_game.soundCore = gameCore.soundCore;
 		}
 		
 		override protected function handleStop() : void {

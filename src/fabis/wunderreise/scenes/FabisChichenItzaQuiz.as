@@ -1,5 +1,5 @@
 package fabis.wunderreise.scenes {
-	
+	import fabis.wunderreise.games.quiz.FabisChichenItzaQuizGame;
 	import fabis.wunderreise.games.quiz.FabiQuiz;
 	import fabis.wunderreise.games.quiz.FabisQuizGameOptions;
 	import fabis.wunderreise.games.quiz.FabisQuizGame;
@@ -10,7 +10,6 @@ package fabis.wunderreise.scenes {
 	public class FabisChichenItzaQuiz extends BaseScene {
 		
 		protected var _game : FabisQuizGame;
-		//protected var _gameField : KolosseumGameField;
 		protected var _fabi : FabiQuiz;
 		
 		public function FabisChichenItzaQuiz() {
@@ -23,11 +22,6 @@ package fabis.wunderreise.scenes {
 	
 		override protected function handleCreation() : void {
 			_view = new FabisChichenItzaView();
-			/*view._kolosseum.gotoAndStop( 1 );
-			
-			_gameField = new KolosseumGameField();
-			_gameField.init();*/
-			
 			_fabi = new FabiQuiz();
 			_fabi.view = new FabiView();
 			_fabi.view.x = 80;
@@ -36,28 +30,24 @@ package fabis.wunderreise.scenes {
 			view._chichenItzaContainer.addChild( _fabi.view );
 			
 			const quizOptions : FabisQuizGameOptions = new FabisQuizGameOptions();
-			/*wordsCaptureOptions.catched = new Vector.<KolosseumStone>();
-			wordsCaptureOptions.allPics = new Vector.<KolosseumStone>();
-			wordsCaptureOptions.wrongStones = new Vector.<KolosseumStone>();
-			wordsCaptureOptions.rightStones = new Vector.<KolosseumStone>();
-			wordsCaptureOptions.background = view._kolosseum;*/
 			quizOptions.fabi = _fabi;
 			quizOptions.view = view;
 			quizOptions.switchTime = 20;
 			quizOptions.questionNumber = 3;
+			
 			// right answers of questions -> 0 for false, 1 for true
 			quizOptions.answers = new Array( 0, 1, 1);
 			quizOptions.trueButtonStartTime = 27;
 			
-			_game = new FabisQuizGame();
+			_game = new FabisChichenItzaQuizGame();
 			_game.initWithOptions( quizOptions );
 			
-			/*view._gameFieldContainer.addChild( _gameField.gameField );*/
 			super.handleCreation();
 		}
 		
 		override protected function initView( evt : Event ) : void {
 			super.initView( evt );
+			_game.soundCore = gameCore.soundCore;
 		}
 		
 		override protected function handleStop() : void {

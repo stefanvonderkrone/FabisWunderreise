@@ -34,14 +34,11 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			_gameOptions.frameArray = _gameOptions.initFrameArray();
 			_gameField._gameOptions = _gameOptions;
 			
-			_gameOptions.soundManager = new KolosseumSoundManager();
-			_gameOptions.soundManager.initWithOptions( _gameOptions );
-			
 			_fabi = _gameOptions.fabi;
-			
 		}
 		
 		override public function start() : void {
+			_gameField.soundCore = soundCore;
 			_gameField.startIntro();
 			//_gameField.start();
 			//_fabi.startSynchronization();
@@ -50,5 +47,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		override public function stop() : void {
 			_gameField.stop();
 		}
+		
+		
 	}
 }

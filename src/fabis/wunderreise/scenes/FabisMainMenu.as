@@ -65,7 +65,7 @@ package fabis.wunderreise.scenes {
 					gameCore.director.replaceScene(
 						new FabisTravelAnimation(
 							FabisTravelAnimationTarget.HOME,
-							FabisTravelAnimationTarget.COLOSSEUM
+							FabisTravelAnimationTarget.CHINESE_WALL
 						), true
 					);
 //					gameCore.director.replaceScene( new FabisKolosseumWordsCapture(), true );

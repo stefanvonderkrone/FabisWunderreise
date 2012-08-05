@@ -5,9 +5,9 @@ package fabis.wunderreise.games.estimate {
 	public class FabisEstimateGameOptions {
 		
 		public var game : FabisEstimateGame;
-		public var soundManager : FabisEstimateSoundManager;
 		public var correctItemNumber : int;
 		public var exerciseNumber : int;
+		public var currentExerciseNumber : int;
 		
 		public var flipTime : int;
 		public var showGiraffesTime : int;
@@ -25,9 +25,8 @@ package fabis.wunderreise.games.estimate {
 		public var fabiCristoContainer : FabiCristoContainer;
 		public var fabi : FabiEstimate;
 		
-		public var cristoGiraffesDragContainer : CristoGiraffesDragContainer;
+		public var dragContainer : CristoDragContainer;
 		public var giraffes : Vector.<CristoGiraffeView>;
-		//public var giraffesGame : FabisEstimateGiraffesGame;
 		
 		public function FabisEstimateGameOptions(){
 			

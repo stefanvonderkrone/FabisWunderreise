@@ -33,14 +33,11 @@ package fabis.wunderreise.games.wordsCapture.petra {
 			_gameOptions.frameArray = _gameOptions.initFrameArray();
 			_gameField._gameOptions = _gameOptions;
 			
-			_gameOptions.soundManager = new PetraSoundManager();
-			_gameOptions.soundManager.initWithOptions( _gameOptions );
-			
 			_fabi = _gameOptions.fabi;
-			
 		}
 		
 		override public function start() : void {
+			_gameField.soundCore = soundCore;
 			_gameField.startIntro();
 			//_gameField.start();
 			//_fabi.startSynchronization();

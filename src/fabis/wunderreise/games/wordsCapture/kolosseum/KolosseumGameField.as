@@ -1,5 +1,5 @@
 package fabis.wunderreise.games.wordsCapture.kolosseum {
-	
+	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
 	import com.greensock.TweenLite;
 	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGameField;
 	import flash.ui.Mouse;
@@ -11,6 +11,12 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 	 */
 	public class KolosseumGameField extends FabisWordsCaptureGameField {
 				
+		protected var _introSound : ISoundItem;
+		protected var _introSoundStarted : Boolean = false;
+		private var _currentFeedbackStone : KolosseumStone;
+		private var _feedbackNumber : int = 0;
+		
+		
 		public function KolosseumGameField() {
 			
 		}
@@ -30,7 +36,20 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			gameField.addEventListener( MouseEvent.MOUSE_OVER, handleMouseOver );
 			gameField.addEventListener( MouseEvent.MOUSE_OUT, handleMouseOut );
 			super._stone = new KolosseumStone();
-			super.startIntro();			
+			playIntro();
+			addEventListener( Event.ENTER_FRAME, handleDemoStart );
+		}
+		
+		private function handleDemoStart( event : Event ) : void {
+			_frameCounter++;
+			if( _frameCounter == (_gameOptions.demoStartTime * 60) ){
+				startDemo();
+			}
+		}
+		
+		override public function startDemo() : void {
+			removeEventListener( Event.ENTER_FRAME, handleDemoStart );
+			super.startDemo();
 		}
 		
 		override public function stopIntro() : void {
@@ -100,6 +119,120 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		
 		override public function removeBasketFront() : void {
 			super.removeBasketFront();
+		}
+		
+		public function playIntro() : void {
+			_introSound = soundCore.getSoundByName("colosseumIntro");
+			_introSoundStarted = true;
+			_introSound.delegate = this;
+			_introSound.play();
+			_gameOptions.fabi.startSynchronization();
+		}
+		
+		override public function reactOnSoundItemSoundComplete( soundItem : ISoundItem ) : void {
+			if( _introSoundStarted ){
+				_introSoundStarted = false;
+				_gameOptions.fabi.stopSynchronization();
+				stopIntro();
+			}
+			if( _feedbackSoundStarted ){
+				_feedbackSoundStarted = false;
+				_gameOptions.fabi.stopSynchronization();
+				TweenLite.delayedCall(1, playPointsSound);
+			}
+			if( _pointsSoundStarted ){
+				_pointsSoundStarted = false;
+				removeBasketFront();
+				_gameOptions.fabi.stopSynchronization();
+			}
+		}
+		
+		public function playFeedback( points : int ) : void {
+			_points = points;
+			
+			_feedbackSound = soundCore.getSoundByName("colosseumDebriefing");
+			_feedbackSound.delegate = this;
+			_feedbackSoundStarted = true;
+			_feedbackSound.play();
+			_gameOptions.fabi.startSynchronization();
+			
+			_feedbackTime = _gameOptions.feedbackTimes.shift() * 60;
+			
+			_gameField.addEventListener( Event.ENTER_FRAME, handleFeedbackSound );
+			//_channel.addEventListener( Event.SOUND_COMPLETE, handlePointsSound );
+			
+		}
+		
+		private function handleFeedbackSound( event: Event ) : void {
+			
+			_frameNumber++;
+			
+			if( _frameNumber == _feedbackTime ){
+			
+				var _stone : KolosseumStone;
+				if( _currentFeedbackStone ) _currentFeedbackStone.removeHighlight();
+				
+				if( _feedbackNumber < _gameOptions.numrightStones ){
+					
+					_feedbackNumber++;
+					var _stoneId : int;
+					_stoneId = _gameOptions.feedbackOrder.shift();
+					
+					for each( _stone in _gameOptions.allPics){
+						if( _stone.id == _stoneId ){
+							
+							_currentFeedbackStone = _stone;
+							_currentFeedbackStone.highlight();
+							_feedbackTime = _gameOptions.feedbackTimes.shift() * 60;
+							break;
+						}
+					}
+				}
+				else{
+					for each( _stone in _gameOptions.wrongStones ){
+						_stone.highlight();
+					}
+					TweenLite.delayedCall(2, removeWrongHighlights);
+					_gameOptions.gameField.removeEventListener( Event.ENTER_FRAME, handleFeedbackSound );
+				}
+			}
+		}
+		
+		protected function playPointsSound() : void {
+			
+			switch( _points ) {
+				case 1:
+				case 2:
+				case 3:
+					_pointsSound = soundCore.getSoundByName("colosseumFeedback3AndLess");
+					break;
+				case 4:
+					_pointsSound = soundCore.getSoundByName("colosseumFeedback4");
+					break;
+				case 5:
+					_pointsSound = soundCore.getSoundByName("colosseumFeedback5");
+					break;
+				case 6:
+					_pointsSound = soundCore.getSoundByName("colosseumFeedback6");
+					break;
+				case 7:
+					_pointsSound = soundCore.getSoundByName("colosseumFeedback7");
+					break;
+				case 8:
+					_pointsSound = soundCore.getSoundByName("colosseumFeedbackComplete");
+					break;
+			}
+			_pointsSoundStarted = true;
+			_pointsSound.delegate = this;
+			_pointsSound.play();
+			_gameOptions.fabi.startSynchronization();
+		}
+		
+		private function removeWrongHighlights() : void {
+			var _stone : KolosseumStone;
+			for each( _stone in _gameOptions.wrongStones ){
+				_stone.removeHighlight();
+			}
 		}
 	}
 }

@@ -1,20 +1,27 @@
 package fabis.wunderreise.games.quiz {
+	import com.flashmastery.as3.game.interfaces.sound.ISoundCore;
+	import flash.events.ProgressEvent;
+
+	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
+
+	import flash.events.ErrorEvent;
+	import flash.events.SampleDataEvent;
+	import com.flashmastery.as3.game.interfaces.delegates.ISoundItemDelegate;
 	import flash.display.SimpleButton;
 	import flash.events.MouseEvent;
 	import flash.events.Event;
-	import flash.display.MovieClip;
 	import com.greensock.TweenLite;
 	import flash.display.Sprite;
 	
 	/**
 	 * @author Stefanie Drost
 	 */
-	public class FabisQuizGame extends Sprite {
+	public class FabisQuizGame extends Sprite implements ISoundItemDelegate {
 		
 		protected var _view : FabisCloseView;
+		protected var _game : *;
 		protected var _gameOptions : FabisQuizGameOptions;
-		protected var _soundManager : FabisQuizSoundManager;
-		protected var _imageContainer : FabisQuizImageContainer;
+		protected var _imageContainer : *;
 		protected var _fabiClose : FabiQuizClose;
 		protected var _currentQuestionNumber : int;
 		protected var _trueButton : SimpleButton;
@@ -22,11 +29,28 @@ package fabis.wunderreise.games.quiz {
 		protected var _rightSymbol : Sprite;
 		protected var _wrongSymbol : Sprite;
 		
+		protected var _introSound : ISoundItem;
+		protected var _introSoundStarted : Boolean = false;
+		protected var _questionSound : ISoundItem;
+		protected var _questionSoundStarted : Boolean = false;
+		protected var _buttonClickedSound : ISoundItem;
+		protected var _buttonClickedSoundStarted : Boolean = false;
+		protected var _answerSound : ISoundItem;
+		protected var _answerSoundStarted : Boolean = false;
+		protected var _feedbackSound : ISoundItem;
+		protected var _feedbackSoundStarted : Boolean = false;
+		protected var _pointsSound : ISoundItem;
+		protected var _pointsSoundStarted : Boolean = false;
+				
+		protected var _soundCore : ISoundCore;
+		protected var _frameCounter : int = 0;
+		protected var _frameNumber : int = 0;
+		
 		public function FabisQuizGame() {
 			
 		}
 		
-		private function get view() : FabisCloseView {
+		protected function get view() : FabisCloseView {
 			return FabisCloseView( _view );
 		}
 		
@@ -39,19 +63,15 @@ package fabis.wunderreise.games.quiz {
 			_fabiClose.init();
 			_fabiClose._game = this;
 			
-			_soundManager = new FabisQuizSoundManager();
-			_soundManager.initWithOptions( _gameOptions );
-			_soundManager._game = this;
-			
 			_currentQuestionNumber = 1;
 		}
 		
 		public function start() : void {
 			//TODO: add Intro
-			startIntro();
-			/*switchToCloseView();
-			startQuestion();
-			initTrueButton();*/
+			//startIntro();
+			//switchToCloseView();
+			//startQuestion();
+			//initTrueButton();
 		}
 		
 		public function stop() : void {
@@ -59,60 +79,43 @@ package fabis.wunderreise.games.quiz {
 		}
 		
 		public function switchToCloseView() : void {
-			_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, _soundManager.handleSwitchViews );
-			_gameOptions.view.removeChild( _gameOptions.view._chichenItzaContainer );
+			_gameOptions.fabi.stopSynchronization();
 			_gameOptions.view.addChild( view._closeContainer );
 			_fabiClose.startSynchronization();
-			//_view = new FabisCloseView();
 		}
 		
 		public function startIntro() : void {
-			_soundManager.playIntro();
+			//_introSound = _soundCore.getSoundByName( "chichenItzaIntro" );
+			_introSoundStarted = true;
+			_introSound.delegate = this;
+			_introSound.play();
+			
+			_gameOptions.fabi.addEventListener( Event.ENTER_FRAME, handleSwitchViews );
+			_gameOptions.fabi.addEventListener( Event.ENTER_FRAME, handleTrueButtonView );
+			_gameOptions.fabi.startSynchronization();
 		}
 		
 		public function startQuestion() : void {
 			
-			//if( _trueButton ) view._closeContainer.removeChild( _trueButton );
 			_fabiClose.resetNose();
 			
 			if( _currentQuestionNumber <= _gameOptions.questionNumber ){
-				initImageContainer( _currentQuestionNumber );
-				//initTrueButton();
+				_game.initImageContainer( _currentQuestionNumber );
 				_rightSymbol.visible = false;
 				_wrongSymbol.visible = false;
-				
-				_soundManager.playQuestion( _currentQuestionNumber );
+				_game.playQuestion( _currentQuestionNumber );
 			}
 			else{
-				TweenLite.delayedCall(1, _soundManager.playPoints, [ _points ] );
+				TweenLite.delayedCall(1, playPoints, [ _points ] );
 			}
-			
 		}
 		
 		public function initEndOfQuestion() : void {
 			_fabiClose.initNose( _gameOptions.answers[ 0 ] );
 			_trueButton.addEventListener( MouseEvent.CLICK, onClickTrueButton );
-			
 		}
 		
 		public function initImageContainer( frameNumber : int ) : void {
-			if( frameNumber == 1 ){
-				_imageContainer = new FabisQuizImageContainer();
-				_rightSymbol = new RightSymbolView();
-				_wrongSymbol = new WrongSymbolView();
-				_rightSymbol.y = -5;
-				_rightSymbol.x = 20;
-				_wrongSymbol.y = -5;
-				_wrongSymbol.x = 30;
-				_imageContainer.x = 350;
-				_imageContainer.y = 30;
-				_imageContainer.addChild( _rightSymbol );
-				_imageContainer.addChild( _wrongSymbol );
-				
-				view._closeContainer.addChild( _imageContainer );
-				
-			}
-			_imageContainer.gotoAndStop( frameNumber );
 		}
 		
 		public function initTrueButton() : void {
@@ -123,7 +126,8 @@ package fabis.wunderreise.games.quiz {
 		}
 		
 		private function onClickTrueButton( event : MouseEvent ) : void {
-			_soundManager.playButtonClicked();
+			_buttonClickedSound = _soundCore.getSoundByName("buttonClicked");
+			_buttonClickedSound.play();
 			resetTrueButton();
 			_fabiClose.resetNose();
 			checkAnswer( true );
@@ -135,23 +139,130 @@ package fabis.wunderreise.games.quiz {
 		
 		public function checkAnswer( choosed : Boolean ) : void {
 			var _rightAnswer : int = _gameOptions.answers.shift();
+			
 			if( ( _rightAnswer && choosed ) || ( !_rightAnswer && !choosed ) ){
 				_points++;
 			}
 			
 			if( _rightAnswer ){
-				_soundManager.playRightOrWrongEffect( true );
+				playRightOrWrongEffect( true );
 				_imageContainer.setChildIndex( _rightSymbol, 3);
 				_rightSymbol.visible = true;
 			}
 			else{
-				_soundManager.playRightOrWrongEffect( false );
+				playRightOrWrongEffect( false );
 				_imageContainer.setChildIndex( _rightSymbol, 3);
 				_wrongSymbol.visible = true;
 			}
-				
-			_soundManager.playFeedback( _rightAnswer, choosed, _currentQuestionNumber );
+			
+			_game.playFeedback( _rightAnswer, choosed, _currentQuestionNumber );
+			//_fabiClose.startSynchronization();
 			_currentQuestionNumber++;
+		}
+
+		public function reactOnSoundItemProgressEvent(evt : ProgressEvent, soundItem : ISoundItem) : void {
+		}
+
+		public function reactOnSoundItemEvent(evt : Event, soundItem : ISoundItem) : void {
+		}
+
+		public function reactOnSoundItemSoundComplete(soundItem : ISoundItem) : void {
+			if( _introSoundStarted ){
+				_introSoundStarted = false;
+				_fabiClose.stopSynchronization();
+				TweenLite.delayedCall( 1, startQuestion );
+			}
+			if( _questionSoundStarted ){
+				_questionSoundStarted = false;
+				_fabiClose.stopSynchronization();
+				initEndOfQuestion();
+			}
+			if( _feedbackSoundStarted ){
+				_feedbackSoundStarted = false;
+				_fabiClose.stopSynchronization();
+				startQuestion();
+			}
+			if( _pointsSoundStarted ){
+				_pointsSoundStarted = false;
+				_fabiClose.stopSynchronization();
+			}
+		}
+
+		public function reactOnSoundItemLoadComplete(soundItem : ISoundItem) : void {
+		}
+
+		public function reactOnSoundItemErrorEvent(evt : ErrorEvent, soundItem : ISoundItem) : void {
+		}
+
+		public function reactOnSoundItemSampleDataEvent(evt : SampleDataEvent, soundItem : ISoundItem) : void {
+		}
+		
+		public function handleSwitchViews( event : Event ) : void {
+			_frameCounter++;
+			
+			if( _frameCounter == (_gameOptions.switchTime * 60) ){
+				_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleSwitchViews );
+				switchToCloseView();
+				_frameCounter = 0;
+			}
+		}
+		
+		public function handleTrueButtonView( event : Event ) : void {
+			_frameNumber++;
+			
+			if( _frameNumber == (_gameOptions.trueButtonStartTime * 60) ){
+				_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleTrueButtonView );
+				initTrueButton();
+				_frameNumber = 0;
+			}
+		}
+		
+		public function playQuestion( questionNumber : int ) : void {
+			_questionSoundStarted = true;
+			_questionSound.delegate = this;
+			_questionSound.play();
+			_fabiClose.startSynchronization();
+		}
+		
+		public function playRightOrWrongEffect( boolean : Boolean ) : void {
+			if( boolean ) _answerSound = _soundCore.getSoundByName( "wrightAnswer" );
+			else _answerSound = _soundCore.getSoundByName( "wrightAnswer" );
+			_answerSoundStarted = true;
+			_answerSound.play();
+		}
+		
+		public function playFeedback( answerTrue : int, choosedAnswerTrue : Boolean, questionNumber : int ) : void {
+			_feedbackSoundStarted = true;
+			_feedbackSound.delegate = this;
+			_feedbackSound.play();
+			_fabiClose.startSynchronization();
+		}
+		
+		public function playPoints( points : int ) : void {
+			
+			switch( points ){
+				case 0:
+				case 1:
+					_pointsSound = _soundCore.getSoundByName( "endingsRightWrong12" );
+					break;
+					
+				case 2:
+				case 3:
+					_pointsSound = _soundCore.getSoundByName( "endingsRightWrong34" );
+					break;
+			}
+			_pointsSoundStarted = true;
+			_pointsSound.delegate = this;
+			_pointsSound.play();
+			_fabiClose.startSynchronization();
+		}
+		
+		public function set soundCore( soundCore : ISoundCore) : void {
+			_soundCore = soundCore;
+		}
+		
+		public function get soundCore() : ISoundCore {
+			return _soundCore;
 		}
 	}
 }

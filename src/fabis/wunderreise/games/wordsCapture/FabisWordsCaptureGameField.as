@@ -1,4 +1,12 @@
 package fabis.wunderreise.games.wordsCapture {
+	import com.flashmastery.as3.game.interfaces.sound.ISoundCore;
+	import flash.events.ProgressEvent;
+
+	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
+
+	import flash.events.ErrorEvent;
+	import flash.events.SampleDataEvent;
+	import com.flashmastery.as3.game.interfaces.delegates.ISoundItemDelegate;
 	import com.greensock.TweenLite;
 	import flash.net.URLRequest;
 	import flash.media.Sound;
@@ -8,7 +16,7 @@ package fabis.wunderreise.games.wordsCapture {
 	/**
 	 * @author Stefanie Drost
 	 */
-	public class FabisWordsCaptureGameField  extends MovieClip {
+	public class FabisWordsCaptureGameField  extends MovieClip implements ISoundItemDelegate {
 		
 		//protected var _gameField : GameField;
 		
@@ -18,6 +26,17 @@ package fabis.wunderreise.games.wordsCapture {
 		protected var _gameFieldObject :*;
 		protected var _stone :*;
 		protected var _frameCounter : int = 0;
+		protected var _soundCore : ISoundCore;
+		protected var _stoneEffect : ISoundItem;
+		protected var _feedbackSound : ISoundItem;
+		protected var _feedbackSoundStarted : Boolean = false;
+		protected var _pointsSound : ISoundItem;
+		protected var _pointsSoundStarted : Boolean = false;
+		protected var _completionSound : ISoundItem;
+		protected var _completionSoundStarted : Boolean = false;
+		protected var _frameNumber : int = 0;
+		protected var _feedbackTime : int;
+		
 		
 		
 		protected var _currentImageIndex : int;
@@ -40,19 +59,9 @@ package fabis.wunderreise.games.wordsCapture {
 		}
 		
 		public function startIntro() : void{
-			_gameOptions.soundManager.playIntro();
-			addEventListener( Event.ENTER_FRAME, handleDemoStart );
 		}
 		
-		private function handleDemoStart( event : Event ) : void {
-			_frameCounter++;
-			if( _frameCounter == (_gameOptions.demoStartTime * 60) ){
-				startDemo();
-			}
-		}
-		
-		private function startDemo() : void {
-			removeEventListener( Event.ENTER_FRAME, handleDemoStart );
+		public function startDemo() : void {
 			_stone.init();
 			_stone.stone.gotoAndStop( _currentImageIndex + 1 );
 			_gameField.addChild( _stone.stone );
@@ -73,7 +82,6 @@ package fabis.wunderreise.games.wordsCapture {
 		}
 		
 		public function start() : void {
-			
 			_stone.init();
 			_currentImageIndex = _gameOptions.frameArray.shift();
 			_stone.id = _currentImageIndex + 1;
@@ -82,7 +90,6 @@ package fabis.wunderreise.games.wordsCapture {
 			_gameField.swapChildren( _stone.stone, _basket.basket );
 			
 			_gameField.addEventListener(Event.ENTER_FRAME, handleEnterFrame);
-			
 		}	
 		
 		public function handleEnterFrame( evt : Event ) : void{
@@ -92,18 +99,16 @@ package fabis.wunderreise.games.wordsCapture {
 			// gefangen
 			if( _stone.stone.y > 430 && _basket.hitBasket( _stone.stone.x, _stone.stone.x + _stone.stone.width) ){
 				
-				_gameOptions.soundManager.playStoneCatchedSound();
+				playCatchedStoneEffect();
 				checkImage(true);
 				_gameOptions.catched.push( _stone );
 				_gameOptions.allPics.push( _stone );
 				_gameField.removeChild( _stone.stone );
 				
 				_stone = _gameFieldObject.getNewStone();
-				//_stone = new KolosseumStone();
 				_stone.init();
 				checkGameEnd();
 				_stone.id = _currentImageIndex + 1;
-				
 				
 				_gameField.addChild( _stone.stone );
 				_gameField.swapChildren( _stone.stone, _basket.basket );
@@ -111,14 +116,13 @@ package fabis.wunderreise.games.wordsCapture {
 			} // vorbei
 			else if( _stone.stone.y > 430 && (!_basket.hitBasket( _stone.stone.x, _stone.stone.x + _stone.stone.width)) ){
 				
-				_gameOptions.soundManager.playStoneFallSound();
+				playStoneFallEffect();
 				checkImage(false);	
 				_gameOptions.allPics.push(this._stone);
 							
 				_stone.fallDown();
 				
 				_stone = _gameFieldObject.getNewStone();
-				//_stone = new KolosseumStone();
 				_stone.init();
 				checkGameEnd();
 				_stone.id = _currentImageIndex + 1 ;
@@ -171,7 +175,9 @@ package fabis.wunderreise.games.wordsCapture {
 			_basket.tweenOut();
 			_basket.showBasketFront( _gameOptions );
 			// TODO: add to game
-			_gameOptions.soundManager.playFeedback( _points );
+			//_gameOptions.soundManager.playFeedback( _points );
+			_gameFieldObject.playFeedback( _points );
+			
 			//TweenLite.delayedCall(2, _basket.removeBasketFront );
 			//_gameOptions.soundManager.playCompletion();
 			//addStonesToWall();
@@ -182,7 +188,56 @@ package fabis.wunderreise.games.wordsCapture {
 		}
 		
 		public function completeGame() : void {
-			_gameOptions.soundManager.playCompletion();
+			//_gameOptions.soundManager.playCompletion();
+			playCompletion();
+		}
+
+		public function set soundCore( soundCore : ISoundCore) : void {
+			_soundCore = soundCore;
+		}
+		
+		public function get soundCore() : ISoundCore {
+			return _soundCore;
+		}
+		
+		public function reactOnSoundItemProgressEvent(evt : ProgressEvent, soundItem : ISoundItem) : void {
+		}
+
+		public function reactOnSoundItemEvent(evt : Event, soundItem : ISoundItem) : void {
+		}
+
+		public function reactOnSoundItemSoundComplete(soundItem : ISoundItem) : void {
+			if( _completionSoundStarted ){
+				_completionSoundStarted = false;
+				_gameOptions.fabi.stopSynchronization();
+			}
+		}
+
+		public function reactOnSoundItemLoadComplete(soundItem : ISoundItem) : void {
+		}
+
+		public function reactOnSoundItemErrorEvent(evt : ErrorEvent, soundItem : ISoundItem) : void {
+		}
+
+		public function reactOnSoundItemSampleDataEvent(evt : SampleDataEvent, soundItem : ISoundItem) : void {
+		}
+		
+		public function playCatchedStoneEffect() : void {
+			_stoneEffect = soundCore.getSoundByName("stoneCatched");
+			_stoneEffect.play();
+		}
+		
+		public function playStoneFallEffect() : void {
+			_stoneEffect = soundCore.getSoundByName("stoneFall");
+			_stoneEffect.play();
+		}
+		
+		public function playCompletion() : void {
+			_completionSoundStarted = true;
+			_completionSound = soundCore.getSoundByName("endingsWordsCapture");
+			_completionSound.delegate = this;
+			_completionSound.play();
+			_gameOptions.fabi.startSynchronization();
 		}
 	}
 }
