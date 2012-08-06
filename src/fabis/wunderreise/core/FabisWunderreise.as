@@ -1,5 +1,6 @@
 package fabis.wunderreise.core {
 
+	import fabis.wunderreise.DEBUGGING;
 	import fabis.wunderreise.scenes.FabisIntro;
 
 	import com.flashmastery.as3.game.core.FlashGraphicsCore;
@@ -26,7 +27,6 @@ package fabis.wunderreise.core {
 	public class FabisWunderreise extends Sprite implements IGameDelegate {
 
 		private var _gameCore : IGameCore;
-		private static const _debugging : Boolean = true;
 
 		public function FabisWunderreise() {
 			if ( stage ) init();
@@ -38,7 +38,7 @@ package fabis.wunderreise.core {
 			TweenPlugin.activate( [ FramePlugin, ColorTransformPlugin, ScalePlugin ] );
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
-			if ( _debugging ) {
+			if ( DEBUGGING ) {
 				Cc.startOnStage( stage, "fabi" );
 				Cc.config.tracing = true;
 				Cc.listenUncaughtErrors( loaderInfo );

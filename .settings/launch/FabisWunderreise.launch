@@ -21,6 +21,7 @@
 <stringAttribute key="PRE_COMPILE_ANT" value=""/>
 <stringAttribute key="PROJECT_NAME" value="Fabis Wunderreise"/>
 <stringAttribute key="PUBLISHER_ID" value=""/>
+<booleanAttribute key="START_DEBUGGER" value="true"/>
 <booleanAttribute key="START_SWF_ENABLED" value="true"/>
 <stringAttribute key="START_SWF_LOCATION" value="bin/index.html"/>
 <stringAttribute key="START_SWF_WITH" value="Browser"/>
