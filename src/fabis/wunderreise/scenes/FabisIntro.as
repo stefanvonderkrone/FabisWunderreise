@@ -1,12 +1,15 @@
 package fabis.wunderreise.scenes {
 
-	import flash.display.MovieClip;
-	import flash.media.SoundMixer;
-	import flash.utils.ByteArray;
+	import fabis.wunderreise.sound.FabisLipSyncher;
+	import fabis.wunderreise.sound.IFabisLipSyncherDelegate;
+
+	import com.flashmastery.as3.game.interfaces.core.IGameCore;
+	import com.flashmastery.as3.game.interfaces.core.IInteractiveGameObject;
 	import com.flashmastery.as3.game.interfaces.delegates.ISoundItemDelegate;
 	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
 	import com.greensock.TweenLite;
 
+	import flash.display.MovieClip;
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.ProgressEvent;
@@ -15,15 +18,13 @@ package fabis.wunderreise.scenes {
 	/**
 	 * @author Stefan von der Krone (2012)
 	 */
-	public class FabisIntro extends BaseScene implements ISoundItemDelegate {
+	public class FabisIntro extends BaseScene implements ISoundItemDelegate, IFabisLipSyncherDelegate {
 		
 		protected static const UPDATE_FRAMES : int = 5;
 
 		protected var _introSound : ISoundItem;
 		protected var _introSoundStarted : Boolean = false;
-		protected var _numFrames : int = 0;
-		protected var _spectrumFloat : Number = 0;
-		protected var _spectrum : ByteArray;
+		protected var _lipSyncher : FabisLipSyncher;
 
 		public function FabisIntro() {
 			super();
@@ -36,7 +37,8 @@ package fabis.wunderreise.scenes {
 		override protected function handleCreation() : void {
 			_view = new FabisIntroView();
 			view._fabi._lips.gotoAndStop( 1 );
-			_spectrum = new ByteArray();
+			_lipSyncher = new FabisLipSyncher();
+			_lipSyncher.delegate = this;
 			super.handleCreation();
 		}
 
@@ -44,6 +46,8 @@ package fabis.wunderreise.scenes {
 			super.initView( evt );
 			_introSound = gameCore.soundCore.getSoundByName( "menuIntro" );
 			_introSound.delegate = this;
+			_lipSyncher.gameCore = gameCore;
+			gameCore.juggler.addAnimatable( _lipSyncher );
 		}
 
 		override protected function handleStart() : void {
@@ -60,6 +64,7 @@ package fabis.wunderreise.scenes {
 		protected function startSound() : void {
 			_introSound.play();
 			_introSoundStarted = true;
+			_lipSyncher.start();
 		}
 
 		override protected function handleStop() : void {
@@ -67,46 +72,17 @@ package fabis.wunderreise.scenes {
 			_introSound.stop();
 			TweenLite.killDelayedCallsTo( gameCore.director.replaceScene );
 			TweenLite.killTweensOf( view._fabi );
+			_lipSyncher.stop();
 		}
 
 		override protected function handleDisposal() : void {
 			super.handleDisposal();
 			_introSound.delegate = null;
 			_introSound = null;
-			_spectrum = null;
+			_lipSyncher.gameCore = null;
+			_lipSyncher.dispose();
 		}
 		
-		override public function update( deltaTime : Number ) : void {
-			deltaTime;
-			if ( _introSoundStarted ) {
-				_numFrames++;
-				SoundMixer.computeSpectrum( _spectrum, false, 0 );
-				for (var i:int = 0; i < 512; i++) {
-					_spectrumFloat += Math.abs( _spectrum.readFloat() );
-				}
-				if ( _numFrames == UPDATE_FRAMES ) {
-					const lips : MovieClip = view._fabi._lips;
-					if ( _spectrumFloat > 30 ) {
-						lips.gotoAndStop(
-							int( Math.random() * ( lips.totalFrames - 1 ) + 2 )
-						);
-					} else lips.gotoAndStop( 1 );
-					_spectrumFloat = 0;
-					_numFrames = 0;
-				}
-			}
-			super.update(deltaTime);
-//			if ( gameCore.keyboardHandler.isKeyPressed( "c" ) ) {
-//				_introSound.stop();
-//				gameCore.director.replaceScene( new FabisMainMenu(), true );
-//			}
-		}
-
-		public function reactOnSoundItemProgressEvent( evt : ProgressEvent, soundItem : ISoundItem ) : void {
-		}
-
-		public function reactOnSoundItemEvent( evt : Event, soundItem : ISoundItem ) : void {
-		}
 
 		public function reactOnSoundItemSoundComplete( soundItem : ISoundItem ) : void {
 			TweenLite.delayedCall(
@@ -116,6 +92,21 @@ package fabis.wunderreise.scenes {
 			);
 		}
 
+		public function reactOnCumulatedSpectrum( cumulatedSpectrum : Number ) : void {
+			const lips : MovieClip = view._fabi._lips;
+			if ( cumulatedSpectrum > 30 ) {
+				lips.gotoAndStop(
+					int( Math.random() * ( lips.totalFrames - 1 ) + 2 )
+				);
+			} else lips.gotoAndStop( 1 );
+		}
+
+		public function reactOnSoundItemProgressEvent( evt : ProgressEvent, soundItem : ISoundItem ) : void {
+		}
+
+		public function reactOnSoundItemEvent( evt : Event, soundItem : ISoundItem ) : void {
+		}
+
 		public function reactOnSoundItemLoadComplete( soundItem : ISoundItem ) : void {
 		}
 
@@ -123,6 +114,24 @@ package fabis.wunderreise.scenes {
 		}
 
 		public function reactOnSoundItemSampleDataEvent( evt : SampleDataEvent, soundItem : ISoundItem ) : void {
+		}
+
+		public function reactOnStart( delegater : IInteractiveGameObject ) : void {
+		}
+
+		public function reactOnStop( delegater : IInteractiveGameObject ) : void {
+		}
+
+		public function reactOnDisposal( delegater : IInteractiveGameObject ) : void {
+		}
+
+		public function reactOnAddedToDelegater( delegater : IInteractiveGameObject ) : void {
+		}
+
+		public function reactOnRemovalFromDelegater( delegater : IInteractiveGameObject ) : void {
+		}
+
+		public function reactOnGameFinished( result : Object, gameCore : IGameCore ) : void {
 		}
 	}
 }
