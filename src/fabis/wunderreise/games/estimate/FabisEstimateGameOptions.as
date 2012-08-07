@@ -5,6 +5,7 @@ package fabis.wunderreise.games.estimate {
 	public class FabisEstimateGameOptions {
 		
 		public var game : FabisEstimateGame;
+		public var skipButton : FabisSkipButton;
 		public var correctItemNumber : int;
 		public var exerciseNumber : int;
 		public var currentExerciseNumber : int;

@@ -10,6 +10,7 @@ package fabis.wunderreise.games.wordsCapture {
 		public var gameField : FabisWordsCaptureGameField;
 		public var background : MovieClip;
 		public var fabi : FabiWordsCapture;
+		public var skipButton : FabisSkipButton;
 		
 		public var catched : *;
 		public var frameArray : Array = new Array( numStones );

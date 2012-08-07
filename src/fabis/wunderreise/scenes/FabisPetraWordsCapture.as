@@ -1,4 +1,5 @@
 package fabis.wunderreise.scenes {
+	import flash.events.MouseEvent;
 	import flash.display.MovieClip;
 	import fabis.wunderreise.games.wordsCapture.FabiWordsCapture;
 	import fabis.wunderreise.games.wordsCapture.petra.PetraStone;
@@ -13,10 +14,11 @@ package fabis.wunderreise.scenes {
 	 */
 	public class FabisPetraWordsCapture extends BaseScene {
 		
-		protected var _game : FabisWordsCaptureGame;
+		protected var _game : PetraGame;
 		protected var _gameField : PetraGameField;
 		protected var _fabi : FabiWordsCapture;
 		protected var _fabiView : FabiView;
+		protected var _skipButton : FabisSkipButton;
 		
 		public function FabisPetraWordsCapture() {
 			super();
@@ -54,6 +56,13 @@ package fabis.wunderreise.scenes {
 			
 			_game = new PetraGame();
 			_game.initWithOptions( wordsCaptureOptions );
+			
+			_skipButton = new FabisSkipButton();
+			_skipButton.x = 20;
+			_skipButton.y = 20;
+			wordsCaptureOptions.skipButton = _skipButton;
+			_skipButton.addEventListener( MouseEvent.CLICK, _game.skipIntro);
+			view.addChild( _skipButton );
 			
 			view._gameFieldContainer.addChild( _gameField.gameField );
 			super.handleCreation();

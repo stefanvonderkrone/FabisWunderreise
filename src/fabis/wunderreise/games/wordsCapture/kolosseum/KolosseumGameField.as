@@ -32,6 +32,14 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			super.init();
 		}
 		
+		override public function skipIntro() : void{
+			_introSound.stop();
+			_introSoundStarted = false;
+			_gameOptions.fabi.stopSynchronization();
+			removeEventListener( Event.ENTER_FRAME, handleDemoStart );	
+			stopIntro();
+		}
+		
 		override public function startIntro() : void{
 			gameField.addEventListener( MouseEvent.MOUSE_OVER, handleMouseOver );
 			gameField.addEventListener( MouseEvent.MOUSE_OUT, handleMouseOut );

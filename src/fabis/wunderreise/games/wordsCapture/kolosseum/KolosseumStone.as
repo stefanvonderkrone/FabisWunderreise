@@ -17,7 +17,6 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		protected var _id : int;
 		protected var _bRight : Boolean;
 		protected var myGlow : GlowFilter = new GlowFilter();
-		
 		protected var _stone : KolosseumStoneView;
 		
 		// fall-down values
@@ -66,8 +65,6 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			
 			if( stone.y > 430 ){
 				initPosition();
-				var randomIndex : int = Math.floor(Math.random() * (7 - 0 + 1)) + 0;
-				stone.gotoAndStop( randomIndex + 1 );
 				_currentSpeed = 0;
 			}
 			else{

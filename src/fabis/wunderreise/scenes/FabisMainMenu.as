@@ -60,12 +60,19 @@ package fabis.wunderreise.scenes {
 //					gameCore.director.replaceScene( new FabisChichenItzaQuiz(), true );
 					break;
 				case view._worldMap._chineseWall:
+					gameCore.director.replaceScene(
+						new FabisTravelAnimation(
+							FabisTravelAnimationTarget.HOME,
+							FabisTravelAnimationTarget.CHINESE_WALL
+						), true
+					);
+//					gameCore.director.replaceScene( new FabisKolosseumWordsCapture(), true );
 					break;
 				case view._worldMap._colosseum:
 					gameCore.director.replaceScene(
 						new FabisTravelAnimation(
 							FabisTravelAnimationTarget.HOME,
-							FabisTravelAnimationTarget.CHINESE_WALL
+							FabisTravelAnimationTarget.COLOSSEUM
 						), true
 					);
 //					gameCore.director.replaceScene( new FabisKolosseumWordsCapture(), true );

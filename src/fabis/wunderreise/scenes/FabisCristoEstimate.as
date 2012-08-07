@@ -1,4 +1,5 @@
 package fabis.wunderreise.scenes {
+	import flash.events.MouseEvent;
 	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
 	import fabis.wunderreise.games.estimate.FabiEstimateSmall;
 	import flash.events.Event;
@@ -11,6 +12,7 @@ package fabis.wunderreise.scenes {
 		
 		protected var _game : FabisEstimateGame;
 		protected var _fabiSmall : FabiEstimateSmall;
+		protected var _skipButton : FabisSkipButton;
 		
 		protected var _fabiCristoSmallContainer : FabiCristoSmallContainer;
 		protected var _fabiCristoContainer : FabiCristoContainer;
@@ -55,6 +57,13 @@ package fabis.wunderreise.scenes {
 			
 			_game = new FabisEstimateGame();
 			_game.initWithOptions( estimateOptions );
+			
+			_skipButton = new FabisSkipButton();
+			_skipButton.x = 20;
+			_skipButton.y = 20;
+			estimateOptions.skipButton = _skipButton;
+			_skipButton.addEventListener( MouseEvent.CLICK, _game.skipIntro);
+			view.addChild( _skipButton );
 			
 			super.handleCreation();
 		}

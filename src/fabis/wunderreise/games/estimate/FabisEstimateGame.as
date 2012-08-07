@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.estimate {
+	import flash.events.MouseEvent;
 	import com.greensock.TweenLite;
 	import com.flashmastery.as3.game.interfaces.sound.ISoundCore;
 	import flash.events.ProgressEvent;
@@ -42,6 +43,14 @@ package fabis.wunderreise.games.estimate {
 			_mainView = FabisCristoView( _gameOptions.fabiCristoContainer.parent );
 		}
 		
+		public function skipIntro( event : MouseEvent ) : void {
+			_gameOptions.skipButton.removeEventListener( MouseEvent.CLICK, skipIntro);
+			_introSound.stop();
+			_introSoundStarted = false;
+			_mainView.removeChild( _gameOptions.fabiCristoSmallContainer );
+			initFabi();
+		}
+		
 		public function initFabi() : void {
 			_fabi = new FabiEstimate();
 			_fabi.init();
@@ -77,9 +86,7 @@ package fabis.wunderreise.games.estimate {
 		
 		public function start() : void {
 			//TODO: add intro
-			//startIntro();
-			_mainView.removeChild( _gameOptions.fabiCristoSmallContainer );
-			initFabi();
+			startIntro();
 		}
 		
 		public function stop() : void {

@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.quiz {
+	import flash.events.MouseEvent;
 	/**
 	 * @author Stefanie Drost
 	 */
@@ -13,7 +14,14 @@ package fabis.wunderreise.games.quiz {
 			_game = this;
 		}
 		
+		override public function skipIntro( event : MouseEvent ) : void {
+			_gameOptions.skipButton.removeEventListener( MouseEvent.CLICK, skipIntro);
+			_gameOptions.view._chichenItzaContainer.removeChild( _gameOptions.skipButton );
+			super.skipIntro( event );
+		}
+		
 		override public function start() : void {
+			
 			startIntro();
 		}
 		

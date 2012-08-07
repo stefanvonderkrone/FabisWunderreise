@@ -13,5 +13,6 @@ package fabis.wunderreise.games.quiz {
 		public var answers : Array;
 		
 		public var trueButtonStartTime : int;
+		public var skipButton : FabisSkipButton;
 	}
 }

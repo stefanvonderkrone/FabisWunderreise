@@ -1,4 +1,5 @@
 package fabis.wunderreise.scenes {
+	import flash.events.MouseEvent;
 	import fabis.wunderreise.games.wordsCapture.FabiWordsCapture;
 	import fabis.wunderreise.games.wordsCapture.kolosseum.KolosseumStone;
 	import fabis.wunderreise.games.wordsCapture.kolosseum.KolosseumGame;
@@ -13,9 +14,10 @@ package fabis.wunderreise.scenes {
 	 */
 	public class FabisKolosseumWordsCapture extends BaseScene {
 		
-		protected var _game : FabisWordsCaptureGame;
+		protected var _game : KolosseumGame;
 		protected var _gameField : KolosseumGameField;
 		protected var _fabi : FabiWordsCapture;
+		protected var _skipButton : FabisSkipButton;
 		
 		public function FabisKolosseumWordsCapture() {
 			super();
@@ -48,6 +50,13 @@ package fabis.wunderreise.scenes {
 			
 			_game = new KolosseumGame();
 			_game.initWithOptions( wordsCaptureOptions );
+			
+			_skipButton = new FabisSkipButton();
+			_skipButton.x = 20;
+			_skipButton.y = 20;
+			wordsCaptureOptions.skipButton = _skipButton;
+			_skipButton.addEventListener( MouseEvent.CLICK, _game.skipIntro);
+			view.addChild( _skipButton );
 			
 			view._gameFieldContainer.addChild( _gameField.gameField );
 			super.handleCreation();
