@@ -1,8 +1,10 @@
 package fabis.wunderreise.scenes {
 
+	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
 	import fabis.wunderreise.DEBUGGING;
 
 	import com.flashmastery.as3.game.core.GameScene;
+	import com.greensock.TweenLite;
 	import com.junkbyte.console.Cc;
 
 	import flash.display.InteractiveObject;
@@ -17,10 +19,14 @@ package fabis.wunderreise.scenes {
 	 */
 	public class BaseScene extends GameScene {
 		
+		protected static const MOUSE_OUT_FPS : uint = 120;
+		protected static const MOUSE_OVER_FPS : uint = 90;
+		
 		protected var _buttons : Vector.<InteractiveObject>;
 		protected var _btnHelp : MovieClip;
 		protected var _btnMap : MovieClip;
 		protected var _btnPassport : MovieClip;
+		protected var _helpSound : ISoundItem;
 
 		public function BaseScene() {
 			_buttons = new Vector.<InteractiveObject>();
@@ -44,6 +50,7 @@ package fabis.wunderreise.scenes {
 			while ( --numButtons >= 0 )
 				resetButton( _buttons.pop() );
 			_buttons = null;
+			_helpSound = null;
 		}
 
 		protected function initView( evt : Event ) : void {
@@ -80,9 +87,31 @@ package fabis.wunderreise.scenes {
 		}
 
 		protected function handleMouseOver( evt : MouseEvent ) : void {
+			switch( evt.currentTarget ) {
+				case _btnHelp:
+				case _btnMap:
+				case _btnPassport:
+					const mc : MovieClip = MovieClip( evt.currentTarget );
+					const numFrames : uint = mc.totalFrames - mc.currentFrame;
+					TweenLite.to( evt.currentTarget, numFrames / MOUSE_OVER_FPS, { frame: mc.totalFrames } );
+					mc.parent.setChildIndex( mc, mc.parent.numChildren - 1 );
+					break;
+				default:
+					break;
+			}
 		}
 
 		protected function handleMouseOut( evt : MouseEvent ) : void {
+			switch( evt.currentTarget ) {
+				case _btnHelp:
+				case _btnMap:
+				case _btnPassport:
+					const numFrames : uint = MovieClip( evt.currentTarget ).currentFrame;
+					TweenLite.to( evt.currentTarget, numFrames / MOUSE_OUT_FPS, { frame: 1 } );
+					break;
+				default:
+					break;
+			}
 		}
 
 		protected function handleClick( evt : MouseEvent ) : void {
@@ -109,7 +138,10 @@ package fabis.wunderreise.scenes {
 		}
 
 		protected function handleClickOnHelp() : void {
-			log( "play help sound for specific scene!!!" );
+			if ( _helpSound )
+				_helpSound.play();
+			else
+				log( "play \"_helpSound\" sound for specific scene!!!" );
 		}
 		
 		override public function update( deltaTime : Number ) : void {
@@ -130,16 +162,22 @@ package fabis.wunderreise.scenes {
 			_btnPassport = mainMenu.hasOwnProperty( "_btnPassport" ) ? mainMenu[ "_btnPassport" ] as MovieClip : null;
 			if ( _btnHelp == null )
 				log( "mainMenu has no help (\"_btnHelp\")!!!" );
-			else
+			else {
+				_btnHelp.gotoAndStop( 1 );
 				initButton( _btnHelp );
+			}
 			if ( _btnMap == null )
 				log( "mainMenu has no map (\"_btnMap\")!!!" );
-			else
+			else {
+				_btnMap.gotoAndStop( 1 );
 				initButton( _btnMap );
+			}
 			if ( _btnPassport == null )
 				log( "mainMenu has no passport (\"_btnPassport\")!!!" );
-			else
+			else {
+				_btnPassport.gotoAndStop( 1 );
 				initButton( _btnPassport );
+			}
 		}
 	}
 }

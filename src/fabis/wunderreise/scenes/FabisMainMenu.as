@@ -14,8 +14,6 @@ package fabis.wunderreise.scenes {
 	 */
 	public class FabisMainMenu extends BaseScene {
 		
-		private static const MOUSE_OUT_FPS : uint = 120;
-		private static const MOUSE_OVER_FPS : uint = 90;
 		private static const PLAY_HELP_SOUND_DELAY : Number = 30000;
 		
 		protected var _timedHelpSounds : Vector.<ISoundItem>;
@@ -45,6 +43,7 @@ package fabis.wunderreise.scenes {
 			initButton( view._worldMap._machuPicchu );
 			initButton( view._worldMap._petra );
 			initButton( view._worldMap._tajMahal );
+			initMainMenu( view._menuButtons );
 			super.handleCreation();
 		}
 		
@@ -57,7 +56,6 @@ package fabis.wunderreise.scenes {
 							FabisTravelAnimationTarget.CHICHEN_ITZA
 						), true
 					);
-//					gameCore.director.replaceScene( new FabisChichenItzaQuiz(), true );
 					break;
 				case view._worldMap._chineseWall:
 					break;
@@ -68,7 +66,6 @@ package fabis.wunderreise.scenes {
 							FabisTravelAnimationTarget.CHINESE_WALL
 						), true
 					);
-//					gameCore.director.replaceScene( new FabisKolosseumWordsCapture(), true );
 					break;
 				case view._worldMap._cristo:
 					gameCore.director.replaceScene(
@@ -77,7 +74,6 @@ package fabis.wunderreise.scenes {
 							FabisTravelAnimationTarget.CRISTO
 						), true
 					);
-//					gameCore.director.replaceScene( new FabisCristoEstimate(), true );
 					break;
 				case view._worldMap._machuPicchu:
 					gameCore.director.replaceScene(
@@ -94,7 +90,6 @@ package fabis.wunderreise.scenes {
 							FabisTravelAnimationTarget.PETRA
 						), true
 					);
-//					gameCore.director.replaceScene( new FabisPetraWordsCapture(), true );
 					break;
 				case view._worldMap._tajMahal:
 					gameCore.director.replaceScene(
@@ -103,7 +98,9 @@ package fabis.wunderreise.scenes {
 							FabisTravelAnimationTarget.TAJ_MAHAL
 						), true
 					);
-//					gameCore.director.replaceScene( new FabisTajMahalMemory(), true );
+					break;
+				default:
+					super.handleClick( evt );
 					break;
 			}
 		}
@@ -121,6 +118,7 @@ package fabis.wunderreise.scenes {
 					TweenLite.to( evt.currentTarget, numFrames / MOUSE_OUT_FPS, { frame: 1 } );
 					break;
 				default:
+					super.handleMouseOut( evt );
 					break;
 			}
 		}
@@ -140,6 +138,7 @@ package fabis.wunderreise.scenes {
 					view._worldMap.setChildIndex( mc, view._worldMap.numChildren - 2 );
 					break;
 				default:
+					super.handleMouseOver( evt );
 					break;
 			}
 		}
@@ -151,18 +150,28 @@ package fabis.wunderreise.scenes {
 					_gameCore.soundCore.getSoundByName( "menuTimedHelpB" ),
 					_gameCore.soundCore.getSoundByName( "menuTimedHelpWW" )
 				] );
+			_helpSound = gameCore.soundCore.getSoundByName( "menuHelpHelp" );
 		}
 		
 		override protected function handleStop() : void {
 			super.handleStop();
+			stopSounds();
+			clearInterval( _timedHeldInterval );
+		}
+		
+		protected function stopSounds() : void {
+			_helpSound.stop();
 			var numSounds : int = _timedHelpSounds.length;
 			while ( --numSounds >= 0 )
 				_timedHelpSounds[ int( numSounds ) ].stop();
-			clearInterval( _timedHeldInterval );
 		}
 		
 		override protected function handleStart() : void {
 			super.handleStart();
+			startTimer();
+		}
+		
+		protected function startTimer() : void {
 			_timedHeldInterval = setInterval( playHelpSound, PLAY_HELP_SOUND_DELAY );
 		}
 
@@ -173,6 +182,13 @@ package fabis.wunderreise.scenes {
 		override protected function handleDisposal() : void {
 			super.handleDisposal();
 			_timedHelpSounds = null;
+		}
+
+		override protected function handleClickOnHelp() : void {
+			clearInterval( _timedHeldInterval );
+			TweenLite.delayedCall( _helpSound.length, startTimer );
+			stopSounds();
+			super.handleClickOnHelp();
 		}
 	}
 }
