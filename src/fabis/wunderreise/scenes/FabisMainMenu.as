@@ -186,6 +186,7 @@ package fabis.wunderreise.scenes {
 
 		override protected function handleClickOnHelp() : void {
 			clearInterval( _timedHeldInterval );
+			TweenLite.killDelayedCallsTo( startTimer );
 			TweenLite.delayedCall( _helpSound.length, startTimer );
 			stopSounds();
 			super.handleClickOnHelp();
