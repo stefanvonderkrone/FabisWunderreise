@@ -1,7 +1,7 @@
 package fabis.wunderreise.scenes {
+	import fabis.wunderreise.sound.FabisLipSyncher;
 	import flash.events.MouseEvent;
 	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
-	import fabis.wunderreise.games.estimate.FabiEstimateSmall;
 	import flash.events.Event;
 	import fabis.wunderreise.games.estimate.FabisEstimateGame;
 	import fabis.wunderreise.games.estimate.FabisEstimateGameOptions;
@@ -11,13 +11,14 @@ package fabis.wunderreise.scenes {
 	public class FabisCristoEstimate extends BaseScene {
 		
 		protected var _game : FabisEstimateGame;
-		protected var _fabiSmall : FabiEstimateSmall;
+		protected var _fabiSmall : FabiSmall;
 		protected var _skipButton : FabisSkipButton;
 		
 		protected var _fabiCristoSmallContainer : FabiCristoSmallContainer;
 		protected var _fabiCristoContainer : FabiCristoContainer;
 		
 		protected var _introSound : ISoundItem;
+		protected var _lipSyncher : FabisLipSyncher;
 		
 		public function FabisCristoEstimate() {
 			super();
@@ -33,9 +34,16 @@ package fabis.wunderreise.scenes {
 			_fabiCristoSmallContainer = view._fabiCristoSmallContainer;
 			_fabiCristoContainer = view._fabiCristoContainer;
 			
-			_fabiSmall = new FabiEstimateSmall();
-			_fabiSmall.init();
-			_fabiCristoSmallContainer.addChild( _fabiSmall.view );
+			_fabiSmall = new FabiSmall();
+			_fabiSmall.width = 16;
+			_fabiSmall.height = 50.5;
+			_fabiSmall._fabi._lips.gotoAndStop( 1 );
+			_fabiSmall._fabi._eyes.gotoAndStop( 1 );
+			_fabiSmall._fabi._nose.gotoAndStop( 1 );
+			_fabiSmall._fabi._arm.gotoAndStop( 1 );
+			
+		//	_fabiSmall.init();
+			_fabiCristoSmallContainer.addChild( _fabiSmall );
 			
 			const estimateOptions : FabisEstimateGameOptions = new FabisEstimateGameOptions();
 			//TODO: set to 2
@@ -55,6 +63,9 @@ package fabis.wunderreise.scenes {
 			estimateOptions.fabiCristoContainer = _fabiCristoContainer;
 			estimateOptions.fabiSmall = _fabiSmall;
 			
+			_lipSyncher = new FabisLipSyncher();
+			estimateOptions.lipSyncher = _lipSyncher;
+			
 			_game = new FabisEstimateGame();
 			_game.initWithOptions( estimateOptions );
 			
@@ -71,6 +82,8 @@ package fabis.wunderreise.scenes {
 		override protected function initView( evt : Event ) : void {
 			super.initView( evt );
 			_game.soundCore = gameCore.soundCore;
+			_lipSyncher.gameCore = gameCore;
+			gameCore.juggler.addAnimatable( _lipSyncher );
 		}
 		
 		override protected function handleStop() : void {

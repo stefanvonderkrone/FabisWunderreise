@@ -1,4 +1,8 @@
 package fabis.wunderreise.games.estimate {
+	import flash.display.MovieClip;
+	import com.flashmastery.as3.game.interfaces.core.IInteractiveGameObject;
+	import com.flashmastery.as3.game.interfaces.core.IGameCore;
+	import fabis.wunderreise.sound.IFabisLipSyncherDelegate;
 	import flash.events.MouseEvent;
 	import com.greensock.TweenLite;
 	import com.flashmastery.as3.game.interfaces.sound.ISoundCore;
@@ -14,12 +18,12 @@ package fabis.wunderreise.games.estimate {
 	/**
 	 * @author Stefanie Drost
 	 */
-	public class FabisEstimateGame extends Sprite implements ISoundItemDelegate {
+	public class FabisEstimateGame extends Sprite implements ISoundItemDelegate, IFabisLipSyncherDelegate {
 		
 		public var _gameOptions : FabisEstimateGameOptions;
 		
 		protected var _mainView : FabisCristoView;
-		protected var _fabi : FabiEstimate;
+		protected var _fabiCristo : FabiCristo;
 		//TODO: change to 1
 		protected var _currentExerciseNumber : int = 1;
 		protected var _secondTry : Boolean = false;
@@ -33,6 +37,8 @@ package fabis.wunderreise.games.estimate {
 		
 		protected var _soundCore : ISoundCore;
 		protected var _frameCounter : int = 0;
+		
+		protected var _smallView : Boolean = true;
 		
 		public function FabisEstimateGame() {
 			
@@ -52,10 +58,15 @@ package fabis.wunderreise.games.estimate {
 		}
 		
 		public function initFabi() : void {
-			_fabi = new FabiEstimate();
-			_fabi.init();
-			_gameOptions.fabi = _fabi;
-			_gameOptions.fabiCristoContainer.addChild( _fabi.view );
+			_smallView = false;
+			_fabiCristo = new FabiCristo();
+			_fabiCristo._fabi._lips.gotoAndStop( 1 );
+			_fabiCristo._fabi._eyes.gotoAndStop( 1 );
+			_fabiCristo._fabi._nose.gotoAndStop( 1 );
+			_fabiCristo._fabi._arm.gotoAndStop( 1 );
+			//_fabi.init();
+			_gameOptions.fabiCristo = _fabiCristo;
+			_gameOptions.fabiCristoContainer.addChild( _fabiCristo );
 			
 			startExercise( _currentExerciseNumber );
 		}
@@ -80,8 +91,9 @@ package fabis.wunderreise.games.estimate {
 			_exerciseSound.delegate = this;
 			_exerciseSound.play();
 			_exerciseSoundStarted = true;
-			_fabi.startSynchronization();
-			_gameOptions.fabi.addEventListener( Event.ENTER_FRAME, _currentExercise.handleGameInstructions );
+			_gameOptions.lipSyncher.start();
+			//_fabi.startSynchronization();
+			_gameOptions.fabiCristo.addEventListener( Event.ENTER_FRAME, _currentExercise.handleGameInstructions );
 		}
 		
 		public function start() : void {
@@ -98,11 +110,15 @@ package fabis.wunderreise.games.estimate {
 		}
 		
 		public function startIntro() : void {
+			_gameOptions.lipSyncher.delegate = this;
+			
 			_introSound = _soundCore.getSoundByName( "cristoIntro" );
 			_introSoundStarted = true;
 			_introSound.delegate = this;
 			_introSound.play();
-			_gameOptions.fabiSmall.startSynchronization();
+			
+			_gameOptions.lipSyncher.start();
+			//_gameOptions.fabiSmall.startSynchronization();
 			_gameOptions.fabiSmall.addEventListener( Event.ENTER_FRAME, handleFlip );
 		}
 		
@@ -112,20 +128,22 @@ package fabis.wunderreise.games.estimate {
 			
 			if( _frameCounter == _gameOptions.flipTime * 60 ){
 				_gameOptions.fabiSmall.removeEventListener( Event.ENTER_FRAME, handleFlip );
-				_gameOptions.fabiSmall.stopSynchronization();
-				TweenLite.to( _gameOptions.fabiSmall.view, 1/2, {frame: _gameOptions.fabiSmall.view.totalFrames} );
+				_gameOptions.lipSyncher.stop();
+				//_gameOptions.fabiSmall.stopSynchronization();
+				TweenLite.to( _gameOptions.fabiSmall._fabi._arm, 1/2, {frame: _gameOptions.fabiSmall._fabi._arm.totalFrames} );
 				TweenLite.delayedCall( 1, _mainView.removeChild, [ _gameOptions.fabiCristoSmallContainer ] );
 				_frameCounter = 0;
 			}
 		}
 		
 		public function endOfExercise() : void {
-			
-			_fabi.stopSynchronization();
+			_gameOptions.lipSyncher.stop();
+			//_fabi.stopSynchronization();
 			
 			if( _secondTry ){
 				_currentExercise.reset();
-				_fabi.startSynchronization();
+				_gameOptions.lipSyncher.start();
+				//_fabi.startSynchronization();
 			}
 			else{
 				_currentExercise.clean();
@@ -152,9 +170,10 @@ package fabis.wunderreise.games.estimate {
 				initFabi();
 			}
 			if( _exerciseSoundStarted ){
-				_fabi.stopSynchronization();
+				_gameOptions.lipSyncher.stop();
+				//_fabi.stopSynchronization();
 				_exerciseSoundStarted = false;
-				initDrag();
+				TweenLite.delayedCall(1, initDrag);
 			}
 			
 		}
@@ -186,6 +205,51 @@ package fabis.wunderreise.games.estimate {
 		
 		public function get soundCore() : ISoundCore {
 			return _soundCore;
+		}
+
+		public function reactOnCumulatedSpectrum(cumulatedSpectrum : Number) : void {
+			var lips : MovieClip;
+			if( _smallView )
+				lips = _gameOptions.fabiSmall._fabi._lips;
+			else 
+				lips = _gameOptions.fabiCristo._fabi._lips;
+				
+				
+			if ( cumulatedSpectrum > 30 ) {
+				lips.gotoAndStop(
+					int( Math.random() * ( lips.totalFrames - 1 ) + 2 )
+				);
+			} else lips.gotoAndStop( 1 );
+		}
+
+		public function reactOnStart(delegater : IInteractiveGameObject) : void {
+		}
+
+		public function reactOnStop(delegater : IInteractiveGameObject) : void {
+		}
+
+		public function reactOnDisposal(delegater : IInteractiveGameObject) : void {
+		}
+
+		public function reactOnAddedToDelegater(delegater : IInteractiveGameObject) : void {
+		}
+
+		public function reactOnRemovalFromDelegater(delegater : IInteractiveGameObject) : void {
+		}
+
+		public function reactOnGameFinished(result : Object, gameCore : IGameCore) : void {
+		}
+
+		public function get gameCore() : IGameCore {
+			return null;
+		}
+
+		public function set gameCore(gameCore : IGameCore) : void {
+		}
+		
+		public function flip() : void {
+			TweenLite.to( _fabiCristo._fabi._arm, 1, {frame: _fabiCristo._fabi._arm.totalFrames} );
+			TweenLite.delayedCall(1, _fabiCristo._fabi._arm.gotoAndStop, [1] );
 		}
 	}
 }

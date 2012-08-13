@@ -1,7 +1,7 @@
 package fabis.wunderreise.scenes {
+	import fabis.wunderreise.sound.FabisLipSyncher;
 	import flash.events.MouseEvent;
 	import flash.display.MovieClip;
-	import fabis.wunderreise.games.wordsCapture.FabiWordsCapture;
 	import fabis.wunderreise.games.wordsCapture.petra.PetraStone;
 	import fabis.wunderreise.games.wordsCapture.petra.PetraGame;
 	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGameOptions;
@@ -16,9 +16,9 @@ package fabis.wunderreise.scenes {
 		
 		protected var _game : PetraGame;
 		protected var _gameField : PetraGameField;
-		protected var _fabi : FabiWordsCapture;
 		protected var _fabiView : FabiView;
 		protected var _skipButton : FabisSkipButton;
+		protected var _lipSyncher : FabisLipSyncher;
 		
 		public function FabisPetraWordsCapture() {
 			super();
@@ -35,24 +35,18 @@ package fabis.wunderreise.scenes {
 			_gameField = new PetraGameField();
 			_gameField.init();
 			
-			_fabiView = new FabiView();
-			_fabiView.x = 110;
-			_fabiView.y = 260;
-			view.addChild( _fabiView );
-			
-			_fabi = new FabiWordsCapture();
-			_fabi.view = _fabiView;
-			_fabi.init();
-			
 			const wordsCaptureOptions : FabisWordsCaptureGameOptions = new FabisWordsCaptureGameOptions();
 			wordsCaptureOptions.catched = new Vector.<PetraStone>();
 			wordsCaptureOptions.allPics = new Vector.<PetraStone>();
 			wordsCaptureOptions.wrongStones = new Vector.<PetraStone>();
 			wordsCaptureOptions.rightStones = new Vector.<PetraStone>();
 			//wordsCaptureOptions.background = view._petra;
-			wordsCaptureOptions.fabi = _fabi;
+			wordsCaptureOptions.fabi = new FabiView();
 			wordsCaptureOptions.gameField = _gameField;
 			wordsCaptureOptions.demoStartTime = 10;
+			
+			_lipSyncher = new FabisLipSyncher();
+			wordsCaptureOptions.lipSyncher = _lipSyncher;
 			
 			_game = new PetraGame();
 			_game.initWithOptions( wordsCaptureOptions );
@@ -65,12 +59,15 @@ package fabis.wunderreise.scenes {
 			view.addChild( _skipButton );
 			
 			view._gameFieldContainer.addChild( _gameField.gameField );
+			view.addChild( wordsCaptureOptions.fabi );
 			super.handleCreation();
 		}
 		
 		override protected function initView( evt : Event ) : void {
 			super.initView( evt );
 			_game.soundCore = gameCore.soundCore;
+			_lipSyncher.gameCore = gameCore;
+			gameCore.juggler.addAnimatable( _lipSyncher );
 		}
 		
 		override protected function handleStop() : void {

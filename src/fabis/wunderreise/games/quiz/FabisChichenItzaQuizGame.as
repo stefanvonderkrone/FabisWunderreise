@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.quiz {
+	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
 	/**
 	 * @author Stefanie Drost
@@ -21,7 +22,6 @@ package fabis.wunderreise.games.quiz {
 		}
 		
 		override public function start() : void {
-			
 			startIntro();
 		}
 		
@@ -41,10 +41,10 @@ package fabis.wunderreise.games.quiz {
 				_imageContainer = new FabisChichenItzaImageContainer();
 				_rightSymbol = new RightSymbolView();
 				_wrongSymbol = new WrongSymbolView();
-				_rightSymbol.y = -5;
-				_rightSymbol.x = 20;
-				_wrongSymbol.y = -5;
-				_wrongSymbol.x = 30;
+				_rightSymbol.y = 15;
+				_rightSymbol.x = 60;
+				_wrongSymbol.y = 15;
+				_wrongSymbol.x = 60;
 				_imageContainer.x = 350;
 				_imageContainer.y = 30;
 				_imageContainer.addChild( _rightSymbol );

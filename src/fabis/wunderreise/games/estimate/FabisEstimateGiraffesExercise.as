@@ -21,7 +21,7 @@ package fabis.wunderreise.games.estimate {
 		private const GIRAFFE_WIDTH : int = 40;
 		private const GIRAFFE_HEIGHT : int = 65;
 		private const GIRAFFE_SOCKEL_X : int = 500;
-		private const GIRAFFE_SOCKEL_Y : int = 425;
+		private const GIRAFFE_SOCKEL_Y : int = 420;
 		
 		private const STACKFIELD_X : int = 500;
 		private const STACKFIELD_Y : int = 11;
@@ -138,7 +138,7 @@ package fabis.wunderreise.games.estimate {
 			}
 			
 			if( _frameCounter == _gameOptions.removeStatueTime * 60  ){
-				_gameOptions.fabi.flip();
+				_game.flip();
 				TweenLite.delayedCall( 1/2 , removeStatue );
 			}
 			
@@ -148,7 +148,7 @@ package fabis.wunderreise.games.estimate {
 			
 			if( _frameCounter == _gameOptions.showDoneButtonTime * 60  ){
 				initDoneButton();
-				_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleGameInstructions );
+				_gameOptions.fabiCristo.removeEventListener( Event.ENTER_FRAME, handleGameInstructions );
 			}
 		}
 		

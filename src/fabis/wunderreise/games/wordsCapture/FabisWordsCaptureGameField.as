@@ -1,4 +1,8 @@
 package fabis.wunderreise.games.wordsCapture {
+	import com.flashmastery.as3.game.interfaces.core.IInteractiveGameObject;
+	import com.flashmastery.as3.game.interfaces.core.IGameCore;
+	import fabis.wunderreise.sound.IFabisLipSyncherDelegate;
+	import fabis.wunderreise.sound.FabisLipSyncher;
 	import com.flashmastery.as3.game.interfaces.sound.ISoundCore;
 	import flash.events.ProgressEvent;
 
@@ -16,7 +20,7 @@ package fabis.wunderreise.games.wordsCapture {
 	/**
 	 * @author Stefanie Drost
 	 */
-	public class FabisWordsCaptureGameField  extends MovieClip implements ISoundItemDelegate {
+	public class FabisWordsCaptureGameField  extends MovieClip implements ISoundItemDelegate, IFabisLipSyncherDelegate {
 		
 		//protected var _gameField : GameField;
 		
@@ -27,6 +31,7 @@ package fabis.wunderreise.games.wordsCapture {
 		protected var _stone :*;
 		protected var _frameCounter : int = 0;
 		protected var _soundCore : ISoundCore;
+		protected var _gameCore : IGameCore;
 		protected var _stoneEffect : ISoundItem;
 		protected var _feedbackSound : ISoundItem;
 		protected var _feedbackSoundStarted : Boolean = false;
@@ -55,7 +60,7 @@ package fabis.wunderreise.games.wordsCapture {
 			_basket.init();
 			_basket.basket.x = 0;
 			_basket.basket.y = _gameField.height - 130;
-			_gameField.addChild( _basket.basket );
+			_gameField.addChild( _basket.basket );			
 		}
 		
 		public function startIntro() : void{
@@ -212,7 +217,8 @@ package fabis.wunderreise.games.wordsCapture {
 		public function reactOnSoundItemSoundComplete(soundItem : ISoundItem) : void {
 			if( _completionSoundStarted ){
 				_completionSoundStarted = false;
-				_gameOptions.fabi.stopSynchronization();
+				_gameOptions.lipSyncher.stop();
+				//_gameOptions.fabi.stopSynchronization();
 			}
 		}
 
@@ -240,7 +246,38 @@ package fabis.wunderreise.games.wordsCapture {
 			_completionSound = soundCore.getSoundByName("endingsWordsCapture");
 			_completionSound.delegate = this;
 			_completionSound.play();
-			_gameOptions.fabi.startSynchronization();
+			_gameOptions.lipSyncher.start();
+			//_gameOptions.fabi.startSynchronization();
+		}
+
+		public function reactOnCumulatedSpectrum(cumulatedSpectrum : Number) : void {
+			
+		}
+
+		public function reactOnStart(delegater : IInteractiveGameObject) : void {
+		}
+
+		public function reactOnStop(delegater : IInteractiveGameObject) : void {
+		}
+
+		public function reactOnDisposal(delegater : IInteractiveGameObject) : void {
+		}
+
+		public function reactOnAddedToDelegater(delegater : IInteractiveGameObject) : void {
+		}
+
+		public function reactOnRemovalFromDelegater(delegater : IInteractiveGameObject) : void {
+		}
+
+		public function reactOnGameFinished(result : Object, gameCore : IGameCore) : void {
+		}
+
+		public function get gameCore() : IGameCore {
+			return _gameCore;
+		}
+
+		public function set gameCore(gameCore : IGameCore) : void {
+			_gameCore = gameCore;
 		}
 	}
 }

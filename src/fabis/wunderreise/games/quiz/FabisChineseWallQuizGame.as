@@ -40,10 +40,10 @@ package fabis.wunderreise.games.quiz {
 				_imageContainer = new FabisChineseWallImageContainer();
 				_rightSymbol = new RightSymbolView();
 				_wrongSymbol = new WrongSymbolView();
-				_rightSymbol.y = -5;
-				_rightSymbol.x = 20;
-				_wrongSymbol.y = -5;
-				_wrongSymbol.x = 30;
+				_rightSymbol.y = 15;
+				_rightSymbol.x = 60;
+				_wrongSymbol.y = 15;
+				_wrongSymbol.x = 60;
 				_imageContainer.x = 350;
 				_imageContainer.y = 30;
 				_imageContainer.addChild( _rightSymbol );

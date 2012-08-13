@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.wordsCapture.petra {
+	import flash.display.MovieClip;
 	import com.greensock.TweenLite;
 	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
 	import flash.ui.Mouse;
@@ -31,6 +32,8 @@ package fabis.wunderreise.games.wordsCapture.petra {
 		}
 		
 		override public function startIntro() : void{
+			_gameOptions.lipSyncher.delegate = this;
+			
 			gameField.addEventListener( MouseEvent.MOUSE_OVER, handleMouseOver );
 			gameField.addEventListener( MouseEvent.MOUSE_OUT, handleMouseOut );
 			super._stone = new PetraStone();
@@ -42,7 +45,8 @@ package fabis.wunderreise.games.wordsCapture.petra {
 		override public function skipIntro() : void{
 			_introSound.stop();
 			_introSoundStarted = false;
-			_gameOptions.fabi.stopSynchronization();
+			
+			_gameOptions.lipSyncher.stop();
 			removeEventListener( Event.ENTER_FRAME, handleDemoStart );	
 			stopIntro();
 		}
@@ -126,7 +130,7 @@ package fabis.wunderreise.games.wordsCapture.petra {
 		override public function reactOnSoundItemSoundComplete( soundItem : ISoundItem ) : void {
 			if( _introSoundStarted ){
 				_introSoundStarted = false;
-				_gameOptions.fabi.stopSynchronization();
+				_gameOptions.lipSyncher.stop();
 				stopIntro();
 			}
 			/*if( _feedbackSoundStarted ){
@@ -146,7 +150,7 @@ package fabis.wunderreise.games.wordsCapture.petra {
 			_introSoundStarted = true;
 			_introSound.delegate = this;
 			_introSound.play();
-			_gameOptions.fabi.startSynchronization();
+			_gameOptions.lipSyncher.start();
 		}
 		
 		public function playFeedback( points : int ) : void {
@@ -156,7 +160,7 @@ package fabis.wunderreise.games.wordsCapture.petra {
 			_feedbackSound.delegate = this;
 			_feedbackSoundStarted = true;
 			_feedbackSound.play();
-			_gameOptions.fabi.startSynchronization();
+			_gameOptions.lipSyncher.start();
 			
 			_feedbackTime = _gameOptions.feedbackTimes.shift() * 60;
 			
@@ -227,7 +231,7 @@ package fabis.wunderreise.games.wordsCapture.petra {
 			_pointsSoundStarted = true;
 			_pointsSound.delegate = this;
 			_pointsSound.play();
-			_gameOptions.fabi.startSynchronization();
+			_gameOptions.lipSyncher.start();
 		}
 		
 		private function removeWrongHighlights() : void {
@@ -235,6 +239,15 @@ package fabis.wunderreise.games.wordsCapture.petra {
 			for each( _stone in _gameOptions.wrongStones ){
 				_stone.removeHighlight();
 			}
+		}
+		
+		override public function reactOnCumulatedSpectrum(cumulatedSpectrum : Number) : void {
+			const lips : MovieClip = _gameOptions.fabi._lips;
+			if ( cumulatedSpectrum > 30 ) {
+				lips.gotoAndStop(
+					int( Math.random() * ( lips.totalFrames - 1 ) + 2 )
+				);
+			} else lips.gotoAndStop( 1 );
 		}
 	}
 }

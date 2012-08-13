@@ -1,6 +1,5 @@
 package fabis.wunderreise.games.wordsCapture.petra {
 	import flash.events.MouseEvent;
-	import fabis.wunderreise.games.wordsCapture.FabiWordsCapture;
 	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGameOptions;
 	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGame;
 	/**
@@ -10,7 +9,7 @@ package fabis.wunderreise.games.wordsCapture.petra {
 		
 		protected var _gameField : PetraGameField;
 		protected var _stone : PetraStone;
-		protected var _fabi : FabiWordsCapture;
+		protected var _fabi : FabiView;
 		
 		public function PetraGame() {
 			
@@ -35,6 +34,12 @@ package fabis.wunderreise.games.wordsCapture.petra {
 			_gameField._gameOptions = _gameOptions;
 			
 			_fabi = _gameOptions.fabi;
+			_fabi.x = 90;
+			_fabi.y = 295;
+			_fabi._eyes.gotoAndStop( 1 );
+			_fabi._lips.gotoAndStop( 1 );
+			_fabi._nose.gotoAndStop( 1 );
+			_fabi._arm.gotoAndStop( 1 );
 		}
 		
 		override public function skipIntro( event : MouseEvent ) : void {

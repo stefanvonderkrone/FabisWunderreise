@@ -7,18 +7,18 @@ package fabis.wunderreise.games.estimate {
 	 */
 	public class FabisEstimateCarsExercise extends FabisEstimateExercise {
 		
-		private const STACKFIELD_WIDTH : int = 420;
-		private const STACKFIELD_HEIGHT : int = 100;
-		private const STACKFIELD_X : int = 150;
+		private const STACKFIELD_WIDTH : int = 520;
+		private const STACKFIELD_HEIGHT : int = 120;
+		private const STACKFIELD_X : int = 140;
 		private const STACKFIELD_Y : int = 450;
-		protected const STACKFIELD_X_DIFF : int = 50;
+		protected const STACKFIELD_X_DIFF : int = 60;
 		
-		protected const DRAGFIELD_FIRST_ELEMENT_X : int = -50;
-		protected const DRAGFIELD_FIRST_ELEMENT_Y : int = 0;
-		private const DRAGFIELD_WIDTH : int = 180;
-		private const DRAGFIELD_HEIGHT : int = 400;
-		protected const DRAGFIELD_X : int = 750;
-		protected const DRAGFIELD_Y : int = 0;
+		protected const DRAGFIELD_FIRST_ELEMENT_X : int = -60;
+		protected const DRAGFIELD_FIRST_ELEMENT_Y : int = 75;
+		private const DRAGFIELD_WIDTH : int = 200;
+		private const DRAGFIELD_HEIGHT : int = 300;
+		protected const DRAGFIELD_X : int = 730;
+		protected const DRAGFIELD_Y : int = 60;
 		
 		private const CAR_WIDTH : int = 50;
 		//private const CAR_HEIGHT : int = 30;
@@ -45,8 +45,10 @@ package fabis.wunderreise.games.estimate {
 		
 		private function initRoadSign() : void {
 			_roadSign = new CristoCarsRoadSign();
-			_roadSign.x = 100;
-			_roadSign.y = 300;
+			_roadSign.x = 151;
+			_roadSign.y = 438;
+			_roadSign.width = 69;
+			_roadSign.height = 112;
 			_mainView.addChild( _roadSign );
 		}
 		
@@ -137,8 +139,9 @@ package fabis.wunderreise.games.estimate {
 			}
 			
 			if( _frameCounter == _gameOptions.removeCarsStatueTime * 60  ){
-				_gameOptions.fabi.flip();
+				_game.flip();
 				TweenLite.delayedCall(1, removeStatue );
+				_gameOptions.fabiCristo.removeEventListener( Event.ENTER_FRAME, handleGameInstructions );
 			}
 		}
 		

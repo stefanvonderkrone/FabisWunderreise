@@ -37,6 +37,7 @@ package fabis.wunderreise.scenes {
 		override protected function handleCreation() : void {
 			_view = new FabisIntroView();
 			view._fabi._lips.gotoAndStop( 1 );
+			view._fabi._eyes.gotoAndStop( 1 );
 			_lipSyncher = new FabisLipSyncher();
 			_lipSyncher.delegate = this;
 			super.handleCreation();

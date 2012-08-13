@@ -1,4 +1,8 @@
 package fabis.wunderreise.games.wordsCapture {
+	import fabis.wunderreise.sound.FabisLipSyncher;
+	import com.flashmastery.as3.game.interfaces.core.IInteractiveGameObject;
+	import com.flashmastery.as3.game.interfaces.core.IGameCore;
+	import fabis.wunderreise.sound.IFabisLipSyncherDelegate;
 	import flash.events.MouseEvent;
 	import com.flashmastery.as3.game.interfaces.sound.ISoundCore;
 	import flash.events.ProgressEvent;
@@ -18,8 +22,10 @@ package fabis.wunderreise.games.wordsCapture {
 		
 		protected var _gameOptions : FabisWordsCaptureGameOptions;
 		protected var _soundCore : ISoundCore;
+		protected var _gameCore : IGameCore;
 		protected var _currentImageIndex : int;
 		protected var _currentTime : int;
+		
 		
 		public function FabisWordsCaptureGame() {
 			
@@ -65,6 +71,16 @@ package fabis.wunderreise.games.wordsCapture {
 		}
 
 		public function reactOnSoundItemSampleDataEvent(evt : SampleDataEvent, soundItem : ISoundItem) : void {
+		}
+
+		
+
+		public function get gameCore() : IGameCore {
+			return _gameCore;
+		}
+
+		public function set gameCore(gameCore : IGameCore) : void {
+			_gameCore = gameCore;
 		}
 	}
 }

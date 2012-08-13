@@ -1,4 +1,6 @@
 package fabis.wunderreise.games.wordsCapture.kolosseum {
+	import flash.display.MovieClip;
+	import fabis.wunderreise.sound.FabisLipSyncher;
 	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
 	import com.greensock.TweenLite;
 	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGameField;
@@ -16,7 +18,6 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		private var _currentFeedbackStone : KolosseumStone;
 		private var _feedbackNumber : int = 0;
 		
-		
 		public function KolosseumGameField() {
 			
 		}
@@ -32,20 +33,23 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			super.init();
 		}
 		
-		override public function skipIntro() : void{
-			_introSound.stop();
-			_introSoundStarted = false;
-			_gameOptions.fabi.stopSynchronization();
-			removeEventListener( Event.ENTER_FRAME, handleDemoStart );	
-			stopIntro();
-		}
-		
 		override public function startIntro() : void{
+			_gameOptions.lipSyncher.delegate = this;
+			
 			gameField.addEventListener( MouseEvent.MOUSE_OVER, handleMouseOver );
 			gameField.addEventListener( MouseEvent.MOUSE_OUT, handleMouseOut );
 			super._stone = new KolosseumStone();
 			playIntro();
 			addEventListener( Event.ENTER_FRAME, handleDemoStart );
+		}
+		
+		override public function skipIntro() : void{
+			_introSound.stop();
+			_introSoundStarted = false;
+			
+			_gameOptions.lipSyncher.stop();
+			removeEventListener( Event.ENTER_FRAME, handleDemoStart );	
+			stopIntro();
 		}
 		
 		private function handleDemoStart( event : Event ) : void {
@@ -66,9 +70,6 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		}
 		
 		override public function start() : void {
-			//TODO: remove eventlistener and start intro first
-			//gameField.addEventListener( MouseEvent.MOUSE_OVER, handleMouseOver );
-			//gameField.addEventListener( MouseEvent.MOUSE_OUT, handleMouseOut );
 			super._stone = new KolosseumStone();
 			super.start();
 		}
@@ -134,24 +135,24 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			_introSoundStarted = true;
 			_introSound.delegate = this;
 			_introSound.play();
-			_gameOptions.fabi.startSynchronization();
+			_gameOptions.lipSyncher.start();
 		}
 		
 		override public function reactOnSoundItemSoundComplete( soundItem : ISoundItem ) : void {
 			if( _introSoundStarted ){
 				_introSoundStarted = false;
-				_gameOptions.fabi.stopSynchronization();
+				_gameOptions.lipSyncher.stop();
 				stopIntro();
 			}
 			if( _feedbackSoundStarted ){
 				_feedbackSoundStarted = false;
-				_gameOptions.fabi.stopSynchronization();
+				_gameOptions.lipSyncher.stop();
 				TweenLite.delayedCall(1, playPointsSound);
 			}
 			if( _pointsSoundStarted ){
 				_pointsSoundStarted = false;
 				removeBasketFront();
-				_gameOptions.fabi.stopSynchronization();
+				_gameOptions.lipSyncher.stop();
 			}
 		}
 		
@@ -162,13 +163,12 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			_feedbackSound.delegate = this;
 			_feedbackSoundStarted = true;
 			_feedbackSound.play();
-			_gameOptions.fabi.startSynchronization();
+			
+			_gameOptions.lipSyncher.start();
 			
 			_feedbackTime = _gameOptions.feedbackTimes.shift() * 60;
 			
 			_gameField.addEventListener( Event.ENTER_FRAME, handleFeedbackSound );
-			//_channel.addEventListener( Event.SOUND_COMPLETE, handlePointsSound );
-			
 		}
 		
 		private function handleFeedbackSound( event: Event ) : void {
@@ -233,7 +233,8 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			_pointsSoundStarted = true;
 			_pointsSound.delegate = this;
 			_pointsSound.play();
-			_gameOptions.fabi.startSynchronization();
+			
+			_gameOptions.lipSyncher.start();
 		}
 		
 		private function removeWrongHighlights() : void {
@@ -241,6 +242,15 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			for each( _stone in _gameOptions.wrongStones ){
 				_stone.removeHighlight();
 			}
+		}
+		
+		override public function reactOnCumulatedSpectrum(cumulatedSpectrum : Number) : void {
+			const lips : MovieClip = _gameOptions.fabi._lips;
+			if ( cumulatedSpectrum > 30 ) {
+				lips.gotoAndStop(
+					int( Math.random() * ( lips.totalFrames - 1 ) + 2 )
+				);
+			} else lips.gotoAndStop( 1 );
 		}
 	}
 }

@@ -1,6 +1,5 @@
 package fabis.wunderreise.games.wordsCapture.kolosseum {
 	import flash.events.MouseEvent;
-	import fabis.wunderreise.games.wordsCapture.FabiWordsCapture;
 	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGameOptions;
 	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGame;
 	
@@ -11,7 +10,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		
 		protected var _gameField : KolosseumGameField;
 		protected var _stone : KolosseumStone;
-		protected var _fabi : FabiWordsCapture;
+		protected var _fabi : FabiView;
 		
 		public function KolosseumGame() {
 			
@@ -29,13 +28,19 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			_gameOptions.feedbackTimes = new Array( 11, 16, 26, 36, 41, 50 );
 			
 			// coordinates for adding stones
-			_gameOptions.wallXCoordinates = new Array( 158, 190, 220, 250, 280 );
-			_gameOptions.wallYCoordinates = new Array( 90, 85, 75, 60, 65 );
+			_gameOptions.wallXCoordinates = new Array( 451, 385, 323, 264, 227 );
+			_gameOptions.wallYCoordinates = new Array( 26, 36, 44, 56, 72 );
 			
 			_gameOptions.frameArray = _gameOptions.initFrameArray();
 			_gameField._gameOptions = _gameOptions;
 			
 			_fabi = _gameOptions.fabi;
+			_fabi.x = 90;
+			_fabi.y = 295;
+			_fabi._eyes.gotoAndStop( 1 );
+			_fabi._lips.gotoAndStop( 1 );
+			_fabi._nose.gotoAndStop( 1 );
+			_fabi._arm.gotoAndStop( 1 );
 		}
 		
 		override public function skipIntro( event : MouseEvent ) : void {
@@ -45,13 +50,12 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		
 		override public function start() : void {
 			_gameField.soundCore = soundCore;
+			_gameField.gameCore = gameCore;
 			_gameField.startIntro();
 		}
 		
 		override public function stop() : void {
 			_gameField.stop();
 		}
-		
-		
 	}
 }

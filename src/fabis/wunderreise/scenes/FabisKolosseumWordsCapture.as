@@ -1,10 +1,9 @@
 package fabis.wunderreise.scenes {
+	import fabis.wunderreise.sound.FabisLipSyncher;
 	import flash.events.MouseEvent;
-	import fabis.wunderreise.games.wordsCapture.FabiWordsCapture;
 	import fabis.wunderreise.games.wordsCapture.kolosseum.KolosseumStone;
 	import fabis.wunderreise.games.wordsCapture.kolosseum.KolosseumGame;
 	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGameOptions;
-	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGame;
 	import fabis.wunderreise.games.wordsCapture.kolosseum.KolosseumGameField;
 	import flash.events.Event;
 	import fabis.wunderreise.scenes.BaseScene;
@@ -16,8 +15,9 @@ package fabis.wunderreise.scenes {
 		
 		protected var _game : KolosseumGame;
 		protected var _gameField : KolosseumGameField;
-		protected var _fabi : FabiWordsCapture;
+		//protected var _fabi : FabiWordsCapture;
 		protected var _skipButton : FabisSkipButton;
+		protected var _lipSyncher : FabisLipSyncher;
 		
 		public function FabisKolosseumWordsCapture() {
 			super();
@@ -34,19 +34,20 @@ package fabis.wunderreise.scenes {
 			_gameField = new KolosseumGameField();
 			_gameField.init();
 			
-			_fabi = new FabiWordsCapture();
-			_fabi.view = view._fabi;
-			_fabi.init();
-			
 			const wordsCaptureOptions : FabisWordsCaptureGameOptions = new FabisWordsCaptureGameOptions();
 			wordsCaptureOptions.catched = new Vector.<KolosseumStone>();
 			wordsCaptureOptions.allPics = new Vector.<KolosseumStone>();
 			wordsCaptureOptions.wrongStones = new Vector.<KolosseumStone>();
 			wordsCaptureOptions.rightStones = new Vector.<KolosseumStone>();
 			wordsCaptureOptions.background = view._kolosseum;
-			wordsCaptureOptions.fabi = _fabi;
+			
+			wordsCaptureOptions.fabi = new FabiView();
+			
 			wordsCaptureOptions.gameField = _gameField;
 			wordsCaptureOptions.demoStartTime = 12;
+			
+			_lipSyncher = new FabisLipSyncher();
+			wordsCaptureOptions.lipSyncher = _lipSyncher;
 			
 			_game = new KolosseumGame();
 			_game.initWithOptions( wordsCaptureOptions );
@@ -59,12 +60,15 @@ package fabis.wunderreise.scenes {
 			view.addChild( _skipButton );
 			
 			view._gameFieldContainer.addChild( _gameField.gameField );
+			view.addChild( wordsCaptureOptions.fabi );
 			super.handleCreation();
 		}
 		
 		override protected function initView( evt : Event ) : void {
 			super.initView( evt );
 			_game.soundCore = gameCore.soundCore;
+			_lipSyncher.gameCore = gameCore;
+			gameCore.juggler.addAnimatable( _lipSyncher );
 		}
 		
 		override protected function handleStop() : void {

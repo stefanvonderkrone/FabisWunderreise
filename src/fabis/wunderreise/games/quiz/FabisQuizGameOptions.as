@@ -1,11 +1,13 @@
 package fabis.wunderreise.games.quiz {
+	import fabis.wunderreise.sound.FabisLipSyncher;
 	/**
 	 * @author Stefanie Drost
 	 */
 	public class FabisQuizGameOptions {
 		
 		public var view : *;
-		public var fabi : FabiQuiz;
+		public var fabi : FabiView;
+		public var fabiClose : FabiClose;
 		
 		public var switchTime : int;
 		public var questionNumber : int;
@@ -14,5 +16,7 @@ package fabis.wunderreise.games.quiz {
 		
 		public var trueButtonStartTime : int;
 		public var skipButton : FabisSkipButton;
+		
+		public var lipSyncher : FabisLipSyncher;
 	}
 }

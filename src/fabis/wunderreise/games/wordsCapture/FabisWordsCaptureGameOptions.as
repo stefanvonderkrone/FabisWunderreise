@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.wordsCapture {
+	import fabis.wunderreise.sound.FabisLipSyncher;
 	import flash.display.MovieClip;
 	/**
 	 * @author Stefanie Drost
@@ -9,7 +10,7 @@ package fabis.wunderreise.games.wordsCapture {
 		public var numrightStones : uint = 5;
 		public var gameField : FabisWordsCaptureGameField;
 		public var background : MovieClip;
-		public var fabi : FabiWordsCapture;
+		public var fabi : FabiView;
 		public var skipButton : FabisSkipButton;
 		
 		public var catched : *;
@@ -28,6 +29,8 @@ package fabis.wunderreise.games.wordsCapture {
 		public var demoStartTime : int;
 		
 		public var soundManager : *;
+		
+		public var lipSyncher : FabisLipSyncher;
 		
 		
 

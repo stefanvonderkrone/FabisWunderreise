@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.estimate {
+	import fabis.wunderreise.sound.FabisLipSyncher;
 	/**
 	 * @author Stefanie Drost
 	 */
@@ -21,13 +22,15 @@ package fabis.wunderreise.games.estimate {
 		public var removeCarsStatueTime : int;
 		
 		public var fabiCristoSmallContainer : FabiCristoSmallContainer;
-		public var fabiSmall : FabiEstimateSmall;
+		public var fabiSmall : FabiSmall;
 		
 		public var fabiCristoContainer : FabiCristoContainer;
-		public var fabi : FabiEstimate;
+		public var fabiCristo : FabiCristo;
 		
 		public var dragContainer : CristoDragContainer;
 		public var giraffes : Vector.<CristoGiraffeView>;
+		
+		public var lipSyncher : FabisLipSyncher;
 		
 		public function FabisEstimateGameOptions(){
 			

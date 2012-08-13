@@ -303,9 +303,10 @@ package fabis.wunderreise.games.estimate {
 
 		public function reactOnSoundItemSoundComplete(soundItem : ISoundItem) : void {
 			if( _feedbackSoundStarted ){
-				_gameOptions.fabi.stopSynchronization();
+				_gameOptions.lipSyncher.stop();
+				//_gameOptions.fabi.stopSynchronization();
 				_feedbackSoundStarted = false;
-				TweenLite.delayedCall( 2, _game.endOfExercise );
+				TweenLite.delayedCall( 1, _game.endOfExercise );
 			}
 		}
 
