@@ -66,12 +66,16 @@ package fabis.wunderreise.games.quiz {
 			_currentQuestionNumber = 1;
 		}
 		
+		public function skipIntro( event : MouseEvent ) : void {
+			_introSound.stop();
+			_introSoundStarted = false;
+			switchToCloseView();
+			startQuestion();
+			initTrueButton();
+		}
+		
 		public function start() : void {
-			//TODO: add Intro
-			//startIntro();
-			//switchToCloseView();
-			//startQuestion();
-			//initTrueButton();
+			startIntro();
 		}
 		
 		public function stop() : void {

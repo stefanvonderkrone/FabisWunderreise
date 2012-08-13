@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.wordsCapture.petra {
+	import flash.events.MouseEvent;
 	import fabis.wunderreise.games.wordsCapture.FabiWordsCapture;
 	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGameOptions;
 	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGame;
@@ -36,11 +37,14 @@ package fabis.wunderreise.games.wordsCapture.petra {
 			_fabi = _gameOptions.fabi;
 		}
 		
+		override public function skipIntro( event : MouseEvent ) : void {
+			_gameField.skipIntro();
+			_gameOptions.skipButton.removeEventListener( MouseEvent.CLICK, skipIntro);
+		}
+		
 		override public function start() : void {
 			_gameField.soundCore = soundCore;
 			_gameField.startIntro();
-			//_gameField.start();
-			//_fabi.startSynchronization();
 		}
 		
 		override public function stop() : void {

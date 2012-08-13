@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.wordsCapture {
+	import flash.events.MouseEvent;
 	import com.flashmastery.as3.game.interfaces.sound.ISoundCore;
 	import flash.events.ProgressEvent;
 
@@ -25,6 +26,10 @@ package fabis.wunderreise.games.wordsCapture {
 		}
 		
 		public function initWithOptions( options : FabisWordsCaptureGameOptions ) : void {
+			
+		}
+		
+		public function skipIntro( event : MouseEvent ) : void {
 			
 		}
 		

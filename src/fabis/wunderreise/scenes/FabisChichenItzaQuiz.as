@@ -1,4 +1,5 @@
 package fabis.wunderreise.scenes {
+	import flash.events.MouseEvent;
 	import fabis.wunderreise.games.quiz.FabisChichenItzaQuizGame;
 	import fabis.wunderreise.games.quiz.FabiQuiz;
 	import fabis.wunderreise.games.quiz.FabisQuizGameOptions;
@@ -9,8 +10,9 @@ package fabis.wunderreise.scenes {
 	 */
 	public class FabisChichenItzaQuiz extends BaseScene {
 		
-		protected var _game : FabisQuizGame;
+		protected var _game : FabisChichenItzaQuizGame;
 		protected var _fabi : FabiQuiz;
+		protected var _skipButton : FabisSkipButton;
 		
 		public function FabisChichenItzaQuiz() {
 			super();
@@ -22,6 +24,7 @@ package fabis.wunderreise.scenes {
 	
 		override protected function handleCreation() : void {
 			_view = new FabisChichenItzaView();
+			
 			_fabi = new FabiQuiz();
 			_fabi.view = new FabiView();
 			_fabi.view.x = 80;
@@ -39,8 +42,16 @@ package fabis.wunderreise.scenes {
 			quizOptions.answers = new Array( 0, 1, 1);
 			quizOptions.trueButtonStartTime = 27;
 			
+			
 			_game = new FabisChichenItzaQuizGame();
 			_game.initWithOptions( quizOptions );
+			
+			_skipButton = new FabisSkipButton();
+			_skipButton.x = 20;
+			_skipButton.y = 20;
+			quizOptions.skipButton = _skipButton;
+			_skipButton.addEventListener( MouseEvent.CLICK, _game.skipIntro);
+			view._chichenItzaContainer.addChild( _skipButton );
 			
 			super.handleCreation();
 		}

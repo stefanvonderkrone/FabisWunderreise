@@ -39,6 +39,14 @@ package fabis.wunderreise.games.wordsCapture.petra {
 			addEventListener( Event.ENTER_FRAME, handleDemoStart );			
 		}
 		
+		override public function skipIntro() : void{
+			_introSound.stop();
+			_introSoundStarted = false;
+			_gameOptions.fabi.stopSynchronization();
+			removeEventListener( Event.ENTER_FRAME, handleDemoStart );	
+			stopIntro();
+		}
+		
 		private function handleDemoStart( event : Event ) : void {
 			_frameCounter++;
 			if( _frameCounter == (_gameOptions.demoStartTime * 60) ){

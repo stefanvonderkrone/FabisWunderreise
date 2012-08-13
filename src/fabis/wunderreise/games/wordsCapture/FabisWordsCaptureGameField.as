@@ -61,9 +61,12 @@ package fabis.wunderreise.games.wordsCapture {
 		public function startIntro() : void{
 		}
 		
+		public function skipIntro() : void{
+		}
+		
 		public function startDemo() : void {
 			_stone.init();
-			_stone.stone.gotoAndStop( _currentImageIndex + 1 );
+			_stone.stone.gotoAndStop( _gameOptions.numStones + 1 );
 			_gameField.addChild( _stone.stone );
 			_gameField.swapChildren( _stone.stone, _basket.basket );
 			

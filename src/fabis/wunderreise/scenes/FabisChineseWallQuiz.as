@@ -1,5 +1,5 @@
 package fabis.wunderreise.scenes {
-	
+	import flash.events.MouseEvent;
 	import fabis.wunderreise.games.quiz.FabisChineseWallQuizGame;
 	import fabis.wunderreise.games.quiz.FabiQuiz;
 	import fabis.wunderreise.games.quiz.FabisQuizGameOptions;
@@ -10,8 +10,9 @@ package fabis.wunderreise.scenes {
 	 */
 	public class FabisChineseWallQuiz extends BaseScene {
 		
-		protected var _game : FabisQuizGame;
+		protected var _game : FabisChineseWallQuizGame;
 		protected var _fabi : FabiQuiz;
+		protected var _skipButton : FabisSkipButton;
 		
 		public function FabisChineseWallQuiz() {
 			super();
@@ -42,6 +43,13 @@ package fabis.wunderreise.scenes {
 			
 			_game = new FabisChineseWallQuizGame();
 			_game.initWithOptions( quizOptions );
+			
+			_skipButton = new FabisSkipButton();
+			_skipButton.x = 20;
+			_skipButton.y = 20;
+			quizOptions.skipButton = _skipButton;
+			_skipButton.addEventListener( MouseEvent.CLICK, _game.skipIntro);
+			view._chineseWallContainer.addChild( _skipButton );
 			
 			super.handleCreation();
 		}
