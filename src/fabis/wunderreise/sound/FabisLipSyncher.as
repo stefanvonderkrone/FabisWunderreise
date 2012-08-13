@@ -42,6 +42,7 @@ package fabis.wunderreise.sound {
 		}
 
 		public function update( deltaTime : Number ) : void {
+			if ( !_isRunning ) return;
 			_numFrames++;
 			SoundMixer.computeSpectrum( _spectrum, false, 0 );
 			for (var i:int = 0; i < 512; i++) {
