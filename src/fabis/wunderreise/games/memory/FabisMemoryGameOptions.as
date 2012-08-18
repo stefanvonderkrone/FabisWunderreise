@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.memory {
+	import fabis.wunderreise.sound.FabisLipSyncher;
 	/**
 	 * @author Stefan von der Krone (2012)
 	 */
@@ -11,6 +12,11 @@ package fabis.wunderreise.games.memory {
 		public var cardWidth : Number = 100;
 		public var cardHeight : Number = 100;
 		public var gapBetweenCards : int = 10;
+		public var showMemoryTime : int;
+		public var fabi : FabiView;
+		public var lipSyncher : FabisLipSyncher;
+		
+		public var memoryGame : *;
 
 		public function FabisMemoryGameOptions() {
 		}

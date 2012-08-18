@@ -1,5 +1,19 @@
 package fabis.wunderreise.games.memory {
+	import com.junkbyte.console.Cc;
+	import flash.display.MovieClip;
+	import flash.events.ProgressEvent;
 
+	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
+
+	import flash.events.Event;
+	import flash.events.ErrorEvent;
+	import flash.events.SampleDataEvent;
+
+	import com.flashmastery.as3.game.interfaces.core.IInteractiveGameObject;
+	import com.flashmastery.as3.game.interfaces.core.IGameCore;
+	import fabis.wunderreise.sound.IFabisLipSyncherDelegate;
+	import com.flashmastery.as3.game.interfaces.delegates.ISoundItemDelegate;
+	import com.flashmastery.as3.game.interfaces.sound.ISoundCore;
 	import flash.geom.Rectangle;
 	import com.greensock.TweenLite;
 
@@ -9,7 +23,7 @@ package fabis.wunderreise.games.memory {
 	/**
 	 * @author Stefan von der Krone (2012)
 	 */
-	public class FabisMemoryGame extends Sprite {
+	public class FabisMemoryGame extends Sprite implements ISoundItemDelegate, IFabisLipSyncherDelegate {
 		
 		protected var _gameOptions : FabisMemoryGameOptions;
 		protected var _gameContainer : Sprite;
@@ -17,6 +31,14 @@ package fabis.wunderreise.games.memory {
 		protected var _selectedCards : Vector.<FabisMemoryGameCard>;
 		protected var _locked : Boolean = false;
 		protected var _numCardsCompleted : int = 0;
+		
+		protected var _frameCounter : int = 0;
+		
+		protected var _soundCore : ISoundCore;
+		protected var _introSound : ISoundItem;
+		protected var _introSoundStarted : Boolean = false;
+		protected var _feedbackSound : ISoundItem;
+		protected var _feedbackSoundStarted : Boolean = false;
 
 		public function FabisMemoryGame() {
 		}
@@ -47,6 +69,9 @@ package fabis.wunderreise.games.memory {
 				card.mouseChildren = false;
 				card.useHandCursor = true;
 				card.buttonMode = true;
+				
+				card.visible = false;
+				
 				_memoryCards[ numCards ] = card;
 				_gameContainer.addChild( card );
 			}
@@ -105,15 +130,19 @@ package fabis.wunderreise.games.memory {
 				const card1 : FabisMemoryGameCard = _selectedCards[ 1 ];
 				if ( card0.id == card1.id ) {
 					_numCardsCompleted += 2;
-					removeSelectedCards();
+					removeSelectedCards( card0.id );
 				}
 				else TweenLite.delayedCall(1, resetSelectedCards);
 			}
 		}
 
-		protected function removeSelectedCards() : void {
+		protected function removeSelectedCards( cardId : int ) : void {
 			// TODO remove game cards
 			// TODO show card infos
+			_gameOptions.memoryGame.playFeedback( cardId + 1 );
+			_gameOptions.lipSyncher.delegate = this;
+			_gameOptions.lipSyncher.start();
+			
 			TweenLite.delayedCall( 0.5, unlockAndCheckGameStatus );
 		}
 		
@@ -138,6 +167,21 @@ package fabis.wunderreise.games.memory {
 		}
 		
 		public function start() : void {
+			_gameOptions.lipSyncher.delegate = this;
+			_gameOptions.lipSyncher.start();
+			_gameOptions.fabi.addEventListener( Event.ENTER_FRAME, handleShowMemory );
+		}
+		
+		public function handleShowMemory( event : Event ) : void {
+			_frameCounter++;
+			if( _frameCounter == (_gameOptions.showMemoryTime * 60) ){
+				_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleShowMemory );
+				showMemory();
+				_frameCounter = 0;
+			}
+		}
+		
+		public function showMemory() : void {
 			_gameContainer.addEventListener( MouseEvent.CLICK, clickHandler );
 			_gameContainer.addEventListener( MouseEvent.MOUSE_OUT, mouseOutHandler );
 			_gameContainer.addEventListener( MouseEvent.MOUSE_OVER, mouseOverHandler );
@@ -155,6 +199,7 @@ package fabis.wunderreise.games.memory {
 			var card : FabisMemoryGameCard;
 			while ( --index >= 0 ) {
 				card = _memoryCards[ index ];
+				card.visible = true;
 				TweenLite.from( card, 0.25, { delay: index / 20, alpha: 0 } );
 			}
 		}
@@ -166,6 +211,87 @@ package fabis.wunderreise.games.memory {
 				card = _memoryCards[ index ];
 				TweenLite.to( card, 0.5, { delay: index / 20, alpha: 1 } );
 			}
+		}
+		
+		public function set soundCore( soundCore : ISoundCore) : void {
+			_soundCore = soundCore;
+		}
+		
+		public function get soundCore() : ISoundCore {
+			return _soundCore;
+		}
+		
+		public function playIntro() : void {
+			_introSoundStarted = true;
+			_introSound.delegate = this;
+			_introSound.play();
+		}
+
+		public function reactOnSoundItemProgressEvent(evt : ProgressEvent, soundItem : ISoundItem) : void {
+		}
+
+		public function reactOnSoundItemEvent(evt : Event, soundItem : ISoundItem) : void {
+		}
+
+		public function reactOnSoundItemSoundComplete(soundItem : ISoundItem) : void {
+			if( _introSoundStarted ){
+				_introSoundStarted = false;
+				_gameOptions.lipSyncher.stop();
+			}
+			if( _feedbackSoundStarted ){
+				_feedbackSoundStarted = false;
+				_gameOptions.lipSyncher.stop();
+			}
+		}
+
+		public function reactOnSoundItemLoadComplete(soundItem : ISoundItem) : void {
+		}
+
+		public function reactOnSoundItemErrorEvent(evt : ErrorEvent, soundItem : ISoundItem) : void {
+		}
+
+		public function reactOnSoundItemSampleDataEvent(evt : SampleDataEvent, soundItem : ISoundItem) : void {
+		}
+
+		public function reactOnCumulatedSpectrum(cumulatedSpectrum : Number) : void {
+			var lips : MovieClip = _gameOptions.fabi._lips;
+			
+			if ( cumulatedSpectrum > 30 ) {
+				lips.gotoAndStop(
+					int( Math.random() * ( lips.totalFrames - 1 ) + 2 )
+				);
+			} else lips.gotoAndStop( 1 );
+		}
+
+		public function reactOnStart(delegater : IInteractiveGameObject) : void {
+		}
+
+		public function reactOnStop(delegater : IInteractiveGameObject) : void {
+		}
+
+		public function reactOnDisposal(delegater : IInteractiveGameObject) : void {
+		}
+
+		public function reactOnAddedToDelegater(delegater : IInteractiveGameObject) : void {
+		}
+
+		public function reactOnRemovalFromDelegater(delegater : IInteractiveGameObject) : void {
+		}
+
+		public function reactOnGameFinished(result : Object, gameCore : IGameCore) : void {
+		}
+
+		public function get gameCore() : IGameCore {
+			return null;
+		}
+
+		public function set gameCore(gameCore : IGameCore) : void {
+		}
+		
+		public function playFeedback( cardNumber : int ) : void {
+			_feedbackSoundStarted = true;
+			_feedbackSound.delegate = this;
+			_feedbackSound.play();
 		}
 	}
 }

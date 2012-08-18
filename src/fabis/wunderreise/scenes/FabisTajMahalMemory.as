@@ -1,5 +1,6 @@
 package fabis.wunderreise.scenes {
-
+	import fabis.wunderreise.games.memory.FabisTajMahalGame;
+	import fabis.wunderreise.sound.FabisLipSyncher;
 	import fabis.wunderreise.games.memory.FabisMemoryGame;
 	import fabis.wunderreise.games.memory.FabisMemoryGameOptions;
 
@@ -10,7 +11,10 @@ package fabis.wunderreise.scenes {
 	 */
 	public class FabisTajMahalMemory extends BaseScene {
 		
-		protected var _memory : FabisMemoryGame;
+		protected var _memory : FabisTajMahalGame;
+		protected var _fabi : FabiView;
+		protected var _skipButton : FabisSkipButton;
+		protected var _lipSyncher : FabisLipSyncher;
 
 		public function FabisTajMahalMemory() {
 			super();
@@ -22,7 +26,17 @@ package fabis.wunderreise.scenes {
 
 		override protected function handleCreation() : void {
 			_view = new MemoryTajMahalGameView();
-			_memory = FabisMemoryGame( view._memoryContainer.addChild( new FabisMemoryGame() ) );
+			
+			_fabi = new FabiView();
+			_fabi.x = 50;
+			_fabi.y = 270;
+			_fabi._arm.gotoAndStop( 1 );
+			_fabi._nose.gotoAndStop( 1 );
+			_fabi._eyes.gotoAndStop( 1 );
+			_fabi._lips.gotoAndStop( 1 );
+			view.addChild( _fabi );
+			
+			_memory = FabisTajMahalGame( view._memoryContainer.addChild( new FabisTajMahalGame() ) );
 			const memoryOptions : FabisMemoryGameOptions = new FabisMemoryGameOptions();
 			memoryOptions.cardAssets = Vector.<Class>( [
 				MemoryTajMahalCard01,
@@ -37,15 +51,24 @@ package fabis.wunderreise.scenes {
 			memoryOptions.coverAsset = MemoryTajMahalCover;
 			memoryOptions.numCards = 12;
 			memoryOptions.numColumns = 4;
+			memoryOptions.showMemoryTime = 15;
 			_memory.initWithOptions( memoryOptions );
 			_memory.x = ( 900 - _memory.width ) >> 1;
 			_memory.y = ( 600 - _memory.height ) >> 1;
-			//name = "FabisMachuPicchuMemory";
+			memoryOptions.fabi = _fabi;
+			memoryOptions.memoryGame = _memory;
+			
+			_lipSyncher = new FabisLipSyncher();
+			memoryOptions.lipSyncher = _lipSyncher;
+			
 			super.handleCreation();
 		}
 		
 		override protected function initView( evt : Event ) : void {
 			super.initView( evt );
+			_memory.soundCore = gameCore.soundCore;
+			_lipSyncher.gameCore = gameCore;
+			gameCore.juggler.addAnimatable( _lipSyncher );
 		}
 		
 		override protected function handleStart() : void {
