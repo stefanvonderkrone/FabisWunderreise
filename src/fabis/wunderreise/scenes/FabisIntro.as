@@ -1,5 +1,6 @@
 package fabis.wunderreise.scenes {
 
+	import fabis.wunderreise.sound.FabisEyeTwinkler;
 	import fabis.wunderreise.sound.FabisLipSyncher;
 	import fabis.wunderreise.sound.IFabisLipSyncherDelegate;
 
@@ -25,6 +26,7 @@ package fabis.wunderreise.scenes {
 		protected var _introSound : ISoundItem;
 		protected var _introSoundStarted : Boolean = false;
 		protected var _lipSyncher : FabisLipSyncher;
+		protected var _eyeTwinkler : FabisEyeTwinkler;
 
 		public function FabisIntro() {
 			super();
@@ -40,6 +42,8 @@ package fabis.wunderreise.scenes {
 			view._fabi._eyes.gotoAndStop( 1 );
 			_lipSyncher = new FabisLipSyncher();
 			_lipSyncher.delegate = this;
+			_eyeTwinkler = new FabisEyeTwinkler();
+			_eyeTwinkler.initWithEyes( view._fabi._eyes );
 			super.handleCreation();
 		}
 
@@ -49,10 +53,13 @@ package fabis.wunderreise.scenes {
 			_introSound.delegate = this;
 			_lipSyncher.gameCore = gameCore;
 			gameCore.juggler.addAnimatable( _lipSyncher );
+			_eyeTwinkler.gameCore = gameCore;
+			gameCore.juggler.addAnimatable( _eyeTwinkler );
 		}
 
 		override protected function handleStart() : void {
 			super.handleStart();
+			_eyeTwinkler.start();
 			TweenLite.from(
 				view._fabi,
 				1, {
@@ -74,6 +81,7 @@ package fabis.wunderreise.scenes {
 			TweenLite.killDelayedCallsTo( gameCore.director.replaceScene );
 			TweenLite.killTweensOf( view._fabi );
 			_lipSyncher.stop();
+			_eyeTwinkler.stop();
 		}
 
 		override protected function handleDisposal() : void {
@@ -82,6 +90,8 @@ package fabis.wunderreise.scenes {
 			_introSound = null;
 			_lipSyncher.gameCore = null;
 			_lipSyncher.dispose();
+			_eyeTwinkler.gameCore = null;
+			_eyeTwinkler.dispose();
 		}
 		
 
