@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.wordsCapture {
+	import fabis.wunderreise.sound.FabisEyeTwinkler;
 	import fabis.wunderreise.sound.FabisLipSyncher;
 	import flash.display.MovieClip;
 	/**
@@ -31,6 +32,7 @@ package fabis.wunderreise.games.wordsCapture {
 		public var soundManager : *;
 		
 		public var lipSyncher : FabisLipSyncher;
+		public var eyeTwinkler : FabisEyeTwinkler;
 		
 		
 

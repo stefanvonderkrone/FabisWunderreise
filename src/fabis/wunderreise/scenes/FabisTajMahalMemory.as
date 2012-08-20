@@ -1,4 +1,6 @@
 package fabis.wunderreise.scenes {
+	import flash.events.MouseEvent;
+	import fabis.wunderreise.sound.FabisEyeTwinkler;
 	import fabis.wunderreise.games.memory.FabisTajMahalGame;
 	import fabis.wunderreise.sound.FabisLipSyncher;
 	import fabis.wunderreise.games.memory.FabisMemoryGame;
@@ -15,6 +17,7 @@ package fabis.wunderreise.scenes {
 		protected var _fabi : FabiView;
 		protected var _skipButton : FabisSkipButton;
 		protected var _lipSyncher : FabisLipSyncher;
+		protected var _eyeTwinkler : FabisEyeTwinkler;
 
 		public function FabisTajMahalMemory() {
 			super();
@@ -61,6 +64,19 @@ package fabis.wunderreise.scenes {
 			_lipSyncher = new FabisLipSyncher();
 			memoryOptions.lipSyncher = _lipSyncher;
 			
+			_eyeTwinkler = new FabisEyeTwinkler();
+			_eyeTwinkler.initWithEyes( _fabi._eyes );
+			//memoryOptions.eyeTwinkler = _eyeTwinkler;
+			
+			_skipButton = new FabisSkipButton();
+			_skipButton.x = 20;
+			_skipButton.y = 20;
+			memoryOptions.skipButton = _skipButton;
+			_skipButton.addEventListener( MouseEvent.CLICK, _memory.skipIntro);
+			view.addChild( _skipButton );
+			
+			_memory._mainView = view;
+			
 			super.handleCreation();
 		}
 		
@@ -69,15 +85,19 @@ package fabis.wunderreise.scenes {
 			_memory.soundCore = gameCore.soundCore;
 			_lipSyncher.gameCore = gameCore;
 			gameCore.juggler.addAnimatable( _lipSyncher );
+			_eyeTwinkler.gameCore = gameCore;
+			gameCore.juggler.addAnimatable( _eyeTwinkler );
 		}
 		
 		override protected function handleStart() : void {
 			super.handleStart();
+			_eyeTwinkler.start();
 			_memory.start();
 		}
 		
 		override protected function handleStop() : void {
 			super.handleStop();
+			_eyeTwinkler.stop();
 			_memory.stop();
 		}
 	}

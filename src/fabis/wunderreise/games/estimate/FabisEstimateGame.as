@@ -68,6 +68,8 @@ package fabis.wunderreise.games.estimate {
 			_gameOptions.fabiCristo = _fabiCristo;
 			_gameOptions.fabiCristoContainer.addChild( _fabiCristo );
 			
+			_gameOptions.eyeTwinkler.initWithEyes(_fabiCristo._fabi._eyes );
+			
 			startExercise( _currentExerciseNumber );
 		}
 		

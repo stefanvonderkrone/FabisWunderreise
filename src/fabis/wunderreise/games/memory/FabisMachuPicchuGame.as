@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.memory {
+	import flash.events.MouseEvent;
 	/**
 	 * @author Stefanie Drost
 	 */
@@ -6,6 +7,10 @@ package fabis.wunderreise.games.memory {
 		
 		public function FabisMachuPicchuGame() {
 			
+		}
+		
+		override public function skipIntro( event : MouseEvent ) : void {
+			super.skipIntro( event );
 		}
 		
 		override public function start() : void {

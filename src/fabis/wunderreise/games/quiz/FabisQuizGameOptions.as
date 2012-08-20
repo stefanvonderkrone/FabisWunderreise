@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.quiz {
+	import fabis.wunderreise.sound.FabisEyeTwinkler;
 	import fabis.wunderreise.sound.FabisLipSyncher;
 	/**
 	 * @author Stefanie Drost
@@ -18,5 +19,6 @@ package fabis.wunderreise.games.quiz {
 		public var skipButton : FabisSkipButton;
 		
 		public var lipSyncher : FabisLipSyncher;
+		public var eyeTwinkler : FabisEyeTwinkler;
 	}
 }

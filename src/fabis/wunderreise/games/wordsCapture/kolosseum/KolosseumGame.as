@@ -41,6 +41,8 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			_fabi._lips.gotoAndStop( 1 );
 			_fabi._nose.gotoAndStop( 1 );
 			_fabi._arm.gotoAndStop( 1 );
+			
+			_gameOptions.eyeTwinkler.initWithEyes( _fabi._eyes );
 		}
 		
 		override public function skipIntro( event : MouseEvent ) : void {

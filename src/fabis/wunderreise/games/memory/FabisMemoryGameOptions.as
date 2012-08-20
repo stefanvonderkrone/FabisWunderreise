@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.memory {
+	import fabis.wunderreise.sound.FabisEyeTwinkler;
 	import fabis.wunderreise.sound.FabisLipSyncher;
 	/**
 	 * @author Stefan von der Krone (2012)
@@ -15,8 +16,10 @@ package fabis.wunderreise.games.memory {
 		public var showMemoryTime : int;
 		public var fabi : FabiView;
 		public var lipSyncher : FabisLipSyncher;
+		public var skipButton : FabisSkipButton;
 		
 		public var memoryGame : *;
+		
 
 		public function FabisMemoryGameOptions() {
 		}

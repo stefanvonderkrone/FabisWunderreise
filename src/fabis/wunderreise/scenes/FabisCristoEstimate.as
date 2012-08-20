@@ -1,4 +1,5 @@
 package fabis.wunderreise.scenes {
+	import fabis.wunderreise.sound.FabisEyeTwinkler;
 	import fabis.wunderreise.sound.FabisLipSyncher;
 	import flash.events.MouseEvent;
 	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
@@ -19,6 +20,7 @@ package fabis.wunderreise.scenes {
 		
 		protected var _introSound : ISoundItem;
 		protected var _lipSyncher : FabisLipSyncher;
+		protected var _eyeTwinkler : FabisEyeTwinkler;
 		
 		public function FabisCristoEstimate() {
 			super();
@@ -66,6 +68,10 @@ package fabis.wunderreise.scenes {
 			_lipSyncher = new FabisLipSyncher();
 			estimateOptions.lipSyncher = _lipSyncher;
 			
+			_eyeTwinkler = new FabisEyeTwinkler();
+			_eyeTwinkler.initWithEyes( _fabiSmall._fabi._eyes );
+			estimateOptions.eyeTwinkler = _eyeTwinkler;
+			
 			_game = new FabisEstimateGame();
 			_game.initWithOptions( estimateOptions );
 			
@@ -84,15 +90,19 @@ package fabis.wunderreise.scenes {
 			_game.soundCore = gameCore.soundCore;
 			_lipSyncher.gameCore = gameCore;
 			gameCore.juggler.addAnimatable( _lipSyncher );
+			_eyeTwinkler.gameCore = gameCore;
+			gameCore.juggler.addAnimatable( _eyeTwinkler );
 		}
 		
 		override protected function handleStop() : void {
 			super.handleStop();
+			_eyeTwinkler.stop();
 			_game.stop();
 		}
 		
 		override protected function handleStart() : void {
 			super.handleStart();
+			_eyeTwinkler.start();
 			_game.start();
 		}
 		

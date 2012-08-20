@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.estimate {
+	import fabis.wunderreise.sound.FabisEyeTwinkler;
 	import fabis.wunderreise.sound.FabisLipSyncher;
 	/**
 	 * @author Stefanie Drost
@@ -31,6 +32,7 @@ package fabis.wunderreise.games.estimate {
 		public var giraffes : Vector.<CristoGiraffeView>;
 		
 		public var lipSyncher : FabisLipSyncher;
+		public var eyeTwinkler : FabisEyeTwinkler;
 		
 		public function FabisEstimateGameOptions(){
 			

@@ -39,8 +39,26 @@ package fabis.wunderreise.games.memory {
 		protected var _introSoundStarted : Boolean = false;
 		protected var _feedbackSound : ISoundItem;
 		protected var _feedbackSoundStarted : Boolean = false;
+		public var _mainView : Sprite;
+		
+		protected var _currentCards : Array = new Array();
+		
+		private const _xCardDiff : int = 60;
+		private const _yCardDiff : int = 60;
+		private var _currentCardXCoordinate : int = 50;
+		private var _currentCardYCoordinate : int = 50;
+		private var _cardCounter : int = 0;
 
 		public function FabisMemoryGame() {
+		}
+		
+		public function skipIntro( event : MouseEvent ) : void {
+			_gameOptions.skipButton.removeEventListener( MouseEvent.CLICK, skipIntro);
+			_mainView.removeChild( _gameOptions.skipButton );
+			_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleShowMemory );
+			_introSound.stop();
+			_introSoundStarted = false;
+			showMemory();
 		}
 		
 		public function initWithOptions( options : FabisMemoryGameOptions ) : void {
@@ -76,7 +94,7 @@ package fabis.wunderreise.games.memory {
 				_gameContainer.addChild( card );
 			}
 			const bounds : Rectangle = _gameContainer.getBounds( _gameContainer );
-			_gameContainer.x = -bounds.x;
+			_gameContainer.x = -bounds.x + 50;
 			_gameContainer.y = -bounds.y;
 		}
 
@@ -126,20 +144,22 @@ package fabis.wunderreise.games.memory {
 			if ( _selectedCards.length < 2 ) {
 				TweenLite.delayedCall(1, resetSelectedCards);
 			} else {
-				const card0 : FabisMemoryGameCard = _selectedCards[ 0 ];
-				const card1 : FabisMemoryGameCard = _selectedCards[ 1 ];
+				var card0 : FabisMemoryGameCard = _selectedCards[ 0 ];
+				var card1 : FabisMemoryGameCard = _selectedCards[ 1 ];
 				if ( card0.id == card1.id ) {
 					_numCardsCompleted += 2;
-					removeSelectedCards( card0.id );
+					removeSelectedCards( card0, card1 );
 				}
 				else TweenLite.delayedCall(1, resetSelectedCards);
 			}
 		}
 
-		protected function removeSelectedCards( cardId : int ) : void {
+		protected function removeSelectedCards( card1 : FabisMemoryGameCard,  card2 : FabisMemoryGameCard) : void {
 			// TODO remove game cards
 			// TODO show card infos
-			_gameOptions.memoryGame.playFeedback( cardId + 1 );
+			_gameOptions.memoryGame.playFeedback( card1.id + 1 );
+			_currentCards[0] = card1; 
+			_currentCards[1] = card2; 
 			_gameOptions.lipSyncher.delegate = this;
 			_gameOptions.lipSyncher.start();
 			
@@ -164,6 +184,31 @@ package fabis.wunderreise.games.memory {
 				// TODO memory game finished
 				//tweenOut();
 			}
+		}
+		
+		private function moveToSide( currentCards : Array ) : void {
+			var card0 : FabisMemoryGameCard = currentCards[ 0 ];
+			var card1 : FabisMemoryGameCard = currentCards[ 1 ];
+			card0.visible = false;
+			card1.visible = false;
+			
+			_cardCounter++;
+			
+			_gameContainer.removeChild( card0 );
+			_mainView.addChild( card0 );
+			
+			card0.width = 50;
+			card0.height = 50;
+			
+			if( _cardCounter == 4 ) {
+				_currentCardYCoordinate = 50;
+				_currentCardXCoordinate += _xCardDiff;
+			}
+			
+			card0.y = _currentCardYCoordinate;
+			card0.x = _currentCardXCoordinate;
+			_currentCardYCoordinate += _yCardDiff;
+			card0.visible = true;
 		}
 		
 		public function start() : void {
@@ -241,6 +286,7 @@ package fabis.wunderreise.games.memory {
 			if( _feedbackSoundStarted ){
 				_feedbackSoundStarted = false;
 				_gameOptions.lipSyncher.stop();
+				moveToSide( _currentCards );
 			}
 		}
 

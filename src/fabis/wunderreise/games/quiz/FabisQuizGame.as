@@ -94,6 +94,7 @@ package fabis.wunderreise.games.quiz {
 			_gameOptions.view.addChild( view._closeContainer );
 			_gameOptions.fabiClose = _fabiClose._fabi;
 			_closeView = true;
+			_gameOptions.eyeTwinkler.initWithEyes( _fabiClose._fabi._eyes );
 			_gameOptions.lipSyncher.start();
 		}
 		
