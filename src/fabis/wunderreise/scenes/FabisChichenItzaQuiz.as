@@ -1,4 +1,5 @@
 package fabis.wunderreise.scenes {
+	import fabis.wunderreise.sound.FabisEyeTwinkler;
 	import fabis.wunderreise.sound.FabisLipSyncher;
 	import flash.events.MouseEvent;
 	import fabis.wunderreise.games.quiz.FabisChichenItzaQuizGame;
@@ -13,6 +14,7 @@ package fabis.wunderreise.scenes {
 		protected var _fabi : FabiView;
 		protected var _skipButton : FabisSkipButton;
 		protected var _lipSyncher : FabisLipSyncher;
+		protected var _eyeTwinkler : FabisEyeTwinkler;
 		
 		public function FabisChichenItzaQuiz() {
 			super();
@@ -47,6 +49,10 @@ package fabis.wunderreise.scenes {
 			_lipSyncher = new FabisLipSyncher();
 			quizOptions.lipSyncher = _lipSyncher;
 			
+			_eyeTwinkler = new FabisEyeTwinkler();
+			_eyeTwinkler.initWithEyes( _fabi._eyes );
+			quizOptions.eyeTwinkler = _eyeTwinkler;
+			
 			_game = new FabisChichenItzaQuizGame();
 			_game.initWithOptions( quizOptions );
 			
@@ -65,15 +71,19 @@ package fabis.wunderreise.scenes {
 			_game.soundCore = gameCore.soundCore;
 			_lipSyncher.gameCore = gameCore;
 			gameCore.juggler.addAnimatable( _lipSyncher );
+			_eyeTwinkler.gameCore = gameCore;
+			gameCore.juggler.addAnimatable( _eyeTwinkler );
 		}
 		
 		override protected function handleStop() : void {
 			super.handleStop();
+			_eyeTwinkler.stop();
 			_game.stop();
 		}
 		
 		override protected function handleStart() : void {
 			super.handleStart();
+			_eyeTwinkler.start();
 			_game.start();
 		}
 		
