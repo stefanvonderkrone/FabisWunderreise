@@ -1,5 +1,6 @@
 package fabis.wunderreise.scenes {
-
+	import com.flashmastery.as3.game.interfaces.core.IGameScene;
+	import com.junkbyte.console.Cc;
 	import flash.utils.setInterval;
 	import flash.utils.clearInterval;
 	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
@@ -64,7 +65,6 @@ package fabis.wunderreise.scenes {
 							FabisTravelAnimationTarget.CHINESE_WALL
 						), true
 					);
-//					gameCore.director.replaceScene( new FabisKolosseumWordsCapture(), true );
 					break;
 				case view._worldMap._colosseum:
 					gameCore.director.replaceScene(
@@ -197,6 +197,10 @@ package fabis.wunderreise.scenes {
 			TweenLite.delayedCall( _helpSound.length, startTimer );
 			stopSounds();
 			super.handleClickOnHelp();
+		}
+		
+		override protected function handleClickOnPassport() : void {
+			super.handleClickOnPassport();
 		}
 	}
 }

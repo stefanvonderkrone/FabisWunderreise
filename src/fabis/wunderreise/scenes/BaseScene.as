@@ -1,5 +1,4 @@
 package fabis.wunderreise.scenes {
-
 	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
 	import fabis.wunderreise.DEBUGGING;
 
@@ -27,7 +26,8 @@ package fabis.wunderreise.scenes {
 		protected var _btnMap : MovieClip;
 		protected var _btnPassport : MovieClip;
 		protected var _helpSound : ISoundItem;
-
+		
+		
 		public function BaseScene() {
 			_buttons = new Vector.<InteractiveObject>();
 			super();
@@ -129,7 +129,9 @@ package fabis.wunderreise.scenes {
 		}
 
 		protected function handleClickOnPassport() : void {
-			// TODO handle click on passport
+			if( !( this is FabisPassport ) ){
+				gameCore.director.replaceScene( new FabisPassport() , true );
+			}
 		}
 
 		protected function handleClickOnMap() : void {
