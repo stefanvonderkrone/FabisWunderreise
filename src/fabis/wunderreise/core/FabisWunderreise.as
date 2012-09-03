@@ -1,5 +1,8 @@
 package fabis.wunderreise.core {
 
+	import fabis.wunderreise.gamesave.FabisGameSave;
+	import com.flashmastery.as3.game.core.LocalStorageSOOptions;
+	import com.flashmastery.as3.game.core.LocalStorageSO;
 	import fabis.wunderreise.DEBUGGING;
 	import fabis.wunderreise.scenes.FabisIntro;
 
@@ -41,9 +44,16 @@ package fabis.wunderreise.core {
 			if ( DEBUGGING ) {
 				Cc.startOnStage( stage, "fabi" );
 				Cc.config.tracing = true;
+				Cc.config.commandLineAllowed = true;
+				Cc.commandLine = true;
 				Cc.listenUncaughtErrors( loaderInfo );
+				Cc.addSlashCommand( "clearSaveGame", clearSaveGame );
+				Cc.addSlashCommand( "logSaveGame", logSaveGame );
 				//Cc.visible = true;
 			}
+			const localStorage : LocalStorageSO = new LocalStorageSO();
+			localStorage.setupWithOptions( new LocalStorageSOOptions( "FabisWunderreise", loaderInfo.url ) );
+			localStorage.setupWithStorageObject( new FabisGameSave() );
 			_gameCore = new GameCore();
 			_gameCore.delegate = this;
 			_gameCore.autoSetupOnStageReceived();
@@ -51,10 +61,21 @@ package fabis.wunderreise.core {
 			_gameCore.setupWithGraphicsCore( new FlashGraphicsCore() );
 			_gameCore.setupWithKeyboardHandler( new KeyboardHandler() );
 			_gameCore.setupWithSoundCore( getSoundCore() );
+			_gameCore.setupWithLocalStorage( localStorage );
 			_gameCore.director.runWithScene( new FabisIntro() );
 			_gameCore.graphicsCore.setSize( stage.stageWidth, stage.stageHeight );
 			_gameCore.start();
 			_gameCore.soundCore.getSoundByName( "atmo" ).play( 0, int.MAX_VALUE );
+		}
+
+		protected function logSaveGame() : void {
+			Cc.log( _gameCore.localStorage.getStorageObject() );
+			Cc.log( _gameCore.localStorage.getStorageObject().toString() );
+		}
+
+		protected function clearSaveGame() : void {
+			_gameCore.localStorage.setupWithStorageObject( new FabisGameSave(), true );
+			_gameCore.localStorage.saveStorage();
 		}
 
 		protected function getSoundCore() : ISoundCore {
