@@ -243,8 +243,8 @@ package fabis.wunderreise.games.memory {
 			_gameContainer.removeEventListener( MouseEvent.CLICK, clickHandler );
 			_gameContainer.removeEventListener( MouseEvent.MOUSE_OUT, mouseOutHandler );
 			_gameContainer.removeEventListener( MouseEvent.MOUSE_OVER, mouseOverHandler );
-			_gameOptions.lipSyncher.gameCore.director.currentScene.stop();
 			_gameFinished = true;
+			_gameOptions.lipSyncher.gameCore.director.currentScene.stop();
 		}
 
 		public function tweenIn() : void {

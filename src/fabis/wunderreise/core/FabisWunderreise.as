@@ -62,6 +62,7 @@ package fabis.wunderreise.core {
 			_gameCore.setupWithKeyboardHandler( new KeyboardHandler() );
 			_gameCore.setupWithSoundCore( getSoundCore() );
 			_gameCore.setupWithLocalStorage( localStorage );
+			clearSaveGame();
 			_gameCore.director.runWithScene( new FabisIntro() );
 			_gameCore.graphicsCore.setSize( stage.stageWidth, stage.stageHeight );
 			_gameCore.start();
