@@ -25,6 +25,7 @@ package fabis.wunderreise.games.memory {
 	 */
 	public class FabisMemoryGame extends Sprite implements ISoundItemDelegate, IFabisLipSyncherDelegate {
 		
+		public var _gameFinished : Boolean = false;
 		protected var _gameOptions : FabisMemoryGameOptions;
 		protected var _gameContainer : Sprite;
 		protected var _memoryCards : Vector.<FabisMemoryGameCard>;
@@ -209,6 +210,11 @@ package fabis.wunderreise.games.memory {
 			card0.x = _currentCardXCoordinate;
 			_currentCardYCoordinate += _yCardDiff;
 			card0.visible = true;
+			
+			// TODO: change to 6
+			if( _cardCounter == 1 ){
+				TweenLite.delayedCall( 2, stop );
+			}
 		}
 		
 		public function start() : void {
@@ -237,6 +243,8 @@ package fabis.wunderreise.games.memory {
 			_gameContainer.removeEventListener( MouseEvent.CLICK, clickHandler );
 			_gameContainer.removeEventListener( MouseEvent.MOUSE_OUT, mouseOutHandler );
 			_gameContainer.removeEventListener( MouseEvent.MOUSE_OVER, mouseOverHandler );
+			_gameOptions.lipSyncher.gameCore.director.currentScene.stop();
+			_gameFinished = true;
 		}
 
 		public function tweenIn() : void {
@@ -326,18 +334,18 @@ package fabis.wunderreise.games.memory {
 
 		public function reactOnGameFinished(result : Object, gameCore : IGameCore) : void {
 		}
+		
+		public function playFeedback( cardNumber : int ) : void {
+			_feedbackSoundStarted = true;
+			_feedbackSound.delegate = this;
+			_feedbackSound.play();
+		}
 
 		public function get gameCore() : IGameCore {
 			return null;
 		}
 
 		public function set gameCore(gameCore : IGameCore) : void {
-		}
-		
-		public function playFeedback( cardNumber : int ) : void {
-			_feedbackSoundStarted = true;
-			_feedbackSound.delegate = this;
-			_feedbackSound.play();
 		}
 	}
 }

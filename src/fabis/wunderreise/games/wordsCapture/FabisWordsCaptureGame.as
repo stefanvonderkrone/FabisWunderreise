@@ -20,6 +20,7 @@ package fabis.wunderreise.games.wordsCapture {
 	 */
 	public class FabisWordsCaptureGame extends Sprite implements ISoundItemDelegate {
 		
+		public var _gameFinished : Boolean = false;
 		protected var _gameOptions : FabisWordsCaptureGameOptions;
 		protected var _soundCore : ISoundCore;
 		protected var _gameCore : IGameCore;
@@ -44,7 +45,8 @@ package fabis.wunderreise.games.wordsCapture {
 		}
 		
 		public function stop() : void {
-			
+			_gameFinished = true;
+			_gameOptions.lipSyncher.gameCore.director.currentScene.stop();
 		}
 		
 		public function set soundCore( soundCore : ISoundCore) : void {

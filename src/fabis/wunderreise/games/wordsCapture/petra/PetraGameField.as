@@ -143,6 +143,7 @@ package fabis.wunderreise.games.wordsCapture.petra {
 				removeBasketFront();
 				_gameOptions.fabi.stopSynchronization();
 			}*/
+			super.reactOnSoundItemSoundComplete( soundItem );
 		}
 		
 		public function playIntro() : void {

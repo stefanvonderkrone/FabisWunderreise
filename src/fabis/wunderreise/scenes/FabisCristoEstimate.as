@@ -1,4 +1,5 @@
 package fabis.wunderreise.scenes {
+	import com.greensock.TweenLite;
 	import fabis.wunderreise.sound.FabisEyeTwinkler;
 	import fabis.wunderreise.sound.FabisLipSyncher;
 	import flash.events.MouseEvent;
@@ -21,6 +22,8 @@ package fabis.wunderreise.scenes {
 		protected var _introSound : ISoundItem;
 		protected var _lipSyncher : FabisLipSyncher;
 		protected var _eyeTwinkler : FabisEyeTwinkler;
+		protected var _menuButtons : FabisMenuButtons;
+		protected var _storage : *;
 		
 		public function FabisCristoEstimate() {
 			super();
@@ -32,7 +35,7 @@ package fabis.wunderreise.scenes {
 	
 		override protected function handleCreation() : void {
 			_view = new FabisCristoView();
-			
+			_menuButtons = new FabisMenuButtons();
 			_fabiCristoSmallContainer = view._fabiCristoSmallContainer;
 			_fabiCristoContainer = view._fabiCristoContainer;
 			
@@ -44,11 +47,9 @@ package fabis.wunderreise.scenes {
 			_fabiSmall._fabi._nose.gotoAndStop( 1 );
 			_fabiSmall._fabi._arm.gotoAndStop( 1 );
 			
-		//	_fabiSmall.init();
 			_fabiCristoSmallContainer.addChild( _fabiSmall );
 			
 			const estimateOptions : FabisEstimateGameOptions = new FabisEstimateGameOptions();
-			//TODO: set to 2
 			estimateOptions.exerciseNumber = 2;
 			estimateOptions.flipTime = 12;
 			
@@ -82,6 +83,8 @@ package fabis.wunderreise.scenes {
 			_skipButton.addEventListener( MouseEvent.CLICK, _game.skipIntro);
 			view.addChild( _skipButton );
 			
+			view.addChild( _menuButtons );
+			initMainMenu( _menuButtons );
 			super.handleCreation();
 		}
 		
@@ -97,7 +100,21 @@ package fabis.wunderreise.scenes {
 		override protected function handleStop() : void {
 			super.handleStop();
 			_eyeTwinkler.stop();
-			_game.stop();
+			_lipSyncher.stop();
+			_game.soundCore.stopAllSounds();
+			
+			if( _game._gameFinished ){
+				_storage = gameCore.localStorage.getStorageObject();
+				_storage.stampArray["cristoStamp"] = false;
+				_storage.finishedCristoRedentor = true;
+				gameCore.localStorage.saveStorage();
+				
+				TweenLite.delayedCall(
+					2,
+					gameCore.director.replaceScene,
+					[ new FabisPassport(), true ]
+				);
+			}
 		}
 		
 		override protected function handleStart() : void {

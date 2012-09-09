@@ -122,8 +122,8 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		}
 		
 		override public function completeGame() : void {
-			super.completeGame();
 			TweenLite.delayedCall( 1, addStonesToWall );
+			super.completeGame();
 		}
 		
 		override public function removeBasketFront() : void {
@@ -154,6 +154,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 				removeBasketFront();
 				_gameOptions.lipSyncher.stop();
 			}
+			super.reactOnSoundItemSoundComplete( soundItem );
 		}
 		
 		public function playFeedback( points : int ) : void {

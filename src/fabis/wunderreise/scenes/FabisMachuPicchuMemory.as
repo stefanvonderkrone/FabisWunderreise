@@ -1,4 +1,8 @@
 package fabis.wunderreise.scenes {
+	import fabis.wunderreise.gamesave.FabisGameSave;
+	import com.junkbyte.console.Cc;
+	import com.flashmastery.as3.game.interfaces.core.IGameScene;
+	import com.greensock.TweenLite;
 	import flash.events.MouseEvent;
 	import fabis.wunderreise.sound.FabisEyeTwinkler;
 	import fabis.wunderreise.games.memory.FabisMachuPicchuGame;
@@ -18,6 +22,8 @@ package fabis.wunderreise.scenes {
 		protected var _skipButton : FabisSkipButton;
 		protected var _lipSyncher : FabisLipSyncher;
 		protected var _eyeTwinkler : FabisEyeTwinkler;
+		protected var _storage : *;
+		protected var _menuButtons : FabisMenuButtons;
 
 		public function FabisMachuPicchuMemory() {
 			super();
@@ -29,7 +35,7 @@ package fabis.wunderreise.scenes {
 
 		override protected function handleCreation() : void {
 			_view = new MemoryMachuPicchuGameView();
-			
+			_menuButtons = new FabisMenuButtons();
 			_fabi = new FabiView();
 			_fabi.x = 50;
 			_fabi.y = 250;
@@ -76,7 +82,8 @@ package fabis.wunderreise.scenes {
 			view.addChild( _skipButton );
 			
 			_memory._mainView = view;
-			
+			view.addChild( _menuButtons );
+			initMainMenu( _menuButtons );
 			super.handleCreation();
 		}
 		
@@ -98,7 +105,22 @@ package fabis.wunderreise.scenes {
 		override protected function handleStop() : void {
 			super.handleStop();
 			_eyeTwinkler.stop();
-			_memory.stop();
+			_lipSyncher.stop();
+			_memory.soundCore.stopAllSounds();
+			
+			if( _memory._gameFinished ){
+				_storage = gameCore.localStorage.getStorageObject();
+				_storage.stampArray["machuPicchuStamp"] = false;
+				_storage.finishedMachuPicchu = true;
+				gameCore.localStorage.saveStorage();
+				
+				TweenLite.delayedCall(
+					2,
+					gameCore.director.replaceScene,
+					[ new FabisPassport(), true ]
+				);
+			}
+			
 		}
 	}
 }

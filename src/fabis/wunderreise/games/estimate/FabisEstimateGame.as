@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.estimate {
+	import com.junkbyte.console.Cc;
 	import flash.display.MovieClip;
 	import com.flashmastery.as3.game.interfaces.core.IInteractiveGameObject;
 	import com.flashmastery.as3.game.interfaces.core.IGameCore;
@@ -21,10 +22,9 @@ package fabis.wunderreise.games.estimate {
 	public class FabisEstimateGame extends Sprite implements ISoundItemDelegate, IFabisLipSyncherDelegate {
 		
 		public var _gameOptions : FabisEstimateGameOptions;
-		
+		public var _gameFinished : Boolean = false;
 		protected var _mainView : FabisCristoView;
 		protected var _fabiCristo : FabiCristo;
-		//TODO: change to 1
 		protected var _currentExerciseNumber : int = 1;
 		protected var _secondTry : Boolean = false;
 		public var _currentExercise : *;
@@ -99,12 +99,13 @@ package fabis.wunderreise.games.estimate {
 		}
 		
 		public function start() : void {
-			//TODO: add intro
 			startIntro();
 		}
 		
 		public function stop() : void {
-			//super.stop();
+			Cc.logch.apply( undefined, [ "stop in EstimateGame "] );
+			_gameFinished = true;
+			_gameOptions.lipSyncher.gameCore.director.currentScene.stop();
 		}
 		
 		public function initDrag() : void {
@@ -120,7 +121,6 @@ package fabis.wunderreise.games.estimate {
 			_introSound.play();
 			
 			_gameOptions.lipSyncher.start();
-			//_gameOptions.fabiSmall.startSynchronization();
 			_gameOptions.fabiSmall.addEventListener( Event.ENTER_FRAME, handleFlip );
 		}
 		
@@ -131,7 +131,6 @@ package fabis.wunderreise.games.estimate {
 			if( _frameCounter == _gameOptions.flipTime * 60 ){
 				_gameOptions.fabiSmall.removeEventListener( Event.ENTER_FRAME, handleFlip );
 				_gameOptions.lipSyncher.stop();
-				//_gameOptions.fabiSmall.stopSynchronization();
 				TweenLite.to( _gameOptions.fabiSmall._fabi._arm, 1/2, {frame: _gameOptions.fabiSmall._fabi._arm.totalFrames} );
 				TweenLite.delayedCall( 1, _mainView.removeChild, [ _gameOptions.fabiCristoSmallContainer ] );
 				_frameCounter = 0;
@@ -140,12 +139,10 @@ package fabis.wunderreise.games.estimate {
 		
 		public function endOfExercise() : void {
 			_gameOptions.lipSyncher.stop();
-			//_fabi.stopSynchronization();
 			
 			if( _secondTry ){
 				_currentExercise.reset();
 				_gameOptions.lipSyncher.start();
-				//_fabi.startSynchronization();
 			}
 			else{
 				_currentExercise.clean();

@@ -1,4 +1,5 @@
 package fabis.wunderreise.scenes {
+	import com.greensock.TweenLite;
 	import fabis.wunderreise.sound.FabisEyeTwinkler;
 	import fabis.wunderreise.sound.FabisLipSyncher;
 	import flash.events.MouseEvent;
@@ -16,10 +17,11 @@ package fabis.wunderreise.scenes {
 		
 		protected var _game : KolosseumGame;
 		protected var _gameField : KolosseumGameField;
-		//protected var _fabi : FabiWordsCapture;
+		protected var _storage : *;
 		protected var _skipButton : FabisSkipButton;
 		protected var _lipSyncher : FabisLipSyncher;
 		protected var _eyeTwinkler : FabisEyeTwinkler;
+		protected var _menuButtons : FabisMenuButtons;
 		
 		public function FabisKolosseumWordsCapture() {
 			super();
@@ -31,6 +33,7 @@ package fabis.wunderreise.scenes {
 	
 		override protected function handleCreation() : void {
 			_view = new FabisKolosseumView();
+			_menuButtons = new FabisMenuButtons();
 			view._kolosseum.gotoAndStop( 1 );
 			
 			_gameField = new KolosseumGameField();
@@ -57,6 +60,7 @@ package fabis.wunderreise.scenes {
 			
 			_game = new KolosseumGame();
 			_game.initWithOptions( wordsCaptureOptions );
+			_gameField._game = _game;
 			
 			_skipButton = new FabisSkipButton();
 			_skipButton.x = 20;
@@ -67,6 +71,10 @@ package fabis.wunderreise.scenes {
 			
 			view._gameFieldContainer.addChild( _gameField.gameField );
 			view.addChild( wordsCaptureOptions.fabi );
+			
+			view.addChild( _menuButtons );
+			initMainMenu( _menuButtons );
+			
 			super.handleCreation();
 		}
 		
@@ -82,7 +90,21 @@ package fabis.wunderreise.scenes {
 		override protected function handleStop() : void {
 			super.handleStop();
 			_eyeTwinkler.stop();
-			_game.stop();
+			_lipSyncher.stop();
+			_game.soundCore.stopAllSounds();
+			
+			if( _game._gameFinished ){
+				_storage = gameCore.localStorage.getStorageObject();
+				_storage.stampArray["colosseumStamp"] = false;
+				_storage.finishedColosseum = true;
+				gameCore.localStorage.saveStorage();
+				
+				TweenLite.delayedCall(
+					2,
+					gameCore.director.replaceScene,
+					[ new FabisPassport(), true ]
+				);
+			}
 		}
 		
 		override protected function handleStart() : void {

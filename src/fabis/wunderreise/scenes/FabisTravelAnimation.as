@@ -104,6 +104,7 @@ package fabis.wunderreise.scenes {
 			_vehicle.scaleY = 1/3;
 			_vehicle.gotoAndStop( _target + 1 );
 			view._worldMap.cacheAsBitmap = true;
+			view.removeChild( view._menuButtons );
 			super.handleCreation();
 		}
 

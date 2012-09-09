@@ -22,6 +22,7 @@ package fabis.wunderreise.games.quiz {
 	 */
 	public class FabisQuizGame extends Sprite implements ISoundItemDelegate, IFabisLipSyncherDelegate {
 		
+		public var _gameFinished : Boolean = false;
 		protected var _view : FabisCloseView;
 		protected var _game : *;
 		protected var _gameOptions : FabisQuizGameOptions;
@@ -85,7 +86,8 @@ package fabis.wunderreise.games.quiz {
 		}
 		
 		public function stop() : void {
-			//_gameField.stop();
+			_gameOptions.lipSyncher.gameCore.director.currentScene.stop();
+			_gameFinished = true;
 		}
 		
 		public function switchToCloseView() : void {
@@ -200,6 +202,7 @@ package fabis.wunderreise.games.quiz {
 			if( _pointsSoundStarted ){
 				_pointsSoundStarted = false;
 				_gameOptions.lipSyncher.stop();
+				stop();
 			}
 		}
 

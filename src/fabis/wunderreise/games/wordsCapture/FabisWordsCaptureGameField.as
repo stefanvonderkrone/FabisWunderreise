@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.wordsCapture {
+	import com.junkbyte.console.Cc;
 	import com.flashmastery.as3.game.interfaces.core.IInteractiveGameObject;
 	import com.flashmastery.as3.game.interfaces.core.IGameCore;
 	import fabis.wunderreise.sound.IFabisLipSyncherDelegate;
@@ -22,12 +23,11 @@ package fabis.wunderreise.games.wordsCapture {
 	 */
 	public class FabisWordsCaptureGameField  extends MovieClip implements ISoundItemDelegate, IFabisLipSyncherDelegate {
 		
-		//protected var _gameField : GameField;
-		
 		protected var _basket : FabisWordsCaptureBasket;
 		public var _gameOptions : FabisWordsCaptureGameOptions;
 		protected var _gameField :*;
 		protected var _gameFieldObject :*;
+		public var _game : *;
 		protected var _stone :*;
 		protected var _frameCounter : int = 0;
 		protected var _soundCore : ISoundCore;
@@ -67,6 +67,10 @@ package fabis.wunderreise.games.wordsCapture {
 		}
 		
 		public function skipIntro() : void{
+		}
+		
+		override public function stop() : void {
+			_game.stop();
 		}
 		
 		public function startDemo() : void {
@@ -182,13 +186,7 @@ package fabis.wunderreise.games.wordsCapture {
 		public function showFeedback() : void{
 			_basket.tweenOut();
 			_basket.showBasketFront( _gameOptions );
-			// TODO: add to game
-			//_gameOptions.soundManager.playFeedback( _points );
 			_gameFieldObject.playFeedback( _points );
-			
-			//TweenLite.delayedCall(2, _basket.removeBasketFront );
-			//_gameOptions.soundManager.playCompletion();
-			//addStonesToWall();
 		}
 		
 		public function removeBasketFront() : void {
@@ -196,7 +194,6 @@ package fabis.wunderreise.games.wordsCapture {
 		}
 		
 		public function completeGame() : void {
-			//_gameOptions.soundManager.playCompletion();
 			playCompletion();
 		}
 
@@ -218,7 +215,7 @@ package fabis.wunderreise.games.wordsCapture {
 			if( _completionSoundStarted ){
 				_completionSoundStarted = false;
 				_gameOptions.lipSyncher.stop();
-				//_gameOptions.fabi.stopSynchronization();
+				TweenLite.delayedCall( 3, stop );
 			}
 		}
 
@@ -247,7 +244,6 @@ package fabis.wunderreise.games.wordsCapture {
 			_completionSound.delegate = this;
 			_completionSound.play();
 			_gameOptions.lipSyncher.start();
-			//_gameOptions.fabi.startSynchronization();
 		}
 
 		public function reactOnCumulatedSpectrum(cumulatedSpectrum : Number) : void {

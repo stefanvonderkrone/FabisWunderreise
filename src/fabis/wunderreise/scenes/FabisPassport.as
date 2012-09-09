@@ -1,6 +1,6 @@
 package fabis.wunderreise.scenes {
-	import flash.display.MovieClip;
-	import fabis.wunderreise.passport.FabisPassportOptions;
+	import fl.text.TLFTextField;
+	import flash.filters.GlowFilter;
 	import flash.events.ProgressEvent;
 
 	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
@@ -15,9 +15,12 @@ package fabis.wunderreise.scenes {
 	 */
 	public class FabisPassport extends BaseScene implements ISoundItemDelegate {
 		
-		public var _options : FabisPassportOptions;
+		
 		protected var _feedbackSound : ISoundItem;
 		protected var _feedbackSoundStarted : Boolean = false;
+		protected var _storage : *;
+		protected var myGlow : GlowFilter = new GlowFilter();
+		protected var _menuButtons : FabisMenuButtons;
 		
 		public function FabisPassport() {
 			super();
@@ -29,17 +32,43 @@ package fabis.wunderreise.scenes {
 	
 		override protected function handleCreation() : void {
 			_view = new FabisPassportView();
+			_menuButtons = new FabisMenuButtons();
 			
+			view._passportContainer._chichenItzaStamp.gotoAndStop( 1 );
+			view._passportContainer._chineseWallStamp.gotoAndStop( 1 );
+			view._passportContainer._colosseumStamp.gotoAndStop( 1 );
+			view._passportContainer._cristoStamp.gotoAndStop( 1 );
+			view._passportContainer._machuPicchuStamp.gotoAndStop( 1 );
+			view._passportContainer._petraStamp.gotoAndStop( 1 );
+			view._passportContainer._tajMahalStamp.gotoAndStop( 1 );
+			view._passportContainer._rank0.visible = true;
+			view._passportContainer._rank1.visible = false;
+			view._passportContainer._rank2.visible = false;
+			view._passportContainer._rank3.visible = false;
+			view._passportContainer._rank4.visible = false;
+			view._passportContainer._rank5.visible = false;
+			view._passportContainer._rank6.visible = false;
+			view._passportContainer._rank7.visible = false;
+			
+			view.addChild( _menuButtons );
+			initMainMenu( _menuButtons );
 			super.handleCreation();
 		}
 		
 		override protected function initView( evt : Event ) : void {
 			super.initView( evt );
+			_storage = gameCore.localStorage.getStorageObject();
 			initPassport();
 		}
 		
 		override protected function handleStop() : void {
 			super.handleStop();
+			
+			TweenLite.delayedCall(
+				1,
+				gameCore.director.replaceScene,
+				[ new FabisMainMenu(), true ]
+			);
 		}
 		
 		override protected function handleStart() : void {
@@ -54,76 +83,89 @@ package fabis.wunderreise.scenes {
 		}
 		
 		private function initPassport() : void {
-			var _stamp : MovieClip;
-			var _stampName : String;
+			//Cc.logch.apply( undefined, [_storage.finishedMachuPicchu] );
+			checkForNewStamp( "machuPicchuStamp", _storage.finishedMachuPicchu );
+			checkForNewStamp( "chichenItzaStamp", _storage.finishedChichenItza );
+			checkForNewStamp( "chineseWallStamp", _storage.finishedChineseWall );
+			checkForNewStamp( "colosseumStamp", _storage.finishedColosseum );
+			checkForNewStamp( "cristoStamp", _storage.finishedCristoRedentor );
+			checkForNewStamp( "petraStamp", _storage.finishedPetra );
+			checkForNewStamp( "tajMahalStamp", _storage.finishedTajMahal );
 			
-			for( var i : int = 0; i < _options.stampArray.length; i++ ){
-				
-				_stampName = "_" + _options.stampArray[ i ].name;
-				_stamp = MovieClip( view._passportContainer.getChildByName( _stampName ) );
-				
-				if( _options.stampArray[ i ].checked ){
-					_stamp.gotoAndStop( 2 );
-				}
-				else{
-					_stamp.gotoAndStop( 1 );
-				}
+			
+			if( _storage.finishedMachuPicchu ) view._passportContainer._machuPicchuStamp.gotoAndStop( 2 );
+			if( _storage.finishedChichenItza ) view._passportContainer._chichenItzaStamp.gotoAndStop( 2 );
+			if( _storage.finishedChineseWall ) view._passportContainer._chineseWallStamp.gotoAndStop( 2 );
+			if( _storage.finishedColosseum ) view._passportContainer._colosseumStamp.gotoAndStop( 2 );
+			if( _storage.finishedCristoRedentor ) view._passportContainer._cristoStamp.gotoAndStop( 2 );
+			if( _storage.finishedPetra ) view._passportContainer._petraStamp.gotoAndStop( 2 );
+			if( _storage.finishedTajMahal ) view._passportContainer._tajMahalStamp.gotoAndStop( 2 );
+			
+			checkRanks( _storage._stampCounter );
+		}
+		
+		private function checkForNewStamp( stamp : String, gameFinished : Boolean ) : void {
+			if( !_storage.stampArray[ stamp ] && gameFinished ){
+				_storage._stampCounter++;
+				_storage.stampArray[ stamp ] = true;
+				gameCore.localStorage.saveStorage();
+				playStampFeedback( _storage._stampCounter,  stamp );
 			}
 		}
 		
-		public function getNewStamp( wonderOfTheWorld : String ) : void {
-			
-			switch( wonderOfTheWorld ){
-				case "machuPicchu":
-					break;
-				case "cristo":
-				
-					break;
-				case "chichenItza":
-				
-					break;
-				case "colosseum":
-				
-					break;
-				case "petra":
-				
-					break;
-				case "chineseWall":
-				
-					break;
-				case "tajMahal":
-				
-					break;
+		private function checkRanks( rankNumber : int ) : void {
+			var i : int;
+			for( i = 0; i <= rankNumber; i++ ){
+				view._passportContainer.getChildByName("_rank" + i.toString() ).visible = true;
 			}
 		}
 		
-		protected function playStampFeedback( stampNumber : int ) : void {
-			/*switch( stampNumber ) {
+		protected function playStampFeedback( stampNumber : int, stamp : String ) : void {
+			switch( stampNumber ) {
 				case 1:
-					_feedbackSound = _soundCore.getSoundByName( "menuPassportStamp1" );
+					_feedbackSound = gameCore.soundCore.getSoundByName( "menuPassportStamp1" );
 					break;
 				case 2:
-					_feedbackSound = _soundCore.getSoundByName( "menuPassportStamp2" );
+					_feedbackSound = gameCore.soundCore.getSoundByName( "menuPassportStamp2" );
 					break;
 				case 3:
-					_feedbackSound = _soundCore.getSoundByName( "menuPassportStamp3" );
+					_feedbackSound = gameCore.soundCore.getSoundByName( "menuPassportStamp3" );
 					break;
 				case 4:
-					_feedbackSound = _soundCore.getSoundByName( "menuPassportStamp4" );
+					_feedbackSound = gameCore.soundCore.getSoundByName( "menuPassportStamp4" );
 					break;
 				case 5:
-					_feedbackSound = _soundCore.getSoundByName( "menuPassportStamp5" );
+					_feedbackSound = gameCore.soundCore.getSoundByName( "menuPassportStamp5" );
 					break;
 				case 6:
-					_feedbackSound = _soundCore.getSoundByName( "menuPassportStamp6" );
+					_feedbackSound = gameCore.soundCore.getSoundByName( "menuPassportStamp6" );
 					break;
-			}*/
+			}
 			
-			/*_feedbackSoundStarted = true;
+			_feedbackSoundStarted = true;
 			_feedbackSound.delegate = this;
-			_feedbackSound.play();*/
-			
+			_feedbackSound.play();
+			//highlightStamp( stamp );
 		}
+		
+		/*private function highlightStamp( stamp : String ) : void {
+			var _stampName : String = "_" + stamp;
+			var _newStamp : MovieClip;
+			_newStamp = MovieClip( view._passportContainer.getChildByName( _stampName ) );
+			
+			myGlow.color = 0x33CC33;
+			
+			myGlow.blurX = 10;
+			myGlow.blurY = 10;
+			_newStamp.filters = [myGlow];
+			
+		}*/
+		
+		/*private function removeHighlight( stamp : String ) : void{
+			myGlow.blurX = 10;
+			myGlow.blurY = 10;
+			stamp.filters = [myGlow];
+		}*/
 		
 		public function reactOnSoundItemProgressEvent(evt : ProgressEvent, soundItem : ISoundItem) : void {
 		}
@@ -132,6 +174,11 @@ package fabis.wunderreise.scenes {
 		}
 
 		public function reactOnSoundItemSoundComplete(soundItem : ISoundItem) : void {
+			if( _feedbackSoundStarted ){
+				_feedbackSoundStarted = false;
+				//removeHighlight
+				stop();
+			}
 		}
 
 		public function reactOnSoundItemLoadComplete(soundItem : ISoundItem) : void {

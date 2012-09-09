@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.wordsCapture.petra {
+	import com.junkbyte.console.Cc;
 	import flash.events.MouseEvent;
 	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGameOptions;
 	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGame;
@@ -55,7 +56,8 @@ package fabis.wunderreise.games.wordsCapture.petra {
 		}
 		
 		override public function stop() : void {
-			_gameField.stop();
+			Cc.logch.apply( undefined, [ "stop in Petra "] );
+			super.stop();
 		}
 	}
 }

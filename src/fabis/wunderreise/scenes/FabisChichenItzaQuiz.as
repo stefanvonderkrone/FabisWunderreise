@@ -1,4 +1,5 @@
 package fabis.wunderreise.scenes {
+	import com.greensock.TweenLite;
 	import fabis.wunderreise.sound.FabisEyeTwinkler;
 	import fabis.wunderreise.sound.FabisLipSyncher;
 	import flash.events.MouseEvent;
@@ -15,6 +16,8 @@ package fabis.wunderreise.scenes {
 		protected var _skipButton : FabisSkipButton;
 		protected var _lipSyncher : FabisLipSyncher;
 		protected var _eyeTwinkler : FabisEyeTwinkler;
+		protected var _storage : *;
+		protected var _menuButtons : FabisMenuButtons;
 		
 		public function FabisChichenItzaQuiz() {
 			super();
@@ -26,7 +29,7 @@ package fabis.wunderreise.scenes {
 	
 		override protected function handleCreation() : void {
 			_view = new FabisChichenItzaView();
-			
+			_menuButtons = new FabisMenuButtons();
 			_fabi = new FabiView();
 			_fabi.x = 80;
 			_fabi.y = 300;
@@ -62,7 +65,8 @@ package fabis.wunderreise.scenes {
 			quizOptions.skipButton = _skipButton;
 			_skipButton.addEventListener( MouseEvent.CLICK, _game.skipIntro);
 			view._chichenItzaContainer.addChild( _skipButton );
-			
+			view.addChild( _menuButtons );
+			initMainMenu( _menuButtons );
 			super.handleCreation();
 		}
 		
@@ -78,7 +82,21 @@ package fabis.wunderreise.scenes {
 		override protected function handleStop() : void {
 			super.handleStop();
 			_eyeTwinkler.stop();
-			_game.stop();
+			_lipSyncher.stop();
+			_game.soundCore.stopAllSounds();
+			
+			if( _game._gameFinished ){
+				_storage = gameCore.localStorage.getStorageObject();
+				_storage.stampArray["chichenItzaStamp"] = false;
+				_storage.finishedChichenItza = true;
+				gameCore.localStorage.saveStorage();
+				
+				TweenLite.delayedCall(
+					2,
+					gameCore.director.replaceScene,
+					[ new FabisPassport(), true ]
+				);
+			}
 		}
 		
 		override protected function handleStart() : void {

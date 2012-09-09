@@ -1,18 +1,42 @@
 package fabis.wunderreise.gamesave {
+	import com.junkbyte.console.Cc;
 	/**
 	 * @author Stefan von der Krone (2012)
 	 */
 	public class FabisGameSave extends Object {
 		
-		public var finishedChichenItza : Boolean = false;
-		public var finishedChineseWall : Boolean = false;
-		public var finishedCristoRedentor : Boolean = false;
-		public var finishedColosseum : Boolean = false;
-		public var finishedMachuPicchu : Boolean = false;
-		public var finishedPetra : Boolean = false;
-		public var finishedTajMahal : Boolean = false;
+		public var finishedChichenItza : Boolean;
+		public var finishedChineseWall : Boolean;
+		public var finishedCristoRedentor : Boolean;
+		public var finishedColosseum : Boolean;
+		public var finishedMachuPicchu : Boolean;
+		public var finishedPetra : Boolean;
+		public var finishedTajMahal : Boolean;
+		
+		public var stampArray : Array; 
+
+		public var _stampCounter : int;
+
 
 		public function FabisGameSave() {
+			_stampCounter = 0;
+			
+			finishedChichenItza = false;
+			finishedChineseWall = false;
+			finishedCristoRedentor= false;
+			finishedColosseum = false;
+			finishedMachuPicchu = false;
+			finishedPetra = false;
+			finishedTajMahal = false;
+			
+			stampArray = [ {"chichenItzaStamp"  :  false },
+										{"machuPicchuStamp" : false },
+										{"cristoStamp" : false },
+										{"colosseumStamp" : false },
+										{"petraStamp" : false },
+										{"chineseWallStamp" : false },
+										{"tajMahalStamp" : false } 
+									];
 		}
 		
 		public function toString() : String {

@@ -1,4 +1,5 @@
 package fabis.wunderreise.scenes {
+	import com.greensock.TweenLite;
 	import fabis.wunderreise.sound.FabisEyeTwinkler;
 	import fabis.wunderreise.sound.FabisLipSyncher;
 	import flash.events.MouseEvent;
@@ -21,6 +22,8 @@ package fabis.wunderreise.scenes {
 		protected var _skipButton : FabisSkipButton;
 		protected var _lipSyncher : FabisLipSyncher;
 		protected var _eyeTwinkler : FabisEyeTwinkler;
+		protected var _menuButtons : FabisMenuButtons;
+		protected var _storage : *;
 		
 		public function FabisPetraWordsCapture() {
 			super();
@@ -32,7 +35,7 @@ package fabis.wunderreise.scenes {
 	
 		override protected function handleCreation() : void {
 			_view = new FabisPetraView();
-			//view._petra.gotoAndStop( 1 );
+			_menuButtons = new FabisMenuButtons();
 			
 			_gameField = new PetraGameField();
 			_gameField.init();
@@ -56,6 +59,7 @@ package fabis.wunderreise.scenes {
 			
 			_game = new PetraGame();
 			_game.initWithOptions( wordsCaptureOptions );
+			_gameField._game = _game;
 			
 			_skipButton = new FabisSkipButton();
 			_skipButton.x = 20;
@@ -66,6 +70,8 @@ package fabis.wunderreise.scenes {
 			
 			view._gameFieldContainer.addChild( _gameField.gameField );
 			view.addChild( wordsCaptureOptions.fabi );
+			view.addChild( _menuButtons );
+			initMainMenu( _menuButtons );
 			super.handleCreation();
 		}
 		
@@ -81,7 +87,21 @@ package fabis.wunderreise.scenes {
 		override protected function handleStop() : void {
 			super.handleStop();
 			_eyeTwinkler.stop();
-			_game.stop();
+			_lipSyncher.stop();
+			_game.soundCore.stopAllSounds();
+			
+			if( _game._gameFinished ){
+				_storage = gameCore.localStorage.getStorageObject();
+				_storage.stampArray["petraStamp"] = false;
+				_storage.finishedPetra = true;
+				gameCore.localStorage.saveStorage();
+				
+				TweenLite.delayedCall(
+					2,
+					gameCore.director.replaceScene,
+					[ new FabisPassport(), true ]
+				);
+			}
 		}
 		
 		override protected function handleStart() : void {
