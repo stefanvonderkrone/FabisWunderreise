@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.quiz {
+	import com.junkbyte.console.Cc;
 	import flash.events.MouseEvent;
 	/**
 	 * @author Stefanie Drost
@@ -22,6 +23,11 @@ package fabis.wunderreise.games.quiz {
 		
 		override public function start() : void {
 			startIntro();
+		}
+		
+		public function stop() : void {
+			_gameFinished = true;
+			_gameOptions.lipSyncher.gameCore.director.currentScene.stop();
 		}
 		
 		override public function startIntro() : void {
@@ -50,7 +56,6 @@ package fabis.wunderreise.games.quiz {
 				_imageContainer.addChild( _wrongSymbol );
 				
 				view._closeContainer.addChild( _imageContainer );
-				
 			}
 			_imageContainer.gotoAndStop( frameNumber );
 		}

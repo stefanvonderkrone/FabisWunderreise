@@ -44,6 +44,7 @@ package fabis.wunderreise.scenes {
 			
 			_memory = FabisTajMahalGame( view._memoryContainer.addChild( new FabisTajMahalGame() ) );
 			const memoryOptions : FabisMemoryGameOptions = new FabisMemoryGameOptions();
+			memoryOptions.memoryContainer = view._memoryContainer;
 			memoryOptions.cardAssets = Vector.<Class>( [
 				MemoryTajMahalCard01,
 				MemoryTajMahalCard02,
@@ -107,15 +108,26 @@ package fabis.wunderreise.scenes {
 			
 			if( _memory._gameFinished ){
 				_storage = gameCore.localStorage.getStorageObject();
-				_storage.stampArray["tajMahalStamp"] = false;
-				_storage.finishedTajMahal = true;
-				gameCore.localStorage.saveStorage();
 				
-				TweenLite.delayedCall(
-					2,
-					gameCore.director.replaceScene,
-					[ new FabisPassport(), true ]
-				);
+				if( _storage.stampArray["tajMahalStamp"] ){
+					
+					TweenLite.delayedCall(
+						2,
+						gameCore.director.replaceScene,
+						[ new FabisPassport(), true ]
+					);
+				}
+				else{
+					_storage.stampArray["tajMahalStamp"] = false;
+					_storage.finishedTajMahal = true;
+					gameCore.localStorage.saveStorage();
+					
+					TweenLite.delayedCall(
+						2,
+						gameCore.director.replaceScene,
+						[ new FabisPassport(), true ]
+					);
+				}
 			}
 		}
 	}

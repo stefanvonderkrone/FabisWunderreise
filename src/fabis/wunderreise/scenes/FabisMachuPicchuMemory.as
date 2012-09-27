@@ -47,6 +47,7 @@ package fabis.wunderreise.scenes {
 			
 			_memory = FabisMachuPicchuGame( view._memoryContainer.addChild( new FabisMachuPicchuGame() ) );
 			const memoryOptions : FabisMemoryGameOptions = new FabisMemoryGameOptions();
+			memoryOptions.memoryContainer = view._memoryContainer;
 			memoryOptions.cardAssets = Vector.<Class>( [
 				MemoryMachuPicchuCard01,
 				MemoryMachuPicchuCard02,
@@ -108,19 +109,30 @@ package fabis.wunderreise.scenes {
 			_lipSyncher.stop();
 			_memory.soundCore.stopAllSounds();
 			
+			
 			if( _memory._gameFinished ){
 				_storage = gameCore.localStorage.getStorageObject();
-				_storage.stampArray["machuPicchuStamp"] = false;
-				_storage.finishedMachuPicchu = true;
-				gameCore.localStorage.saveStorage();
 				
-				TweenLite.delayedCall(
-					2,
-					gameCore.director.replaceScene,
-					[ new FabisPassport(), true ]
-				);
+				if( _storage.stampArray["machuPicchuStamp"] ){
+					
+					TweenLite.delayedCall(
+						2,
+						gameCore.director.replaceScene,
+						[ new FabisPassport(), true ]
+					);
+				}
+				else{
+					_storage.stampArray["machuPicchuStamp"] = false;
+					_storage.finishedMachuPicchu = true;
+					gameCore.localStorage.saveStorage();
+					
+					TweenLite.delayedCall(
+						2,
+						gameCore.director.replaceScene,
+						[ new FabisPassport(), true ]
+					);
+				}
 			}
-			
 		}
 	}
 }

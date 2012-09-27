@@ -87,15 +87,26 @@ package fabis.wunderreise.scenes {
 			
 			if( _game._gameFinished ){
 				_storage = gameCore.localStorage.getStorageObject();
-				_storage.stampArray["chichenItzaStamp"] = false;
-				_storage.finishedChichenItza = true;
-				gameCore.localStorage.saveStorage();
 				
-				TweenLite.delayedCall(
-					2,
-					gameCore.director.replaceScene,
-					[ new FabisPassport(), true ]
-				);
+				if( _storage.stampArray["chichenItzaStamp"] ){
+					
+					TweenLite.delayedCall(
+						2,
+						gameCore.director.replaceScene,
+						[ new FabisPassport(), true ]
+					);
+				}
+				else{
+					_storage.stampArray["chichenItzaStamp"] = false;
+					_storage.finishedChichenItza = true;
+					gameCore.localStorage.saveStorage();
+					
+					TweenLite.delayedCall(
+						2,
+						gameCore.director.replaceScene,
+						[ new FabisPassport(), true ]
+					);
+				}
 			}
 		}
 		

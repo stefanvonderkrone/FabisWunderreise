@@ -95,15 +95,26 @@ package fabis.wunderreise.scenes {
 			
 			if( _game._gameFinished ){
 				_storage = gameCore.localStorage.getStorageObject();
-				_storage.stampArray["colosseumStamp"] = false;
-				_storage.finishedColosseum = true;
-				gameCore.localStorage.saveStorage();
 				
-				TweenLite.delayedCall(
-					2,
-					gameCore.director.replaceScene,
-					[ new FabisPassport(), true ]
-				);
+				if( _storage.stampArray["colosseumStamp"] ){
+					
+					TweenLite.delayedCall(
+						2,
+						gameCore.director.replaceScene,
+						[ new FabisPassport(), true ]
+					);
+				}
+				else{
+					_storage.stampArray["colosseumStamp"] = false;
+					_storage.finishedColosseum = true;
+					gameCore.localStorage.saveStorage();
+					
+					TweenLite.delayedCall(
+						2,
+						gameCore.director.replaceScene,
+						[ new FabisPassport(), true ]
+					);
+				}
 			}
 		}
 		

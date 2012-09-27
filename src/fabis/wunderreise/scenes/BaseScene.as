@@ -135,8 +135,11 @@ package fabis.wunderreise.scenes {
 		}
 
 		protected function handleClickOnMap() : void {
-			if ( !( this is FabisMainMenu ) )
+			if ( !( this is FabisMainMenu ) ){
+				var _mapSound : ISoundItem = gameCore.soundCore.getSoundByName("menuMap");
+				_mapSound.play();
 				gameCore.director.replaceScene( new FabisMainMenu() , true );
+			}
 		}
 
 		protected function handleClickOnHelp() : void {

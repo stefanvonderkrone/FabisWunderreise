@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.memory {
+	import flash.display.MovieClip;
 	import fabis.wunderreise.sound.FabisEyeTwinkler;
 	import fabis.wunderreise.sound.FabisLipSyncher;
 	/**
@@ -17,7 +18,7 @@ package fabis.wunderreise.games.memory {
 		public var fabi : FabiView;
 		public var lipSyncher : FabisLipSyncher;
 		public var skipButton : FabisSkipButton;
-		
+		public var memoryContainer : MovieClip;
 		public var memoryGame : *;
 		
 

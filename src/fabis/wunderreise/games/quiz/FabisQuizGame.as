@@ -76,6 +76,8 @@ package fabis.wunderreise.games.quiz {
 		public function skipIntro( event : MouseEvent ) : void {
 			_introSound.stop();
 			_introSoundStarted = false;
+			_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleSwitchViews );
+			_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleTrueButtonView );
 			switchToCloseView();
 			startQuestion();
 			initTrueButton();
@@ -83,11 +85,6 @@ package fabis.wunderreise.games.quiz {
 		
 		public function start() : void {
 			startIntro();
-		}
-		
-		public function stop() : void {
-			_gameOptions.lipSyncher.gameCore.director.currentScene.stop();
-			_gameFinished = true;
 		}
 		
 		public function switchToCloseView() : void {
@@ -164,12 +161,12 @@ package fabis.wunderreise.games.quiz {
 			
 			if( _rightAnswer ){
 				playRightOrWrongEffect( true );
-				_imageContainer.setChildIndex( _rightSymbol, 3);
+				_imageContainer.setChildIndex( _rightSymbol, _imageContainer.numChildren-1 );
 				_rightSymbol.visible = true;
 			}
 			else{
 				playRightOrWrongEffect( false );
-				_imageContainer.setChildIndex( _rightSymbol, 3);
+				_imageContainer.setChildIndex( _wrongSymbol, _imageContainer.numChildren-1);
 				_wrongSymbol.visible = true;
 			}
 			
@@ -202,7 +199,7 @@ package fabis.wunderreise.games.quiz {
 			if( _pointsSoundStarted ){
 				_pointsSoundStarted = false;
 				_gameOptions.lipSyncher.stop();
-				stop();
+				_game.stop();
 			}
 		}
 

@@ -107,6 +107,8 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			var _xCoordinate : int;
 			var _yCoordinate : int;
 			
+			
+			
 			if( _gameOptions.rightStones.length > 0 ){
 				
 				var _frameNumer : int = (_gameOptions.numrightStones + 2) - _gameOptions.rightStones.length;
@@ -123,6 +125,8 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		
 		override public function completeGame() : void {
 			TweenLite.delayedCall( 1, addStonesToWall );
+			var _addStonesSound : ISoundItem = _soundCore.getSoundByName("wordsCaptureAddStones");
+			TweenLite.delayedCall( 1, _addStonesSound.play );
 			super.completeGame();
 		}
 		

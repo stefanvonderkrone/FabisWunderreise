@@ -36,6 +36,7 @@ package fabis.wunderreise.scenes {
 		override protected function handleCreation() : void {
 			_view = new FabisPetraView();
 			_menuButtons = new FabisMenuButtons();
+			view._petra.gotoAndStop( 1 );
 			
 			_gameField = new PetraGameField();
 			_gameField.init();
@@ -45,7 +46,7 @@ package fabis.wunderreise.scenes {
 			wordsCaptureOptions.allPics = new Vector.<PetraStone>();
 			wordsCaptureOptions.wrongStones = new Vector.<PetraStone>();
 			wordsCaptureOptions.rightStones = new Vector.<PetraStone>();
-			//wordsCaptureOptions.background = view._petra;
+			wordsCaptureOptions.background = view._petra;
 			wordsCaptureOptions.fabi = new FabiView();
 			wordsCaptureOptions.gameField = _gameField;
 			wordsCaptureOptions.demoStartTime = 10;
@@ -92,15 +93,26 @@ package fabis.wunderreise.scenes {
 			
 			if( _game._gameFinished ){
 				_storage = gameCore.localStorage.getStorageObject();
-				_storage.stampArray["petraStamp"] = false;
-				_storage.finishedPetra = true;
-				gameCore.localStorage.saveStorage();
 				
-				TweenLite.delayedCall(
-					2,
-					gameCore.director.replaceScene,
-					[ new FabisPassport(), true ]
-				);
+				if( _storage.stampArray["petraStamp"] ){
+					
+					TweenLite.delayedCall(
+						2,
+						gameCore.director.replaceScene,
+						[ new FabisPassport(), true ]
+					);
+				}
+				else{
+					_storage.stampArray["petraStamp"] = false;
+					_storage.finishedPetra = true;
+					gameCore.localStorage.saveStorage();
+					
+					TweenLite.delayedCall(
+						2,
+						gameCore.director.replaceScene,
+						[ new FabisPassport(), true ]
+					);
+				}
 			}
 		}
 		

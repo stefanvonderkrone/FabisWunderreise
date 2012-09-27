@@ -87,15 +87,26 @@ package fabis.wunderreise.scenes {
 			
 			if( _game._gameFinished ){
 				_storage = gameCore.localStorage.getStorageObject();
-				_storage.stampArray["chineseWallStamp"] = false;
-				_storage.finishedChineseWall = true;
-				gameCore.localStorage.saveStorage();
 				
-				TweenLite.delayedCall(
-					2,
-					gameCore.director.replaceScene,
-					[ new FabisPassport(), true ]
-				);
+				if( _storage.stampArray["chineseWallStamp"] ){
+					
+					TweenLite.delayedCall(
+						2,
+						gameCore.director.replaceScene,
+						[ new FabisPassport(), true ]
+					);
+				}
+				else{
+					_storage.stampArray["chineseWallStamp"] = false;
+					_storage.finishedChineseWall = true;
+					gameCore.localStorage.saveStorage();
+					
+					TweenLite.delayedCall(
+						2,
+						gameCore.director.replaceScene,
+						[ new FabisPassport(), true ]
+					);
+				}
 			}
 		}
 		

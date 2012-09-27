@@ -98,9 +98,9 @@ package fabis.wunderreise.games.wordsCapture.petra {
 			Mouse.show();
 		}
 		
-		/*public function addStonesToWall() : void {
+		public function addStonesToWall() : void {
 			
-			var _stone : KolosseumStone;
+			var _stone : PetraStone;
 			var _xCoordinate : int;
 			var _yCoordinate : int;
 			
@@ -116,11 +116,11 @@ package fabis.wunderreise.games.wordsCapture.petra {
 				TweenLite.delayedCall( 1, gameField.removeChild, [ _stone.stone ] );
 				TweenLite.delayedCall( 1, addStonesToWall );
 			}
-		}*/
+		}
 		
 		override public function completeGame() : void {
 			super.completeGame();
-			//TweenLite.delayedCall( 1, addStonesToWall );
+			TweenLite.delayedCall( 1, addStonesToWall );
 		}
 		
 		override public function removeBasketFront() : void {
@@ -133,16 +133,16 @@ package fabis.wunderreise.games.wordsCapture.petra {
 				_gameOptions.lipSyncher.stop();
 				stopIntro();
 			}
-			/*if( _feedbackSoundStarted ){
+			if( _feedbackSoundStarted ){
 				_feedbackSoundStarted = false;
-				_gameOptions.fabi.stopSynchronization();
+				_gameOptions.lipSyncher.stop();
 				TweenLite.delayedCall(1, playPointsSound);
 			}
 			if( _pointsSoundStarted ){
 				_pointsSoundStarted = false;
 				removeBasketFront();
-				_gameOptions.fabi.stopSynchronization();
-			}*/
+				_gameOptions.lipSyncher.stop();
+			}
 			super.reactOnSoundItemSoundComplete( soundItem );
 		}
 		
@@ -166,7 +166,6 @@ package fabis.wunderreise.games.wordsCapture.petra {
 			_feedbackTime = _gameOptions.feedbackTimes.shift() * 60;
 			
 			_gameField.addEventListener( Event.ENTER_FRAME, handleFeedbackSound );
-			//_channel.addEventListener( Event.SOUND_COMPLETE, handlePointsSound );
 			
 		}
 		

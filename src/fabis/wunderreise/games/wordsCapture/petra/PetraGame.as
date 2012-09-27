@@ -23,19 +23,19 @@ package fabis.wunderreise.games.wordsCapture.petra {
 			//number of frames in mc
 			_gameOptions.wrongPics = new Array( 6, 7, 8 );
 			_gameOptions.rightPics = new Array( 1, 2, 3, 4, 5 );
-			_gameOptions.feedbackOrder = new Array( 2, 3, 5 );
+			_gameOptions.feedbackOrder = new Array( 1, 2, 3, 5, 4 );
 			// time in seconds
-			_gameOptions.feedbackTimes = new Array( 13, 25, 32 );
+			_gameOptions.feedbackTimes = new Array( 8, 13, 25, 32, 48, 55 );
 			
 			// coordinates for adding stones
-			_gameOptions.wallXCoordinates = new Array( 158, 190, 220, 250, 280 );
-			_gameOptions.wallYCoordinates = new Array( 90, 85, 75, 60, 65 );
+			_gameOptions.wallXCoordinates = new Array( 320, 390, 440, 500, 560 );
+			_gameOptions.wallYCoordinates = new Array( 20, 20, 23, 21, 21 );
 			
 			_gameOptions.frameArray = _gameOptions.initFrameArray();
 			_gameField._gameOptions = _gameOptions;
 			
 			_fabi = _gameOptions.fabi;
-			_fabi.x = 90;
+			_fabi.x = 50;
 			_fabi.y = 295;
 			_fabi._eyes.gotoAndStop( 1 );
 			_fabi._lips.gotoAndStop( 1 );

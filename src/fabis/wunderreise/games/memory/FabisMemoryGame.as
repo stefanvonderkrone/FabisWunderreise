@@ -42,7 +42,7 @@ package fabis.wunderreise.games.memory {
 		protected var _feedbackSoundStarted : Boolean = false;
 		public var _mainView : Sprite;
 		
-		protected var _currentCards : Array = new Array();
+		protected var _currentCard : FabisMemoryGameCard;
 		
 		private const _xCardDiff : int = 60;
 		private const _yCardDiff : int = 60;
@@ -156,15 +156,18 @@ package fabis.wunderreise.games.memory {
 		}
 
 		protected function removeSelectedCards( card1 : FabisMemoryGameCard,  card2 : FabisMemoryGameCard) : void {
-			// TODO remove game cards
-			// TODO show card infos
 			_gameOptions.memoryGame.playFeedback( card1.id + 1 );
-			_currentCards[0] = card1; 
-			_currentCards[1] = card2; 
+			_currentCard = card1; 
+			_gameContainer.removeChild( card2 );
 			_gameOptions.lipSyncher.delegate = this;
 			_gameOptions.lipSyncher.start();
-			
+			enlargeCard( _currentCard );
 			TweenLite.delayedCall( 0.5, unlockAndCheckGameStatus );
+		}
+		
+		protected function enlargeCard( card : FabisMemoryGameCard ) : void {
+			_gameContainer.setChildIndex( card, _gameContainer.numChildren - 1 );
+			TweenLite.to( card, 1, {x: 230, y: 142, width: 400, height: 400} );
 		}
 		
 		protected function resetSelectedCards() : void {
@@ -187,32 +190,23 @@ package fabis.wunderreise.games.memory {
 			}
 		}
 		
-		private function moveToSide( currentCards : Array ) : void {
-			var card0 : FabisMemoryGameCard = currentCards[ 0 ];
-			var card1 : FabisMemoryGameCard = currentCards[ 1 ];
-			card0.visible = false;
-			card1.visible = false;
-			
+		private function moveToSide( currentCard : FabisMemoryGameCard ) : void {
 			_cardCounter++;
 			
-			_gameContainer.removeChild( card0 );
-			_mainView.addChild( card0 );
-			
-			card0.width = 50;
-			card0.height = 50;
+			_gameContainer.removeChild( currentCard );
+			currentCard.x = 520;
+			currentCard.y = 300;
+			_mainView.addChild( currentCard );
 			
 			if( _cardCounter == 4 ) {
 				_currentCardYCoordinate = 50;
 				_currentCardXCoordinate += _xCardDiff;
 			}
 			
-			card0.y = _currentCardYCoordinate;
-			card0.x = _currentCardXCoordinate;
+			TweenLite.to( currentCard, 1, { x: _currentCardXCoordinate, y: _currentCardYCoordinate, width: 50, height: 50 } );
 			_currentCardYCoordinate += _yCardDiff;
-			card0.visible = true;
 			
-			// TODO: change to 6
-			if( _cardCounter == 1 ){
+			if( _cardCounter == 6 ){
 				TweenLite.delayedCall( 2, stop );
 			}
 		}
@@ -294,7 +288,7 @@ package fabis.wunderreise.games.memory {
 			if( _feedbackSoundStarted ){
 				_feedbackSoundStarted = false;
 				_gameOptions.lipSyncher.stop();
-				moveToSide( _currentCards );
+				moveToSide( _currentCard );
 			}
 		}
 

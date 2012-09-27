@@ -1,5 +1,6 @@
 package fabis.wunderreise.core {
 
+	import fabis.wunderreise.scenes.FabisMainMenu;
 	import fabis.wunderreise.DEBUGGING;
 	import fabis.wunderreise.gamesave.FabisGameSave;
 	import fabis.wunderreise.scenes.FabisIntro;

@@ -11,8 +11,8 @@ package fabis.wunderreise.games.quiz {
 		}
 		
 		override public function initWithOptions( options : FabisQuizGameOptions ) : void {
-			super.initWithOptions( options );
 			_game = this;
+			super.initWithOptions( options );
 		}
 		
 		override public function skipIntro( event : MouseEvent ) : void {
@@ -23,6 +23,11 @@ package fabis.wunderreise.games.quiz {
 		
 		override public function start() : void {
 			startIntro();
+		}
+		
+		public function stop() : void {
+			_gameFinished = true;
+			_gameOptions.lipSyncher.gameCore.director.currentScene.stop();
 		}
 		
 		override public function startIntro() : void {

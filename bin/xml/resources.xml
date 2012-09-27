@@ -101,5 +101,8 @@
 		<MP3Loader name="menuPassportStamp4" url="menu/passport/stamp4.mp3" autoPlay="false" loops="0" />
 		<MP3Loader name="menuPassportStamp5" url="menu/passport/stamp5.mp3" autoPlay="false" loops="0" />
 		<MP3Loader name="menuPassportStamp6" url="menu/passport/stamp6.mp3" autoPlay="false" loops="0" />
+		<MP3Loader name="passportOpen" url="menu/passport/page_turn_5.mp3" autoPlay="false" loops="0" />
+		<MP3Loader name="menuMap" url="menu/page-fumble-01.mp3" autoPlay="false" loops="0" />
+		<MP3Loader name="wordsCaptureAddStones" url="games/u-chimes3.mp3" autoPlay="false" loops="0" />
 	</LoaderMax>
 </LoaderMax>

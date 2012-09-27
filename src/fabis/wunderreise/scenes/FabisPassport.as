@@ -1,4 +1,12 @@
 package fabis.wunderreise.scenes {
+	import flash.display.MovieClip;
+	import com.flashmastery.as3.game.interfaces.core.IInteractiveGameObject;
+	import com.flashmastery.as3.game.interfaces.core.IGameCore;
+	import fabis.wunderreise.sound.IFabisLipSyncherDelegate;
+	import fabis.wunderreise.sound.FabisLipSyncher;
+	import fabis.wunderreise.sound.FabisEyeTwinkler;
+	import com.junkbyte.console.Cc;
+	import com.flashmastery.as3.game.interfaces.sound.ISoundCore;
 	import fl.text.TLFTextField;
 	import flash.filters.GlowFilter;
 	import flash.events.ProgressEvent;
@@ -13,14 +21,21 @@ package fabis.wunderreise.scenes {
 	/**
 	 * @author Stefanie Drost
 	 */
-	public class FabisPassport extends BaseScene implements ISoundItemDelegate {
+	public class FabisPassport extends BaseScene implements ISoundItemDelegate, IFabisLipSyncherDelegate {
 		
 		
 		protected var _feedbackSound : ISoundItem;
 		protected var _feedbackSoundStarted : Boolean = false;
+		protected var _endSound : ISoundItem;
+		protected var _endSoundStarted : Boolean = false;
 		protected var _storage : *;
+		protected var _lipSyncher : FabisLipSyncher;
+		protected var _eyeTwinkler : FabisEyeTwinkler;
 		protected var myGlow : GlowFilter = new GlowFilter();
 		protected var _menuButtons : FabisMenuButtons;
+		protected var _soundCore : ISoundCore;
+		protected var _newStamp : Boolean = false;
+		protected var _fabi : FabiIntroComplete;
 		
 		public function FabisPassport() {
 			super();
@@ -33,6 +48,13 @@ package fabis.wunderreise.scenes {
 		override protected function handleCreation() : void {
 			_view = new FabisPassportView();
 			_menuButtons = new FabisMenuButtons();
+			_fabi = new FabiIntroComplete();
+			_fabi._lips.gotoAndStop( 1 );
+			_fabi._eyes.gotoAndStop( 1 );
+			_lipSyncher = new FabisLipSyncher();
+			_lipSyncher.delegate = this;
+			_eyeTwinkler = new FabisEyeTwinkler();
+			_eyeTwinkler.initWithEyes( _fabi._eyes );
 			
 			view._passportContainer._chichenItzaStamp.gotoAndStop( 1 );
 			view._passportContainer._chineseWallStamp.gotoAndStop( 1 );
@@ -57,13 +79,17 @@ package fabis.wunderreise.scenes {
 		
 		override protected function initView( evt : Event ) : void {
 			super.initView( evt );
+			_lipSyncher.gameCore = gameCore;
+			gameCore.juggler.addAnimatable( _lipSyncher );
+			_eyeTwinkler.gameCore = gameCore;
+			gameCore.juggler.addAnimatable( _eyeTwinkler );
+			_soundCore = gameCore.soundCore;
 			_storage = gameCore.localStorage.getStorageObject();
 			initPassport();
 		}
 		
 		override protected function handleStop() : void {
 			super.handleStop();
-			
 			TweenLite.delayedCall(
 				1,
 				gameCore.director.replaceScene,
@@ -73,9 +99,14 @@ package fabis.wunderreise.scenes {
 		
 		override protected function handleStart() : void {
 			super.handleStart();
+			var _openSound : ISoundItem =_soundCore.getSoundByName("passportOpen");
+			_openSound.play();
 			TweenLite.fromTo(view._passportContainer, 1, 
 				{ x: 450, y: 300,width: 0, height: 0}, { x: 78, y: 13,width: 740, height: 565} );
 			
+			if( _newStamp == false ){
+				TweenLite.delayedCall( 3, stop );
+			}
 		}
 		
 		override protected function handleDisposal() : void {
@@ -83,7 +114,7 @@ package fabis.wunderreise.scenes {
 		}
 		
 		private function initPassport() : void {
-			//Cc.logch.apply( undefined, [_storage.finishedMachuPicchu] );
+			Cc.logch.apply( undefined, [ "test2" ] );
 			checkForNewStamp( "machuPicchuStamp", _storage.finishedMachuPicchu );
 			checkForNewStamp( "chichenItzaStamp", _storage.finishedChichenItza );
 			checkForNewStamp( "chineseWallStamp", _storage.finishedChineseWall );
@@ -109,6 +140,8 @@ package fabis.wunderreise.scenes {
 				_storage._stampCounter++;
 				_storage.stampArray[ stamp ] = true;
 				gameCore.localStorage.saveStorage();
+				_newStamp = true;
+				Cc.logch.apply( undefined, [ "test" ] );
 				playStampFeedback( _storage._stampCounter,  stamp );
 			}
 		}
@@ -118,6 +151,12 @@ package fabis.wunderreise.scenes {
 			for( i = 0; i <= rankNumber; i++ ){
 				view._passportContainer.getChildByName("_rank" + i.toString() ).visible = true;
 			}
+		}
+		
+		private function playEnd() : void {
+			_lipSyncher.start();
+			_endSound  =_soundCore.getSoundByName("menuOutro");
+			_endSound.play();
 		}
 		
 		protected function playStampFeedback( stampNumber : int, stamp : String ) : void {
@@ -140,11 +179,20 @@ package fabis.wunderreise.scenes {
 				case 6:
 					_feedbackSound = gameCore.soundCore.getSoundByName( "menuPassportStamp6" );
 					break;
+				case 7:
+					_fabi.height = 386;
+					_fabi.width = 202;
+					view.addChild( _fabi );
+					TweenLite.fromTo( _fabi, 1, { x : -_fabi.width, y : 620 - _fabi.height}, { x : 10, onComplete : playEnd });
+					break;
 			}
 			
-			_feedbackSoundStarted = true;
-			_feedbackSound.delegate = this;
-			_feedbackSound.play();
+			if( stampNumber < 7 ){
+				_feedbackSoundStarted = true;
+				_feedbackSound.delegate = this;
+				_feedbackSound.play();
+			}
+			
 			//highlightStamp( stamp );
 		}
 		
@@ -188,6 +236,33 @@ package fabis.wunderreise.scenes {
 		}
 
 		public function reactOnSoundItemSampleDataEvent(evt : SampleDataEvent, soundItem : ISoundItem) : void {
+		}
+
+		public function reactOnCumulatedSpectrum(cumulatedSpectrum : Number) : void {
+			const lips : MovieClip = _fabi._lips;
+			if ( cumulatedSpectrum > 30 ) {
+				lips.gotoAndStop(
+					int( Math.random() * ( lips.totalFrames - 1 ) + 2 )
+				);
+			} else lips.gotoAndStop( 1 );
+		}
+
+		public function reactOnStart(delegater : IInteractiveGameObject) : void {
+		}
+
+		public function reactOnStop(delegater : IInteractiveGameObject) : void {
+		}
+
+		public function reactOnDisposal(delegater : IInteractiveGameObject) : void {
+		}
+
+		public function reactOnAddedToDelegater(delegater : IInteractiveGameObject) : void {
+		}
+
+		public function reactOnRemovalFromDelegater(delegater : IInteractiveGameObject) : void {
+		}
+
+		public function reactOnGameFinished(result : Object, gameCore : IGameCore) : void {
 		}
 	}
 }
