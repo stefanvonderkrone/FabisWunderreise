@@ -1,4 +1,9 @@
 package fabis.wunderreise.scenes {
+	import flash.events.ProgressEvent;
+	import flash.events.ErrorEvent;
+	import flash.events.SampleDataEvent;
+	import com.flashmastery.as3.game.interfaces.delegates.ISoundItemDelegate;
+	import flash.filters.GlowFilter;
 	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
 	import fabis.wunderreise.DEBUGGING;
 
@@ -16,7 +21,7 @@ package fabis.wunderreise.scenes {
 	/**
 	 * @author Stefan von der Krone (2012)
 	 */
-	public class BaseScene extends GameScene {
+	public class BaseScene extends GameScene implements ISoundItemDelegate{
 		
 		protected static const MOUSE_OUT_FPS : uint = 120;
 		protected static const MOUSE_OVER_FPS : uint = 90;
@@ -26,6 +31,12 @@ package fabis.wunderreise.scenes {
 		protected var _btnMap : MovieClip;
 		protected var _btnPassport : MovieClip;
 		protected var _helpSound : ISoundItem;
+		protected var _mapSound : ISoundItem;
+		protected var myGlow : GlowFilter = new GlowFilter();
+		protected var _skipButton : FabisSkipButton;
+		protected var _prevPassportCoordinates : Array = new Array();
+		protected var _prevHelpCoordinates : Array = new Array();
+		protected var _prevMapCoordinates : Array = new Array();
 		
 		
 		public function BaseScene() {
@@ -93,7 +104,7 @@ package fabis.wunderreise.scenes {
 				case _btnPassport:
 					const mc : MovieClip = MovieClip( evt.currentTarget );
 					const numFrames : uint = mc.totalFrames - mc.currentFrame;
-					TweenLite.to( evt.currentTarget, numFrames / MOUSE_OVER_FPS, { frame: mc.totalFrames } );
+					TweenLite.to( evt.currentTarget, numFrames / MOUSE_OVER_FPS, { frame: mc.totalFrames, x: evt.currentTarget.x - 5, y: evt.currentTarget.y - 20} );
 					mc.parent.setChildIndex( mc, mc.parent.numChildren - 1 );
 					break;
 				default:
@@ -102,12 +113,19 @@ package fabis.wunderreise.scenes {
 		}
 
 		protected function handleMouseOut( evt : MouseEvent ) : void {
+			var numFrames : uint;
 			switch( evt.currentTarget ) {
 				case _btnHelp:
+					numFrames = MovieClip( evt.currentTarget ).currentFrame;
+					TweenLite.to( evt.currentTarget, numFrames / MOUSE_OUT_FPS, { frame: 1, x: _prevHelpCoordinates[0], y: _prevHelpCoordinates[1] } );
+					break;
 				case _btnMap:
+					numFrames = MovieClip( evt.currentTarget ).currentFrame;
+					TweenLite.to( evt.currentTarget, numFrames / MOUSE_OUT_FPS, { frame: 1, x: _prevMapCoordinates[0], y: _prevMapCoordinates[1] } );
+					break;
 				case _btnPassport:
-					const numFrames : uint = MovieClip( evt.currentTarget ).currentFrame;
-					TweenLite.to( evt.currentTarget, numFrames / MOUSE_OUT_FPS, { frame: 1 } );
+					numFrames = MovieClip( evt.currentTarget ).currentFrame;
+					TweenLite.to( evt.currentTarget, numFrames / MOUSE_OUT_FPS, { frame: 1, x: _prevPassportCoordinates[0], y: _prevPassportCoordinates[1] } );
 					break;
 				default:
 					break;
@@ -136,17 +154,19 @@ package fabis.wunderreise.scenes {
 
 		protected function handleClickOnMap() : void {
 			if ( !( this is FabisMainMenu ) ){
-				var _mapSound : ISoundItem = gameCore.soundCore.getSoundByName("menuMap");
+				_mapSound = gameCore.soundCore.getSoundByName("menuMap");
+				gameCore.director.replaceScene(new FabisMainMenu() , true);
 				_mapSound.play();
-				gameCore.director.replaceScene( new FabisMainMenu() , true );
 			}
 		}
 
 		protected function handleClickOnHelp() : void {
-			if ( _helpSound )
+			if ( _helpSound ){
 				_helpSound.play();
-			else
+			}
+			else{
 				log( "play \"_helpSound\" sound for specific scene!!!" );
+			}
 		}
 		
 		override public function update( deltaTime : Number ) : void {
@@ -169,20 +189,58 @@ package fabis.wunderreise.scenes {
 				log( "mainMenu has no help (\"_btnHelp\")!!!" );
 			else {
 				_btnHelp.gotoAndStop( 1 );
+				_prevHelpCoordinates[0] = _btnHelp.x;
+				_prevHelpCoordinates[1] = _btnHelp.y;
 				initButton( _btnHelp );
 			}
 			if ( _btnMap == null )
 				log( "mainMenu has no map (\"_btnMap\")!!!" );
 			else {
 				_btnMap.gotoAndStop( 1 );
+				_prevMapCoordinates[0] = _btnMap.x;
+				_prevMapCoordinates[1] = _btnMap.y;
 				initButton( _btnMap );
 			}
 			if ( _btnPassport == null )
 				log( "mainMenu has no passport (\"_btnPassport\")!!!" );
 			else {
 				_btnPassport.gotoAndStop( 1 );
+				_prevPassportCoordinates[0] = _btnPassport.x;
+				_prevPassportCoordinates[1] = _btnPassport.y;
 				initButton( _btnPassport );
 			}
+		}
+		
+		protected function highlightButton( evt : MouseEvent ) : void {
+			myGlow.color = 0xFFFFFF;
+			myGlow.blurX = 10;
+			myGlow.blurY = 10;
+			evt.target.filters = [myGlow];
+		}
+		
+		protected function removeButtonHighlight( evt : MouseEvent ) : void {
+			myGlow.color = 0xFFFFFF;
+			myGlow.blurX = 0;
+			myGlow.blurY = 0;
+			evt.target.filters = [myGlow];
+		}
+
+		public function reactOnSoundItemProgressEvent(evt : ProgressEvent, soundItem : ISoundItem) : void {
+		}
+
+		public function reactOnSoundItemEvent(evt : Event, soundItem : ISoundItem) : void {
+		}
+
+		public function reactOnSoundItemSoundComplete(soundItem : ISoundItem) : void {
+		}
+
+		public function reactOnSoundItemLoadComplete(soundItem : ISoundItem) : void {
+		}
+
+		public function reactOnSoundItemErrorEvent(evt : ErrorEvent, soundItem : ISoundItem) : void {
+		}
+
+		public function reactOnSoundItemSampleDataEvent(evt : SampleDataEvent, soundItem : ISoundItem) : void {
 		}
 	}
 }

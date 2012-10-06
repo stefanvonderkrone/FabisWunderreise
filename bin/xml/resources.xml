@@ -52,8 +52,8 @@
 		<MP3Loader name="endingsWordsCapture" url="games/endings/wordsCapture.mp3" autoPlay="false" loops="0" />
 		<MP3Loader name="stoneFall" url="games/effects/ploing.mp3" autoPlay="false" loops="0" />
 		<MP3Loader name="stoneCatched" url="games/effects/sound11.mp3" autoPlay="false" loops="0" />
-		<MP3Loader name="wrightAnswer" url="games/effects/magicChime01.mp3" autoPlay="false" loops="0" />
-		<MP3Loader name="buttonClicked" url="games/effects/InterfaceSound56.mp3" autoPlay="false" loops="0" />
+		<MP3Loader name="nose" url="games/effects/SlideWhistleUpSlow01.mp3" autoPlay="false" loops="0" />
+		<MP3Loader name="buttonClicked" url="games/effects/dumpfsequenz.mp3" autoPlay="false" loops="0" />
 		<MP3Loader name="machuPicchuImage1" url="games/machuPicchu/image1.mp3" autoPlay="false" loops="0" />
 		<MP3Loader name="machuPicchuImage2" url="games/machuPicchu/image2.mp3" autoPlay="false" loops="0" />
 		<MP3Loader name="machuPicchuImage3" url="games/machuPicchu/image3.mp3" autoPlay="false" loops="0" />
@@ -103,6 +103,9 @@
 		<MP3Loader name="menuPassportStamp6" url="menu/passport/stamp6.mp3" autoPlay="false" loops="0" />
 		<MP3Loader name="passportOpen" url="menu/passport/page_turn_5.mp3" autoPlay="false" loops="0" />
 		<MP3Loader name="menuMap" url="menu/page-fumble-01.mp3" autoPlay="false" loops="0" />
-		<MP3Loader name="wordsCaptureAddStones" url="games/u-chimes3.mp3" autoPlay="false" loops="0" />
+		<MP3Loader name="wordsCaptureAddStones" url="games/effects/u-chimes3.mp3" autoPlay="false" loops="0" />
+		<MP3Loader name="introPlop" url="menu/fingerplop4.mp3" autoPlay="false" loops="0" />
+		<MP3Loader name="removeWrongStones" url="games/effects/swosh-swoosh-whoosh-air-sound-free-high-quality.mp3" autoPlay="false" loops="0" />
+		<MP3Loader name="removeQuestion" url="games/effects/swosh-swoosh-whoosh-air-sound-free-high-quality.mp3" autoPlay="false" loops="0" />
 	</LoaderMax>
 </LoaderMax>

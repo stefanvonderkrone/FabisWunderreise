@@ -46,10 +46,10 @@ package fabis.wunderreise.games.quiz {
 				_imageContainer = new FabisChineseWallImageContainer();
 				_rightSymbol = new RightSymbolView();
 				_wrongSymbol = new WrongSymbolView();
-				_rightSymbol.y = 15;
-				_rightSymbol.x = 60;
-				_wrongSymbol.y = 15;
-				_wrongSymbol.x = 60;
+				_rightSymbol.y = 35;
+				_rightSymbol.x = 80;
+				_wrongSymbol.y = 35;
+				_wrongSymbol.x = 80;
 				_imageContainer.x = 350;
 				_imageContainer.y = 30;
 				_imageContainer.addChild( _rightSymbol );
@@ -97,7 +97,7 @@ package fabis.wunderreise.games.quiz {
 					
 				case 3:
 				
-					if( answerTrue && choosedAnswerTrue)
+					if( !answerTrue && !choosedAnswerTrue)
 						_feedbackSound = _soundCore.getSoundByName( "chineseWallStory3Right" );
 					else
 						_feedbackSound = _soundCore.getSoundByName( "chineseWallStory3Wrong" );

@@ -15,9 +15,11 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		protected var _minX : int = 20;
 		protected var _maxX : int = 460;
 		protected var _id : int;
-		protected var _bRight : Boolean;
+		public var _bRight : Boolean;
 		protected var myGlow : GlowFilter = new GlowFilter();
 		protected var _stone : KolosseumStoneView;
+		protected var _previousWidth : int;
+		protected var _previousHeight : int;
 		
 		// fall-down values
 		protected var _currentSpeed : Number = 0;
@@ -106,15 +108,17 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			myGlow.blurX = 30;
 			myGlow.blurY = 30;
 			stone.filters = [myGlow];
+			_previousWidth = stone.width;
+			_previousHeight = stone.height;
+			
 			if( stone.parent is BasketFront ){
 				stone.parent.setChildIndex( stone, stone.parent.numChildren-1 );
-				if( bRight ) TweenLite.to( stone, 1, {width: 186, height: 135});
+				TweenLite.to( stone, 1, {width: 226, height: 175});
 			}
 			if( stone.parent is KolosseumGameFieldView ){
-				TweenLite.to( stone, 1, {y: 400});
+				stone.parent.setChildIndex( stone, stone.parent.numChildren-1 );
+				TweenLite.to( stone, 1, {y: 350, width: 226, height: 175});
 			}
-			
-			
 		}
 		
 		// highloght right and wrong images
@@ -123,12 +127,17 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			myGlow.blurY = 10;
 			stone.filters = [myGlow];
 			if( stone.parent is BasketFront ){
-				TweenLite.to( stone, 1, {width: 55, height: 45});
+				TweenLite.to( stone, 1, {width: _previousWidth, height: _previousHeight});
 			}
 			if( stone.parent is KolosseumGameFieldView ){
-				TweenLite.to( stone, 1, {y: 500});
+				stone.parent.setChildIndex( stone, stone.parent.numChildren - stone.parent.numChildren + 3 );
+				TweenLite.to( stone, 1, {y: 500, width: _previousWidth, height: _previousHeight});
 			}
 			
+		}
+		
+		public function remove() : void {
+			stone.parent.removeChild( stone );
 		}
 	}
 }

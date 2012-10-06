@@ -1,4 +1,5 @@
 package fabis.wunderreise.scenes {
+	import flash.filters.GlowFilter;
 	import com.greensock.TweenLite;
 	import fabis.wunderreise.sound.FabisEyeTwinkler;
 	import fabis.wunderreise.sound.FabisLipSyncher;
@@ -18,10 +19,10 @@ package fabis.wunderreise.scenes {
 		protected var _game : KolosseumGame;
 		protected var _gameField : KolosseumGameField;
 		protected var _storage : *;
-		protected var _skipButton : FabisSkipButton;
 		protected var _lipSyncher : FabisLipSyncher;
 		protected var _eyeTwinkler : FabisEyeTwinkler;
 		protected var _menuButtons : FabisMenuButtons;
+		protected var wordsCaptureOptions : FabisWordsCaptureGameOptions;
 		
 		public function FabisKolosseumWordsCapture() {
 			super();
@@ -39,7 +40,7 @@ package fabis.wunderreise.scenes {
 			_gameField = new KolosseumGameField();
 			_gameField.init();
 			
-			const wordsCaptureOptions : FabisWordsCaptureGameOptions = new FabisWordsCaptureGameOptions();
+			wordsCaptureOptions = new FabisWordsCaptureGameOptions();
 			wordsCaptureOptions.catched = new Vector.<KolosseumStone>();
 			wordsCaptureOptions.allPics = new Vector.<KolosseumStone>();
 			wordsCaptureOptions.wrongStones = new Vector.<KolosseumStone>();
@@ -47,7 +48,6 @@ package fabis.wunderreise.scenes {
 			wordsCaptureOptions.background = view._kolosseum;
 			
 			wordsCaptureOptions.fabi = new FabiView();
-			
 			wordsCaptureOptions.gameField = _gameField;
 			wordsCaptureOptions.demoStartTime = 12;
 			
@@ -61,13 +61,6 @@ package fabis.wunderreise.scenes {
 			_game = new KolosseumGame();
 			_game.initWithOptions( wordsCaptureOptions );
 			_gameField._game = _game;
-			
-			_skipButton = new FabisSkipButton();
-			_skipButton.x = 20;
-			_skipButton.y = 20;
-			wordsCaptureOptions.skipButton = _skipButton;
-			_skipButton.addEventListener( MouseEvent.CLICK, _game.skipIntro);
-			view.addChild( _skipButton );
 			
 			view._gameFieldContainer.addChild( _gameField.gameField );
 			view.addChild( wordsCaptureOptions.fabi );
@@ -119,6 +112,22 @@ package fabis.wunderreise.scenes {
 		}
 		
 		override protected function handleStart() : void {
+			_storage = gameCore.localStorage.getStorageObject();
+			_storage.lastStop = FabisTravelAnimationTarget.COLOSSEUM;
+			gameCore.localStorage.saveStorage();
+			
+			if( _storage.stampArray["colosseumStamp"] ){
+				_skipButton = new FabisSkipButton();
+				_skipButton.x = 900 - _skipButton.width - 20;
+				_skipButton.y = 20;
+				wordsCaptureOptions.skipButton = _skipButton;
+				_skipButton.addEventListener( MouseEvent.CLICK, _game.skipIntro);
+				view.addChild( _skipButton );
+				_skipButton.addEventListener( MouseEvent.MOUSE_OVER, highlightButton );
+				_skipButton.addEventListener( MouseEvent.MOUSE_OUT, removeButtonHighlight );
+				_skipButton.buttonMode = true;
+			}
+			
 			super.handleStart();
 			_eyeTwinkler.start();
 			_game.start();
@@ -126,6 +135,28 @@ package fabis.wunderreise.scenes {
 		
 		override protected function handleDisposal() : void {
 			super.handleDisposal();
+		}
+		
+		override protected function handleClickOnMap() : void {
+			_gameField.removeAllEventListener();
+			super.handleClickOnMap();
+		}
+		
+		override protected function handleClickOnHelp() : void {
+			if( !_game.hasCurrentSound() ){
+				_helpSound = gameCore.soundCore.getSoundByName( "menuHelpWordsCapture" );
+				super.handleClickOnHelp();
+			}
+			
+		}
+		
+		override protected function handleClickOnPassport() : void {
+			if( !( this is FabisPassport ) ){
+				_storage = gameCore.localStorage.getStorageObject();
+				_storage.currentGameScene = gameCore.director.currentScene;
+				gameCore.localStorage.saveStorage();
+				gameCore.director.pushScene( new FabisPassport() );
+			}
 		}
 	}
 }

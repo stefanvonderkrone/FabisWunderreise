@@ -1,4 +1,5 @@
 package fabis.wunderreise.scenes {
+	import com.junkbyte.console.Cc;
 	import com.greensock.TweenLite;
 	import fabis.wunderreise.sound.FabisEyeTwinkler;
 	import fabis.wunderreise.sound.FabisLipSyncher;
@@ -14,16 +15,14 @@ package fabis.wunderreise.scenes {
 		
 		protected var _game : FabisEstimateGame;
 		protected var _fabiSmall : FabiSmall;
-		protected var _skipButton : FabisSkipButton;
 		
 		protected var _fabiCristoSmallContainer : FabiCristoSmallContainer;
 		protected var _fabiCristoContainer : FabiCristoContainer;
-		
-		protected var _introSound : ISoundItem;
 		protected var _lipSyncher : FabisLipSyncher;
 		protected var _eyeTwinkler : FabisEyeTwinkler;
 		protected var _menuButtons : FabisMenuButtons;
 		protected var _storage : *;
+		protected var estimateOptions : FabisEstimateGameOptions;
 		
 		public function FabisCristoEstimate() {
 			super();
@@ -49,7 +48,7 @@ package fabis.wunderreise.scenes {
 			
 			_fabiCristoSmallContainer.addChild( _fabiSmall );
 			
-			const estimateOptions : FabisEstimateGameOptions = new FabisEstimateGameOptions();
+			estimateOptions = new FabisEstimateGameOptions();
 			estimateOptions.exerciseNumber = 2;
 			estimateOptions.flipTime = 12;
 			
@@ -75,13 +74,6 @@ package fabis.wunderreise.scenes {
 			
 			_game = new FabisEstimateGame();
 			_game.initWithOptions( estimateOptions );
-			
-			_skipButton = new FabisSkipButton();
-			_skipButton.x = 20;
-			_skipButton.y = 20;
-			estimateOptions.skipButton = _skipButton;
-			_skipButton.addEventListener( MouseEvent.CLICK, _game.skipIntro);
-			view.addChild( _skipButton );
 			
 			view.addChild( _menuButtons );
 			initMainMenu( _menuButtons );
@@ -129,6 +121,22 @@ package fabis.wunderreise.scenes {
 		}
 		
 		override protected function handleStart() : void {
+			_storage = gameCore.localStorage.getStorageObject();
+			_storage.lastStop = FabisTravelAnimationTarget.CRISTO;
+			gameCore.localStorage.saveStorage();
+			
+			if( _storage.stampArray["cristoStamp"] ){
+				_skipButton = new FabisSkipButton();
+				_skipButton.x = 900 - _skipButton.width - 20;
+				_skipButton.y = 20;
+				estimateOptions.skipButton = _skipButton;
+				_skipButton.addEventListener( MouseEvent.CLICK, _game.skipIntro);
+				view.addChild( _skipButton );
+				_skipButton.addEventListener( MouseEvent.MOUSE_OVER, highlightButton );
+				_skipButton.addEventListener( MouseEvent.MOUSE_OUT, removeButtonHighlight );
+				_skipButton.buttonMode = true;
+			}
+			
 			super.handleStart();
 			_eyeTwinkler.start();
 			_game.start();
@@ -136,6 +144,40 @@ package fabis.wunderreise.scenes {
 		
 		override protected function handleDisposal() : void {
 			super.handleDisposal();
+		}
+		
+		override protected function handleClickOnHelp() : void {
+			if( !_game.hasCurrentSound() ){
+				estimateOptions.lipSyncher.start();
+				
+				switch( _game._currentExerciseNumber){
+					case 1:
+						_helpSound = gameCore.soundCore.getSoundByName( "menuHelpCristoGiraffe" );
+						break;
+					case 2:
+						_helpSound = gameCore.soundCore.getSoundByName( "menuHelpCristoCars" );
+						break;
+				}
+				_helpSound.delegate = this;
+				_game._helpSoundStarted = true;
+				super.handleClickOnHelp();
+			}
+		}
+		
+		override protected function handleClickOnPassport() : void {
+			if( !( this is FabisPassport ) ){
+				_storage = gameCore.localStorage.getStorageObject();
+				_storage.currentGameScene = gameCore.director.currentScene;
+				gameCore.localStorage.saveStorage();
+				gameCore.director.pushScene( new FabisPassport() );
+			}
+		}
+		
+		override public function reactOnSoundItemSoundComplete(soundItem : ISoundItem) : void {
+			if( _game._helpSoundStarted ){
+				_game._helpSoundStarted = false;
+				estimateOptions.lipSyncher.stop();
+			}
 		}
 	}
 }

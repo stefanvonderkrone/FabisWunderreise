@@ -46,6 +46,9 @@ package fabis.wunderreise.games.quiz {
 		protected var _feedbackSoundStarted : Boolean = false;
 		protected var _pointsSound : ISoundItem;
 		protected var _pointsSoundStarted : Boolean = false;
+		public var _helpSoundStarted : Boolean = false;
+		protected var _newQuestionSound : ISoundItem;
+		protected var _removeQuestionSound : ISoundItem;
 				
 		protected var _soundCore : ISoundCore;
 		protected var _frameCounter : int = 0;
@@ -76,11 +79,13 @@ package fabis.wunderreise.games.quiz {
 		public function skipIntro( event : MouseEvent ) : void {
 			_introSound.stop();
 			_introSoundStarted = false;
+			_buttonClickedSound = _soundCore.getSoundByName("buttonClicked");
+			_buttonClickedSound.play();
 			_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleSwitchViews );
 			_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleTrueButtonView );
 			switchToCloseView();
-			startQuestion();
-			initTrueButton();
+			TweenLite.delayedCall( 0.7, startQuestion );
+			TweenLite.delayedCall( 0.7, initTrueButton );
 		}
 		
 		public function start() : void {
@@ -95,6 +100,9 @@ package fabis.wunderreise.games.quiz {
 			_closeView = true;
 			_gameOptions.eyeTwinkler.initWithEyes( _fabiClose._fabi._eyes );
 			_gameOptions.lipSyncher.start();
+			
+			_newQuestionSound = _soundCore.getSoundByName("introPlop");
+			_removeQuestionSound = _soundCore.getSoundByName("removeQuestion");
 		}
 		
 		public function startIntro() : void {
@@ -115,18 +123,27 @@ package fabis.wunderreise.games.quiz {
 			_fabiClose.resetNose();
 			
 			if( _currentQuestionNumber <= _gameOptions.questionNumber ){
+				_newQuestionSound.play();
 				_game.initImageContainer( _currentQuestionNumber );
+				_imageContainer.visible = true;
 				_rightSymbol.visible = false;
 				_wrongSymbol.visible = false;
-				_game.playQuestion( _currentQuestionNumber );
+				TweenLite.delayedCall( 0.5, _game.playQuestion, [ _currentQuestionNumber ]);
 			}
 			else{
 				TweenLite.delayedCall(1, playPoints, [ _points ] );
 			}
 		}
 		
+		public function removeCurrentQuestion() : void {
+			_fabiClose.resetNose();
+			_removeQuestionSound.play();
+			_imageContainer.visible = false;
+		}
+		
 		public function initEndOfQuestion() : void {
 			_fabiClose.initNose( _gameOptions.answers[ 0 ] );
+			_trueButton.enabled = true;
 			_trueButton.addEventListener( MouseEvent.CLICK, onClickTrueButton );
 		}
 		
@@ -135,20 +152,26 @@ package fabis.wunderreise.games.quiz {
 		
 		public function initTrueButton() : void {
 			_trueButton = new TrueButtonView();
-			_trueButton.x = 450;
-			_trueButton.y = 425;
+			_trueButton.x = 460;
+			_trueButton.y = 405;
+			_trueButton.enabled = false;
+			var _buttonEffectSound : ISoundItem = _soundCore.getSoundByName("introPlop");
+			_buttonEffectSound.play();
 			view._closeContainer.addChild( _trueButton );
 		}
 		
 		private function onClickTrueButton( event : MouseEvent ) : void {
-			_buttonClickedSound = _soundCore.getSoundByName("buttonClicked");
-			_buttonClickedSound.play();
-			resetTrueButton();
-			_fabiClose.resetNose();
-			checkAnswer( true );
+			if( !_helpSoundStarted ){
+				_buttonClickedSound = _soundCore.getSoundByName("buttonClicked");
+				_buttonClickedSound.play();
+				resetTrueButton();
+				_fabiClose.resetNose();
+				checkAnswer( true );
+			}
 		}
 		
 		public function resetTrueButton() : void {
+			_trueButton.enabled = false;
 			_trueButton.removeEventListener( MouseEvent.CLICK, onClickTrueButton );
 		}
 		
@@ -160,18 +183,41 @@ package fabis.wunderreise.games.quiz {
 			}
 			
 			if( _rightAnswer ){
+				TweenLite.delayedCall( 1, reactOnAnswer, [ _rightAnswer, choosed ]);
 				playRightOrWrongEffect( true );
-				_imageContainer.setChildIndex( _rightSymbol, _imageContainer.numChildren-1 );
-				_rightSymbol.visible = true;
+				//_imageContainer.setChildIndex( _rightSymbol, _imageContainer.numChildren-1 );
+				//_rightSymbol.visible = true;
+				
 			}
 			else{
+				TweenLite.delayedCall( 1.5, reactOnAnswer, [ _rightAnswer, choosed ]);
 				playRightOrWrongEffect( false );
+				//TweenLite.to( _fabiClose._fabi._nose, 1, {frame: _fabiClose._fabi._nose.totalFrames});
+				//_imageContainer.setChildIndex( _wrongSymbol, _imageContainer.numChildren-1);
+				//_wrongSymbol.visible = true;
+				
+			}
+		}
+		
+		public function reactOnAnswer(  answerTrue : int, choosedAnswerTrue : Boolean ) : void {
+			_game.playFeedback( answerTrue, choosedAnswerTrue, _currentQuestionNumber );
+			_currentQuestionNumber++;
+		}
+		
+		public function playRightOrWrongEffect( boolean : Boolean ) : void {
+			if( boolean ){
+				// _answerSound = _soundCore.getSoundByName( "rightAnswer" );
+				 _imageContainer.setChildIndex( _rightSymbol, _imageContainer.numChildren-1 );
+				_rightSymbol.visible = true;
+			}
+			else {
+				_answerSound = _soundCore.getSoundByName( "nose" );
+				TweenLite.to( _fabiClose._fabi._nose, 1, {frame: _fabiClose._fabi._nose.totalFrames});
 				_imageContainer.setChildIndex( _wrongSymbol, _imageContainer.numChildren-1);
 				_wrongSymbol.visible = true;
+				_answerSoundStarted = true;
+				_answerSound.play();
 			}
-			
-			_game.playFeedback( _rightAnswer, choosed, _currentQuestionNumber );
-			_currentQuestionNumber++;
 		}
 
 		public function reactOnSoundItemProgressEvent(evt : ProgressEvent, soundItem : ISoundItem) : void {
@@ -194,7 +240,8 @@ package fabis.wunderreise.games.quiz {
 			if( _feedbackSoundStarted ){
 				_feedbackSoundStarted = false;
 				_gameOptions.lipSyncher.stop();
-				startQuestion();
+				TweenLite.delayedCall(1 , removeCurrentQuestion );
+				TweenLite.delayedCall(2 , startQuestion );
 			}
 			if( _pointsSoundStarted ){
 				_pointsSoundStarted = false;
@@ -239,12 +286,7 @@ package fabis.wunderreise.games.quiz {
 			_gameOptions.lipSyncher.start();
 		}
 		
-		public function playRightOrWrongEffect( boolean : Boolean ) : void {
-			if( boolean ) _answerSound = _soundCore.getSoundByName( "wrightAnswer" );
-			else _answerSound = _soundCore.getSoundByName( "wrightAnswer" );
-			_answerSoundStarted = true;
-			_answerSound.play();
-		}
+		
 		
 		public function playFeedback( answerTrue : int, choosedAnswerTrue : Boolean, questionNumber : int ) : void {
 			_feedbackSoundStarted = true;
@@ -317,6 +359,14 @@ package fabis.wunderreise.games.quiz {
 		}
 
 		public function set gameCore(gameCore : IGameCore) : void {
+		}
+		
+		public function hasCurrentSound() : Boolean {
+			if( _introSoundStarted || _feedbackSoundStarted || _pointsSoundStarted
+				|| _questionSoundStarted ){
+				return true;
+			}
+			return false;
 		}
 	}
 }

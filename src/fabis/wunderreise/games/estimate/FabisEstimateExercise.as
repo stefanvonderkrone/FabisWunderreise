@@ -46,7 +46,7 @@ package fabis.wunderreise.games.estimate {
 		protected var _buttonClickedSoundStarted : Boolean = false;
 		
 		protected var _feedbackSound : ISoundItem;
-		protected var _feedbackSoundStarted : Boolean = false;
+		public var _feedbackSoundStarted : Boolean = false;
 		
 		protected var _frameCounter : int = 0;
 		
@@ -78,7 +78,7 @@ package fabis.wunderreise.games.estimate {
 		
 		protected function initDoneButton() : void {
 			_doneButton = new DoneButton();
-			_doneButton.x = 725;
+			_doneButton.x = 745;
 			_doneButton.y = 450;
 			_mainView.addChild( _doneButton );
 		}
@@ -188,12 +188,15 @@ package fabis.wunderreise.games.estimate {
 		}
 		
 		protected function onClickDoneButton( event: MouseEvent ) : void {
-			_doneButton.removeEventListener( MouseEvent.CLICK, onClickDoneButton );
-			_buttonClickedSound = soundCore.getSoundByName("buttonClicked");
-			_buttonClickedSound.play();
+			if( !_game._helpSoundStarted ){
+				_doneButton.removeEventListener( MouseEvent.CLICK, onClickDoneButton );
+				_buttonClickedSound = soundCore.getSoundByName("buttonClicked");
+				_buttonClickedSound.play();
+				
+				playFeedback( _gameOptions.currentExerciseNumber, _pushedElementsNumber, _attempt );
+				_attempt++;
+			}
 			
-			playFeedback( _gameOptions.currentExerciseNumber, _pushedElementsNumber, _attempt );
-			_attempt++;
 		}
 		
 		public function handleGameInstructions( event : Event ) : void {
@@ -201,7 +204,6 @@ package fabis.wunderreise.games.estimate {
 		
 		public function reset() : void {
 			_pushedElementsNumber = 0;
-			//_pushedY = 392;
 			_frameCounter = 0;
 			
 			_emptyXValues = new Array();
@@ -288,6 +290,7 @@ package fabis.wunderreise.games.estimate {
 			_feedbackSound.delegate = this;
 			_feedbackSound.play();
 			_feedbackSoundStarted = true;
+			_gameOptions.lipSyncher.start();
 			_game.secondTry = _tryAgain;
 		}
 		
@@ -304,7 +307,6 @@ package fabis.wunderreise.games.estimate {
 		public function reactOnSoundItemSoundComplete(soundItem : ISoundItem) : void {
 			if( _feedbackSoundStarted ){
 				_gameOptions.lipSyncher.stop();
-				//_gameOptions.fabi.stopSynchronization();
 				_feedbackSoundStarted = false;
 				TweenLite.delayedCall( 1, _game.endOfExercise );
 			}

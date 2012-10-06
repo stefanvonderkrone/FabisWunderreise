@@ -25,7 +25,7 @@ package fabis.wunderreise.games.estimate {
 		public var _gameFinished : Boolean = false;
 		protected var _mainView : FabisCristoView;
 		protected var _fabiCristo : FabiCristo;
-		protected var _currentExerciseNumber : int = 1;
+		public var _currentExerciseNumber : int = 1;
 		protected var _secondTry : Boolean = false;
 		public var _currentExercise : *;
 		
@@ -33,7 +33,11 @@ package fabis.wunderreise.games.estimate {
 		protected var _introSoundStarted : Boolean = false;
 		
 		protected var _exerciseSound : ISoundItem;
-		protected var _exerciseSoundStarted : Boolean = false;
+		public var _exerciseSoundStarted : Boolean = false;
+		protected var _endSound : ISoundItem;
+		protected var _endSoundStarted : Boolean = false;
+		protected var _buttonClickedSound : ISoundItem;
+		public var _helpSoundStarted : Boolean = false;
 		
 		protected var _soundCore : ISoundCore;
 		protected var _frameCounter : int = 0;
@@ -51,26 +55,29 @@ package fabis.wunderreise.games.estimate {
 		
 		public function skipIntro( event : MouseEvent ) : void {
 			_gameOptions.skipButton.removeEventListener( MouseEvent.CLICK, skipIntro);
+			_gameOptions.fabiSmall.removeEventListener( Event.ENTER_FRAME, handleFlip );
+			_gameOptions.lipSyncher.stop();
 			_introSound.stop();
 			_introSoundStarted = false;
+			_buttonClickedSound = _soundCore.getSoundByName("buttonClicked");
+			_buttonClickedSound.play();
 			_mainView.removeChild( _gameOptions.fabiCristoSmallContainer );
+			_mainView.removeChild( _gameOptions.skipButton );
 			initFabi();
 		}
 		
 		public function initFabi() : void {
-			_smallView = false;
 			_fabiCristo = new FabiCristo();
 			_fabiCristo._fabi._lips.gotoAndStop( 1 );
 			_fabiCristo._fabi._eyes.gotoAndStop( 1 );
 			_fabiCristo._fabi._nose.gotoAndStop( 1 );
 			_fabiCristo._fabi._arm.gotoAndStop( 1 );
-			//_fabi.init();
 			_gameOptions.fabiCristo = _fabiCristo;
 			_gameOptions.fabiCristoContainer.addChild( _fabiCristo );
 			
 			_gameOptions.eyeTwinkler.initWithEyes(_fabiCristo._fabi._eyes );
 			
-			startExercise( _currentExerciseNumber );
+			TweenLite.delayedCall( 0.5, startExercise, [ _currentExerciseNumber ] );
 		}
 		
 		public function startExercise( exerciseNumber : int ) : void {
@@ -90,12 +97,15 @@ package fabis.wunderreise.games.estimate {
 			}
 			_currentExercise._game = this;
 			_currentExercise.soundCore = soundCore;
+			playExercise();
+			_gameOptions.lipSyncher.start();
+			_gameOptions.fabiCristo.addEventListener( Event.ENTER_FRAME, _currentExercise.handleGameInstructions );
+		}
+		
+		protected function playExercise() : void {
 			_exerciseSound.delegate = this;
 			_exerciseSound.play();
 			_exerciseSoundStarted = true;
-			_gameOptions.lipSyncher.start();
-			//_fabi.startSynchronization();
-			_gameOptions.fabiCristo.addEventListener( Event.ENTER_FRAME, _currentExercise.handleGameInstructions );
 		}
 		
 		public function start() : void {
@@ -133,6 +143,7 @@ package fabis.wunderreise.games.estimate {
 				_gameOptions.lipSyncher.stop();
 				TweenLite.to( _gameOptions.fabiSmall._fabi._arm, 1/2, {frame: _gameOptions.fabiSmall._fabi._arm.totalFrames} );
 				TweenLite.delayedCall( 1, _mainView.removeChild, [ _gameOptions.fabiCristoSmallContainer ] );
+				_smallView = false;
 				_frameCounter = 0;
 			}
 		}
@@ -151,9 +162,17 @@ package fabis.wunderreise.games.estimate {
 					startExercise( _currentExerciseNumber );
 				}
 				else{
-					stop();
+					playEndSound();
 				}
 			}
+		}
+		
+		protected function playEndSound() : void {
+			_endSound = _soundCore.getSoundByName( "endingsCristo" );
+			_endSound.delegate = this;
+			_endSound.play();
+			_endSoundStarted = true;
+			_gameOptions.lipSyncher.start();
 		}
 		
 
@@ -164,17 +183,21 @@ package fabis.wunderreise.games.estimate {
 		}
 
 		public function reactOnSoundItemSoundComplete(soundItem : ISoundItem) : void {
+			
 			if( _introSoundStarted ){
 				_introSoundStarted = false;
 				initFabi();
 			}
 			if( _exerciseSoundStarted ){
 				_gameOptions.lipSyncher.stop();
-				//_fabi.stopSynchronization();
 				_exerciseSoundStarted = false;
 				TweenLite.delayedCall(1, initDrag);
 			}
-			
+			if( _endSoundStarted ){
+				_gameOptions.lipSyncher.stop();
+				_endSoundStarted = false;
+				stop();
+			}
 		}
 
 		public function reactOnSoundItemLoadComplete(soundItem : ISoundItem) : void {
@@ -249,6 +272,16 @@ package fabis.wunderreise.games.estimate {
 		public function flip() : void {
 			TweenLite.to( _fabiCristo._fabi._arm, 1, {frame: _fabiCristo._fabi._arm.totalFrames} );
 			TweenLite.delayedCall(1, _fabiCristo._fabi._arm.gotoAndStop, [1] );
+		}
+		
+		public function hasCurrentSound() : Boolean {
+			Cc.logch.apply( undefined, [ _introSoundStarted.toString() ] );
+			Cc.logch.apply( undefined, [ _exerciseSoundStarted.toString() ] );
+			Cc.logch.apply( undefined, [ _currentExercise._feedbackSoundStarted.toString() ] );
+			if( _introSoundStarted || _exerciseSoundStarted || _currentExercise._feedbackSoundStarted ){
+				return true;
+			}
+			return false;
 		}
 	}
 }

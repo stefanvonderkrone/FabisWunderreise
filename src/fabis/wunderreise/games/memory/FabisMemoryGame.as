@@ -34,21 +34,29 @@ package fabis.wunderreise.games.memory {
 		protected var _numCardsCompleted : int = 0;
 		
 		protected var _frameCounter : int = 0;
+		protected var _lastXCoordinate : int = 0;
+		protected var _lastYCoordinate : int = 0;
 		
 		protected var _soundCore : ISoundCore;
 		protected var _introSound : ISoundItem;
 		protected var _introSoundStarted : Boolean = false;
 		protected var _feedbackSound : ISoundItem;
 		protected var _feedbackSoundStarted : Boolean = false;
+		protected var _pointsSound : ISoundItem;
+		protected var _pointsSoundStarted : Boolean = false;
+		protected var _buttonClickedSound : ISoundItem;
 		public var _mainView : Sprite;
-		
+		protected var _cardAlreadySelected : Boolean = false;
 		protected var _currentCard : FabisMemoryGameCard;
+		protected var _lastX : Number;
+		protected var _lastY : Number;
 		
 		private const _xCardDiff : int = 60;
 		private const _yCardDiff : int = 60;
 		private var _currentCardXCoordinate : int = 50;
 		private var _currentCardYCoordinate : int = 50;
 		private var _cardCounter : int = 0;
+		public var _helpSoundStarted : Boolean = false;
 
 		public function FabisMemoryGame() {
 		}
@@ -59,6 +67,8 @@ package fabis.wunderreise.games.memory {
 			_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleShowMemory );
 			_introSound.stop();
 			_introSoundStarted = false;
+			_buttonClickedSound = soundCore.getSoundByName("buttonClicked");
+			_buttonClickedSound.play();
 			showMemory();
 		}
 		
@@ -119,16 +129,18 @@ package fabis.wunderreise.games.memory {
 		}
 
 		protected function clickHandler( evt : MouseEvent ) : void {
-//			trace( "VBDGameScreen.clickHandler(evt)", evt.currentTarget, evt.target );
-			if ( _locked || !( evt.target is FabisMemoryGameCard ) ) return;
-			const card : FabisMemoryGameCard = FabisMemoryGameCard( evt.target );
-			card.mouseEnabled = false;
-			_selectedCards.push( card );
-			card.showCover( 0.25 );
-			if ( _selectedCards.length == 2 ) {
-				_locked = true;
-				TweenLite.delayedCall( 0.5, compareSelectedCards );
+			if( !_helpSoundStarted ){
+				if ( _locked || !( evt.target is FabisMemoryGameCard ) ) return;
+				const card : FabisMemoryGameCard = FabisMemoryGameCard( evt.target );
+				card.mouseEnabled = false;
+				_selectedCards.push( card );
+				card.showCover( 0.25 );
+				if ( _selectedCards.length == 2 ) {
+					_locked = true;
+					TweenLite.delayedCall( 0.5, compareSelectedCards );
+				}
 			}
+			
 		}
 
 		protected function mouseOverHandler( evt : MouseEvent ) : void {
@@ -167,6 +179,10 @@ package fabis.wunderreise.games.memory {
 		
 		protected function enlargeCard( card : FabisMemoryGameCard ) : void {
 			_gameContainer.setChildIndex( card, _gameContainer.numChildren - 1 );
+			_gameContainer.removeEventListener( MouseEvent.CLICK, clickHandler );
+			_gameContainer.removeEventListener( MouseEvent.MOUSE_OUT, mouseOutHandler );
+			_gameContainer.removeEventListener( MouseEvent.MOUSE_OVER, mouseOverHandler );
+			
 			TweenLite.to( card, 1, {x: 230, y: 142, width: 400, height: 400} );
 		}
 		
@@ -197,6 +213,7 @@ package fabis.wunderreise.games.memory {
 			currentCard.x = 520;
 			currentCard.y = 300;
 			_mainView.addChild( currentCard );
+			_currentCard = currentCard;
 			
 			if( _cardCounter == 4 ) {
 				_currentCardYCoordinate = 50;
@@ -204,11 +221,45 @@ package fabis.wunderreise.games.memory {
 			}
 			
 			TweenLite.to( currentCard, 1, { x: _currentCardXCoordinate, y: _currentCardYCoordinate, width: 50, height: 50 } );
+			currentCard.addClickHandler();
+			currentCard.addEventListener( MouseEvent.CLICK, handleClickOnCard );
+			
 			_currentCardYCoordinate += _yCardDiff;
 			
 			if( _cardCounter == 6 ){
-				TweenLite.delayedCall( 2, stop );
+				TweenLite.delayedCall( 1, playEnding );
 			}
+		}
+		
+		protected function playEnding() : void {
+			_pointsSound = _soundCore.getSoundByName( "endingsMemory" );
+			_pointsSoundStarted = true;
+			_pointsSound.delegate = this;
+			_pointsSound.play();
+			_gameOptions.lipSyncher.start();
+		}
+		
+		protected function handleClickOnCard( evt : MouseEvent ) : void {
+			if( !_feedbackSoundStarted ){
+				_buttonClickedSound = soundCore.getSoundByName("buttonClicked");
+				_buttonClickedSound.play();
+				_currentCard = FabisMemoryGameCard( evt.currentTarget );
+				_currentCard.removeEventListener( MouseEvent.CLICK, handleClickOnCard );
+				//Cc.logch.apply( undefined, [ evt.target.constructor ] );
+				_lastX = _currentCard.x;
+				_lastY = _currentCard.y;
+				TweenLite.to( _currentCard, 1, {x: 500, y: 300, width: 400, height: 400} );
+				_gameOptions.lipSyncher.start();
+				_gameOptions.memoryGame.playFeedback( _currentCard.id + 1 );
+				_cardAlreadySelected = true;
+			}
+			
+		}
+		
+		protected function moveBackToSide( card : FabisMemoryGameCard, x : Number, y : Number ) : void {
+			TweenLite.to( _currentCard, 1, {x: x, y: y, width: 50, height: 50} );
+			card.addEventListener( MouseEvent.CLICK, handleClickOnCard );
+			_cardAlreadySelected = false;
 		}
 		
 		public function start() : void {
@@ -284,11 +335,27 @@ package fabis.wunderreise.games.memory {
 			if( _introSoundStarted ){
 				_introSoundStarted = false;
 				_gameOptions.lipSyncher.stop();
+				_gameOptions.skipButton.removeEventListener( MouseEvent.CLICK, skipIntro);
+				_mainView.removeChild( _gameOptions.skipButton );
 			}
 			if( _feedbackSoundStarted ){
 				_feedbackSoundStarted = false;
 				_gameOptions.lipSyncher.stop();
-				moveToSide( _currentCard );
+				
+				if( _cardAlreadySelected ){
+					moveBackToSide( _currentCard, _lastX, _lastY );
+				}
+				else{
+					moveToSide( _currentCard );
+					_gameContainer.addEventListener( MouseEvent.CLICK, clickHandler );
+					_gameContainer.addEventListener( MouseEvent.MOUSE_OUT, mouseOutHandler );
+					_gameContainer.addEventListener( MouseEvent.MOUSE_OVER, mouseOverHandler );
+				}
+			}
+			if( _pointsSoundStarted ){
+				_pointsSoundStarted = false;
+				_gameOptions.lipSyncher.stop();
+				TweenLite.delayedCall( 1, stop );
 			}
 		}
 
@@ -340,6 +407,13 @@ package fabis.wunderreise.games.memory {
 		}
 
 		public function set gameCore(gameCore : IGameCore) : void {
+		}
+		
+		public function hasCurrentSound() : Boolean {
+			if( _introSoundStarted || _feedbackSoundStarted ){
+				return true;
+			}
+			return false;
 		}
 	}
 }

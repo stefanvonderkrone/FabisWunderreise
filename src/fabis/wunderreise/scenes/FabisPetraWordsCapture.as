@@ -19,11 +19,11 @@ package fabis.wunderreise.scenes {
 		protected var _game : PetraGame;
 		protected var _gameField : PetraGameField;
 		protected var _fabiView : FabiView;
-		protected var _skipButton : FabisSkipButton;
 		protected var _lipSyncher : FabisLipSyncher;
 		protected var _eyeTwinkler : FabisEyeTwinkler;
 		protected var _menuButtons : FabisMenuButtons;
 		protected var _storage : *;
+		protected var wordsCaptureOptions : FabisWordsCaptureGameOptions;
 		
 		public function FabisPetraWordsCapture() {
 			super();
@@ -41,7 +41,7 @@ package fabis.wunderreise.scenes {
 			_gameField = new PetraGameField();
 			_gameField.init();
 			
-			const wordsCaptureOptions : FabisWordsCaptureGameOptions = new FabisWordsCaptureGameOptions();
+			wordsCaptureOptions = new FabisWordsCaptureGameOptions();
 			wordsCaptureOptions.catched = new Vector.<PetraStone>();
 			wordsCaptureOptions.allPics = new Vector.<PetraStone>();
 			wordsCaptureOptions.wrongStones = new Vector.<PetraStone>();
@@ -62,12 +62,6 @@ package fabis.wunderreise.scenes {
 			_game.initWithOptions( wordsCaptureOptions );
 			_gameField._game = _game;
 			
-			_skipButton = new FabisSkipButton();
-			_skipButton.x = 20;
-			_skipButton.y = 20;
-			wordsCaptureOptions.skipButton = _skipButton;
-			_skipButton.addEventListener( MouseEvent.CLICK, _game.skipIntro);
-			view.addChild( _skipButton );
 			
 			view._gameFieldContainer.addChild( _gameField.gameField );
 			view.addChild( wordsCaptureOptions.fabi );
@@ -83,6 +77,8 @@ package fabis.wunderreise.scenes {
 			gameCore.juggler.addAnimatable( _lipSyncher );
 			_eyeTwinkler.gameCore = gameCore;
 			gameCore.juggler.addAnimatable( _eyeTwinkler );
+			
+			
 		}
 		
 		override protected function handleStop() : void {
@@ -117,6 +113,22 @@ package fabis.wunderreise.scenes {
 		}
 		
 		override protected function handleStart() : void {
+			_storage = gameCore.localStorage.getStorageObject();
+			_storage.lastStop = FabisTravelAnimationTarget.PETRA;
+			gameCore.localStorage.saveStorage();
+			
+			if( _storage.stampArray["petraStamp"] ){
+				_skipButton = new FabisSkipButton();
+				_skipButton.x = 900 - _skipButton.width - 20;
+				_skipButton.y = 20;
+				wordsCaptureOptions.skipButton = _skipButton;
+				_skipButton.addEventListener( MouseEvent.CLICK, _game.skipIntro);
+				view.addChild( _skipButton );
+				_skipButton.addEventListener( MouseEvent.MOUSE_OVER, highlightButton );
+				_skipButton.addEventListener( MouseEvent.MOUSE_OUT, removeButtonHighlight );
+				_skipButton.buttonMode = true;
+			}
+			
 			super.handleStart();
 			_eyeTwinkler.start();
 			_game.start();
@@ -124,6 +136,25 @@ package fabis.wunderreise.scenes {
 		
 		override protected function handleDisposal() : void {
 			super.handleDisposal();
+		}
+		
+		override protected function handleClickOnMap() : void {
+			_gameField.removeAllEventListener();
+			super.handleClickOnMap();
+		}
+		
+		override protected function handleClickOnHelp() : void {
+			_helpSound = gameCore.soundCore.getSoundByName( "menuHelpWordsCapture" );
+			super.handleClickOnHelp();
+		}
+		
+		override protected function handleClickOnPassport() : void {
+			if( !( this is FabisPassport ) ){
+				_storage = gameCore.localStorage.getStorageObject();
+				_storage.currentGameScene = gameCore.director.currentScene;
+				gameCore.localStorage.saveStorage();
+				gameCore.director.pushScene( new FabisPassport() );
+			}
 		}
 	}
 }

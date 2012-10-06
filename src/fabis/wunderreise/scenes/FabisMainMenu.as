@@ -16,9 +16,16 @@ package fabis.wunderreise.scenes {
 	public class FabisMainMenu extends BaseScene {
 		
 		private static const PLAY_HELP_SOUND_DELAY : Number = 30000;
+		protected static const SHOW_PASSPORT_TIME : int = 5;
+		protected static const SHOW_MAP_TIME : int = 16;
+		protected static const SHOW_HELP_TIME : int = 19;
 		
 		protected var _timedHelpSounds : Vector.<ISoundItem>;
 		protected var _timedHeldInterval : uint;
+		protected var _frameCounter : int = 0;
+		protected var _currentMenuSymbol : MovieClip = null;
+		protected var _storage : *;
+		protected var _buttonClickedSound : ISoundItem;
 
 		public function FabisMainMenu() {
 			super();
@@ -30,6 +37,7 @@ package fabis.wunderreise.scenes {
 
 		override protected function handleCreation() : void {
 			_view = new FabisMainMenuView();
+			
 			view._worldMap._chichenItza.gotoAndStop( 1 );
 			view._worldMap._chineseWall.gotoAndStop( 1 );
 			view._worldMap._colosseum.gotoAndStop( 1 );
@@ -37,6 +45,7 @@ package fabis.wunderreise.scenes {
 			view._worldMap._machuPicchu.gotoAndStop( 1 );
 			view._worldMap._petra.gotoAndStop( 1 );
 			view._worldMap._tajMahal.gotoAndStop( 1 );
+			view._worldMap._homePic.gotoAndStop( 1 );
 			initButton( view._worldMap._chichenItza );
 			initButton( view._worldMap._chineseWall );
 			initButton( view._worldMap._colosseum );
@@ -49,11 +58,13 @@ package fabis.wunderreise.scenes {
 		}
 		
 		override protected function handleClick( evt : MouseEvent ) : void {
+			_buttonClickedSound = gameCore.soundCore.getSoundByName("buttonClicked");
+			_buttonClickedSound.play();
 			switch( evt.currentTarget ) {
 				case view._worldMap._chichenItza:
 					gameCore.director.replaceScene(
 						new FabisTravelAnimation(
-							FabisTravelAnimationTarget.HOME,
+							_storage.lastStop,
 							FabisTravelAnimationTarget.CHICHEN_ITZA
 						), true
 					);
@@ -61,7 +72,7 @@ package fabis.wunderreise.scenes {
 				case view._worldMap._chineseWall:
 					gameCore.director.replaceScene(
 						new FabisTravelAnimation(
-							FabisTravelAnimationTarget.HOME,
+							_storage.lastStop,
 							FabisTravelAnimationTarget.CHINESE_WALL
 						), true
 					);
@@ -69,7 +80,7 @@ package fabis.wunderreise.scenes {
 				case view._worldMap._colosseum:
 					gameCore.director.replaceScene(
 						new FabisTravelAnimation(
-							FabisTravelAnimationTarget.HOME,
+							_storage.lastStop,
 							FabisTravelAnimationTarget.COLOSSEUM
 						), true
 					);
@@ -77,7 +88,7 @@ package fabis.wunderreise.scenes {
 				case view._worldMap._cristo:
 					gameCore.director.replaceScene(
 						new FabisTravelAnimation(
-							FabisTravelAnimationTarget.HOME,
+							_storage.lastStop,
 							FabisTravelAnimationTarget.CRISTO
 						), true
 					);
@@ -85,7 +96,7 @@ package fabis.wunderreise.scenes {
 				case view._worldMap._machuPicchu:
 					gameCore.director.replaceScene(
 						new FabisTravelAnimation(
-							FabisTravelAnimationTarget.HOME,
+							_storage.lastStop,
 							FabisTravelAnimationTarget.MACHU_PICCHU
 						), true
 					);
@@ -93,7 +104,7 @@ package fabis.wunderreise.scenes {
 				case view._worldMap._petra:
 					gameCore.director.replaceScene(
 						new FabisTravelAnimation(
-							FabisTravelAnimationTarget.HOME,
+							_storage.lastStop,
 							FabisTravelAnimationTarget.PETRA
 						), true
 					);
@@ -101,7 +112,7 @@ package fabis.wunderreise.scenes {
 				case view._worldMap._tajMahal:
 					gameCore.director.replaceScene(
 						new FabisTravelAnimation(
-							FabisTravelAnimationTarget.HOME,
+							_storage.lastStop,
 							FabisTravelAnimationTarget.TAJ_MAHAL
 						), true
 					);
@@ -174,6 +185,7 @@ package fabis.wunderreise.scenes {
 		}
 		
 		override protected function handleStart() : void {
+			_storage = gameCore.localStorage.getStorageObject();
 			super.handleStart();
 			startTimer();
 		}
@@ -196,7 +208,43 @@ package fabis.wunderreise.scenes {
 			TweenLite.killDelayedCallsTo( startTimer );
 			TweenLite.delayedCall( _helpSound.length, startTimer );
 			stopSounds();
+			view.addEventListener( Event.ENTER_FRAME, handleHelpSymbols);
 			super.handleClickOnHelp();
+		}
+		
+		protected function handleHelpSymbols( event : Event ) : void {
+			_frameCounter++;
+			
+			if( _frameCounter == SHOW_PASSPORT_TIME * 60 ){
+				popUpMenuSymbol( view._menuButtons._btnPassport );
+			}
+			
+			if( _frameCounter == SHOW_MAP_TIME * 60 ){
+				popUpMenuSymbol(  view._menuButtons._btnMap );
+			}
+			
+			if( _frameCounter == SHOW_HELP_TIME * 60 ){
+				popUpMenuSymbol(  view._menuButtons._btnHelp );
+				view.removeEventListener( Event.ENTER_FRAME, handleHelpSymbols );
+				TweenLite.delayedCall( 3, removeCurrentSymbol, [ _currentMenuSymbol ]);
+			}
+		}
+		
+		private function popUpMenuSymbol( symbol : MovieClip ) : void {
+			if( _currentMenuSymbol != null ){
+				removeCurrentSymbol( _currentMenuSymbol );
+			}
+			if( symbol != null ){
+				const numFrames : uint = symbol.totalFrames - symbol.currentFrame;
+				TweenLite.to( symbol, numFrames / MOUSE_OVER_FPS, { frame: symbol.totalFrames } );
+				symbol.parent.setChildIndex( symbol, symbol.parent.numChildren - 1 );
+				_currentMenuSymbol = symbol;
+			}
+		}
+		
+		private function removeCurrentSymbol( symbol : MovieClip ) : void {
+			const numFrames : uint = MovieClip( symbol ).currentFrame;
+			TweenLite.to( symbol, numFrames / MOUSE_OUT_FPS, { frame: 1 } );
 		}
 		
 		override protected function handleClickOnPassport() : void {
