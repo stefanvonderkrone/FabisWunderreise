@@ -32,19 +32,22 @@ package fabis.wunderreise.games.quiz {
 		}
 		
 		public function resetNose() : void {
-			TweenLite.to(_fabi._nose, 0.5, {frame: 1});
+			TweenLite.to(_fabi._nose, 1, {frame: 1});
 			_fabi._noseContainer.buttonMode = false;
 			_fabi.removeEventListener( MouseEvent.CLICK, onClickNose );
 		}
 		
 		private function onClickNose( event : MouseEvent ) : void {
-			_fabi.removeEventListener( MouseEvent.CLICK, onClickNose );
-			_game.resetTrueButton();
-			if( !_answerIsTrue ){
-				TweenLite.to(_fabi._nose, 0.5, {frame: _fabi._nose.totalFrames});
+			if( !_game._helpSoundStarted ){
+				_fabi.removeEventListener( MouseEvent.CLICK, onClickNose );
+				_game.resetTrueButton();
+				if( !_answerIsTrue ){
+					TweenLite.to(_fabi._nose, 0.5, {frame: _fabi._nose.totalFrames});
+				}
+				_fabi._noseContainer.buttonMode = false;
+				_game.checkAnswer( false );
 			}
-			_fabi._noseContainer.buttonMode = false;
-			_game.checkAnswer( false );
+			
 		}
 	}
 }

@@ -21,7 +21,7 @@ package fabis.wunderreise.scenes {
 	/**
 	 * @author Stefanie Drost
 	 */
-	public class FabisPassport extends BaseScene implements ISoundItemDelegate, IFabisLipSyncherDelegate {
+	public class FabisPassport extends BaseScene implements IFabisLipSyncherDelegate {
 		
 		
 		protected var _feedbackSound : ISoundItem;
@@ -31,11 +31,11 @@ package fabis.wunderreise.scenes {
 		protected var _storage : *;
 		protected var _lipSyncher : FabisLipSyncher;
 		protected var _eyeTwinkler : FabisEyeTwinkler;
-		protected var myGlow : GlowFilter = new GlowFilter();
 		protected var _menuButtons : FabisMenuButtons;
 		protected var _soundCore : ISoundCore;
 		protected var _newStamp : Boolean = false;
 		protected var _fabi : FabiIntroComplete;
+		
 		
 		public function FabisPassport() {
 			super();
@@ -89,12 +89,23 @@ package fabis.wunderreise.scenes {
 		}
 		
 		override protected function handleStop() : void {
-			super.handleStop();
-			TweenLite.delayedCall(
-				1,
-				gameCore.director.replaceScene,
-				[ new FabisMainMenu(), true ]
-			);
+			if( _storage.currentGameScene != null ){
+				_storage.currentGameScene = null;
+				gameCore.localStorage.saveStorage();
+				TweenLite.delayedCall(
+					2,
+					gameCore.director.popScene
+				);
+			}
+			else{
+				super.handleStop();
+				TweenLite.delayedCall(
+					1,
+					gameCore.director.replaceScene,
+					[ new FabisMainMenu(), true ]
+				);
+			}
+			
 		}
 		
 		override protected function handleStart() : void {
@@ -105,6 +116,8 @@ package fabis.wunderreise.scenes {
 				{ x: 450, y: 300,width: 0, height: 0}, { x: 78, y: 13,width: 740, height: 565} );
 			
 			if( _newStamp == false ){
+				_menuButtons.removeChild( _menuButtons._btnHelp );
+				_menuButtons.removeChild( _menuButtons._btnPassport );
 				TweenLite.delayedCall( 3, stop );
 			}
 		}
@@ -114,7 +127,7 @@ package fabis.wunderreise.scenes {
 		}
 		
 		private function initPassport() : void {
-			Cc.logch.apply( undefined, [ "test2" ] );
+			//Cc.logch.apply( undefined, [ "test2" ] );
 			checkForNewStamp( "machuPicchuStamp", _storage.finishedMachuPicchu );
 			checkForNewStamp( "chichenItzaStamp", _storage.finishedChichenItza );
 			checkForNewStamp( "chineseWallStamp", _storage.finishedChineseWall );
@@ -141,7 +154,7 @@ package fabis.wunderreise.scenes {
 				_storage.stampArray[ stamp ] = true;
 				gameCore.localStorage.saveStorage();
 				_newStamp = true;
-				Cc.logch.apply( undefined, [ "test" ] );
+				view.removeChild( _menuButtons );
 				playStampFeedback( _storage._stampCounter,  stamp );
 			}
 		}
@@ -192,50 +205,13 @@ package fabis.wunderreise.scenes {
 				_feedbackSound.delegate = this;
 				_feedbackSound.play();
 			}
-			
-			//highlightStamp( stamp );
-		}
-		
-		/*private function highlightStamp( stamp : String ) : void {
-			var _stampName : String = "_" + stamp;
-			var _newStamp : MovieClip;
-			_newStamp = MovieClip( view._passportContainer.getChildByName( _stampName ) );
-			
-			myGlow.color = 0x33CC33;
-			
-			myGlow.blurX = 10;
-			myGlow.blurY = 10;
-			_newStamp.filters = [myGlow];
-			
-		}*/
-		
-		/*private function removeHighlight( stamp : String ) : void{
-			myGlow.blurX = 10;
-			myGlow.blurY = 10;
-			stamp.filters = [myGlow];
-		}*/
-		
-		public function reactOnSoundItemProgressEvent(evt : ProgressEvent, soundItem : ISoundItem) : void {
 		}
 
-		public function reactOnSoundItemEvent(evt : Event, soundItem : ISoundItem) : void {
-		}
-
-		public function reactOnSoundItemSoundComplete(soundItem : ISoundItem) : void {
+		override public function reactOnSoundItemSoundComplete(soundItem : ISoundItem) : void {
 			if( _feedbackSoundStarted ){
 				_feedbackSoundStarted = false;
-				//removeHighlight
 				stop();
 			}
-		}
-
-		public function reactOnSoundItemLoadComplete(soundItem : ISoundItem) : void {
-		}
-
-		public function reactOnSoundItemErrorEvent(evt : ErrorEvent, soundItem : ISoundItem) : void {
-		}
-
-		public function reactOnSoundItemSampleDataEvent(evt : SampleDataEvent, soundItem : ISoundItem) : void {
 		}
 
 		public function reactOnCumulatedSpectrum(cumulatedSpectrum : Number) : void {

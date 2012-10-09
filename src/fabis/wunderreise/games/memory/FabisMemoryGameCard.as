@@ -1,5 +1,7 @@
 package fabis.wunderreise.games.memory {
-
+	import com.junkbyte.console.Cc;
+	import flash.events.MouseEvent;
+	import flash.display.MovieClip;
 	import com.greensock.TweenLite;
 	import com.greensock.TweenMax;
 
@@ -107,6 +109,12 @@ package fabis.wunderreise.games.memory {
 
 		public function set id( id : int ) : void {
 			_id = id;
+		}
+		
+		public function addClickHandler() : void {
+			this.buttonMode = true;
+			this.mouseChildren = true;
+			this.mouseEnabled = true;
 		}
 	}
 }

@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.estimate {
+	import com.junkbyte.console.Cc;
 	import flash.events.Event;
 	import com.greensock.TweenLite;
 	import flash.events.MouseEvent;
@@ -16,7 +17,7 @@ package fabis.wunderreise.games.estimate {
 		private const DRAGFIELD_WIDTH : int = 160;
 		private const DRAGFIELD_HEIGHT : int = 400;
 		private const DRAGFIELD_X : int = 900 - DRAGFIELD_WIDTH;
-		private const DRAGFIELD_Y : int = 11;
+		private const DRAGFIELD_Y : int = 50;
 		
 		private const GIRAFFE_WIDTH : int = 40;
 		private const GIRAFFE_HEIGHT : int = 65;
@@ -132,6 +133,7 @@ package fabis.wunderreise.games.estimate {
 		
 		override public function handleGameInstructions( event : Event ) : void {
 			_frameCounter++;
+			
 			
 			if( _frameCounter == _gameOptions.showGiraffesTime * 60  ){
 				initGiraffes();

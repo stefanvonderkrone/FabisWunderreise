@@ -1,5 +1,5 @@
 package fabis.wunderreise.scenes {
-
+	import com.junkbyte.console.Cc;
 	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
 	import com.greensock.TweenLite;
 	import flash.display.MovieClip;
@@ -53,6 +53,10 @@ package fabis.wunderreise.scenes {
 		protected var _start : int;
 		protected var _target : int;
 		protected var _angle : Number;
+		protected var _lineCounter : int = 0;
+		protected var _fromBottomToTop : Boolean = false;
+		protected var _straightFromTop : Boolean = false;
+		
 
 		public function FabisTravelAnimation( start : int, target : int ) {
 			_start = start;
@@ -79,6 +83,7 @@ package fabis.wunderreise.scenes {
 			view._worldMap._machuPicchu.gotoAndStop( 1 );
 			view._worldMap._petra.gotoAndStop( 1 );
 			view._worldMap._tajMahal.gotoAndStop( 1 );
+			view._worldMap._homePic.gotoAndStop( 1 );
 			_targets = Vector.<MovieClip>( [
 				view._worldMap._chichenItza,
 				view._worldMap._chineseWall,
@@ -94,12 +99,16 @@ package fabis.wunderreise.scenes {
 			_targetPosition = new Point( _targets[ _target ].x, _targets[ _target ].y );
 			_currentPosition = _startPosition.clone();
 			_angle = getAngle();
+			Cc.logch.apply( undefined, [ _angle.toString() ] );
 			if ( _angle < 0 ) {
 				_vehicle.scaleX = -1/3;
-				_vehicle.rotation = _angle + 90;
-			} else {
+				if( !_fromBottomToTop && _angle < -10 )
+					_vehicle.rotation = _angle + 90;
+			} 
+			else {
 				_vehicle.scaleX = 1/3;
-				_vehicle.rotation = _angle - 90;
+				if( !_fromBottomToTop )
+					_vehicle.rotation = _angle - 90;
 			}
 			_vehicle.scaleY = 1/3;
 			_vehicle.gotoAndStop( _target + 1 );
@@ -111,6 +120,12 @@ package fabis.wunderreise.scenes {
 		protected function getAngle() : Number {
 			const a : Number = _targetPosition.x - _startPosition.x;
 			const b : Number = _targetPosition.y - _startPosition.y;
+			if( b < 0 ){
+				_fromBottomToTop = true;
+			}
+			if( Math.abs( a ) <= 20 ){
+				_straightFromTop = true;
+			}
 			return Math.acos( a / Math.sqrt( a*a + b*b ) ) * 180 / Math.PI - 90;
 		}
 
@@ -164,6 +179,7 @@ package fabis.wunderreise.scenes {
 		
 		protected function updateTravelling() : void {
 			updateWorldMapPosition();
+			_lineCounter++;
 			_lineContainer.graphics.clear();
 			_lineContainer.graphics.lineStyle( 3, TARGET_COLORS[ _target ] );
 			_lineContainer.graphics.moveTo( _startPosition.x, _startPosition.y );

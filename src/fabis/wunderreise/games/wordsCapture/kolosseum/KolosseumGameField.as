@@ -14,9 +14,10 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 	public class KolosseumGameField extends FabisWordsCaptureGameField {
 				
 		protected var _introSound : ISoundItem;
-		protected var _introSoundStarted : Boolean = false;
+		public var _introSoundStarted : Boolean = false;
 		private var _currentFeedbackStone : KolosseumStone;
 		private var _feedbackNumber : int = 0;
+		protected var _buttonClickedSound : ISoundItem;
 		
 		public function KolosseumGameField() {
 			
@@ -33,9 +34,12 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			super.init();
 		}
 		
+		override public function removeAllEventListener() : void {
+			super.removeAllEventListener();
+		}
+		
 		override public function startIntro() : void{
 			_gameOptions.lipSyncher.delegate = this;
-			
 			gameField.addEventListener( MouseEvent.MOUSE_OVER, handleMouseOver );
 			gameField.addEventListener( MouseEvent.MOUSE_OUT, handleMouseOut );
 			super._stone = new KolosseumStone();
@@ -48,6 +52,8 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			_introSoundStarted = false;
 			
 			_gameOptions.lipSyncher.stop();
+			_buttonClickedSound =_soundCore.getSoundByName("buttonClicked");
+			_buttonClickedSound.play();
 			removeEventListener( Event.ENTER_FRAME, handleDemoStart );	
 			stopIntro();
 		}
@@ -106,8 +112,6 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			var _stone : KolosseumStone;
 			var _xCoordinate : int;
 			var _yCoordinate : int;
-			
-			
 			
 			if( _gameOptions.rightStones.length > 0 ){
 				
@@ -202,12 +206,22 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 					}
 				}
 				else{
-					for each( _stone in _gameOptions.wrongStones ){
-						_stone.highlight();
-					}
-					TweenLite.delayedCall(2, removeWrongHighlights);
+					_removeSound = soundCore.getSoundByName("removeWrongStones");
+					removeWrongStones();
 					_gameOptions.gameField.removeEventListener( Event.ENTER_FRAME, handleFeedbackSound );
 				}
+			}
+		}
+		
+		protected function removeWrongStones() : void {
+			var _stone : KolosseumStone; 
+			
+			if( _gameOptions.wrongStones.length > 0 ){
+				_stone = _gameOptions.wrongStones.shift();
+				_stone.highlight();
+				TweenLite.delayedCall( 1, _removeSound.play );
+				TweenLite.delayedCall( 1, _stone.remove );
+				TweenLite.delayedCall( 1.5, removeWrongStones );
 			}
 		}
 		

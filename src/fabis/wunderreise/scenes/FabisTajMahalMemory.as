@@ -1,4 +1,5 @@
 package fabis.wunderreise.scenes {
+	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
 	import com.greensock.TweenLite;
 	import flash.events.MouseEvent;
 	import fabis.wunderreise.sound.FabisEyeTwinkler;
@@ -16,11 +17,11 @@ package fabis.wunderreise.scenes {
 		
 		protected var _memory : FabisTajMahalGame;
 		protected var _fabi : FabiView;
-		protected var _skipButton : FabisSkipButton;
 		protected var _lipSyncher : FabisLipSyncher;
 		protected var _eyeTwinkler : FabisEyeTwinkler;
 		protected var _storage : *;
 		protected var _menuButtons : FabisMenuButtons;
+		protected var memoryOptions : FabisMemoryGameOptions;
 
 		public function FabisTajMahalMemory() {
 			super();
@@ -43,7 +44,7 @@ package fabis.wunderreise.scenes {
 			view.addChild( _fabi );
 			
 			_memory = FabisTajMahalGame( view._memoryContainer.addChild( new FabisTajMahalGame() ) );
-			const memoryOptions : FabisMemoryGameOptions = new FabisMemoryGameOptions();
+			memoryOptions = new FabisMemoryGameOptions();
 			memoryOptions.memoryContainer = view._memoryContainer;
 			memoryOptions.cardAssets = Vector.<Class>( [
 				MemoryTajMahalCard01,
@@ -70,14 +71,6 @@ package fabis.wunderreise.scenes {
 			
 			_eyeTwinkler = new FabisEyeTwinkler();
 			_eyeTwinkler.initWithEyes( _fabi._eyes );
-			//memoryOptions.eyeTwinkler = _eyeTwinkler;
-			
-			_skipButton = new FabisSkipButton();
-			_skipButton.x = 20;
-			_skipButton.y = 20;
-			memoryOptions.skipButton = _skipButton;
-			_skipButton.addEventListener( MouseEvent.CLICK, _memory.skipIntro);
-			view.addChild( _skipButton );
 			
 			_memory._mainView = view;
 			view.addChild( _menuButtons );
@@ -95,6 +88,22 @@ package fabis.wunderreise.scenes {
 		}
 		
 		override protected function handleStart() : void {
+			_storage = gameCore.localStorage.getStorageObject();
+			_storage.lastStop = FabisTravelAnimationTarget.TAJ_MAHAL;
+			gameCore.localStorage.saveStorage();
+			
+			if( _storage.stampArray["tajMahalStamp"] ){
+				_skipButton = new FabisSkipButton();
+				_skipButton.x = 900 - _skipButton.width - 20;
+				_skipButton.y = 20;
+				memoryOptions.skipButton = _skipButton;
+				_skipButton.addEventListener( MouseEvent.CLICK, _memory.skipIntro);
+				view.addChild( _skipButton );
+				_skipButton.addEventListener( MouseEvent.MOUSE_OVER, highlightButton );
+				_skipButton.addEventListener( MouseEvent.MOUSE_OUT, removeButtonHighlight );
+				_skipButton.buttonMode = true;
+			}
+			
 			super.handleStart();
 			_eyeTwinkler.start();
 			_memory.start();
@@ -128,6 +137,33 @@ package fabis.wunderreise.scenes {
 						[ new FabisPassport(), true ]
 					);
 				}
+			}
+		}
+		
+		override protected function handleClickOnHelp() : void {
+			if( !_memory.hasCurrentSound() ){
+				memoryOptions.lipSyncher.start();
+				_helpSound = gameCore.soundCore.getSoundByName( "menuHelpMemory" );
+				_helpSound.delegate = this;
+				_memory._helpSoundStarted = true;
+				super.handleClickOnHelp();
+			}
+			
+		}
+		
+		override protected function handleClickOnPassport() : void {
+			if( !( this is FabisPassport ) ){
+				_storage = gameCore.localStorage.getStorageObject();
+				_storage.currentGameScene = gameCore.director.currentScene;
+				gameCore.localStorage.saveStorage();
+				gameCore.director.pushScene( new FabisPassport() );
+			}
+		}
+		
+		override public function reactOnSoundItemSoundComplete(soundItem : ISoundItem) : void {
+			if( _memory._helpSoundStarted ){
+				_memory._helpSoundStarted = false;
+				memoryOptions.lipSyncher.stop();
 			}
 		}
 	}

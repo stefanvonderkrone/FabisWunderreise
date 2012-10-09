@@ -49,6 +49,7 @@ package fabis.wunderreise.games.wordsCapture {
 			_gameOptions.lipSyncher.gameCore.director.currentScene.stop();
 		}
 		
+		
 		public function set soundCore( soundCore : ISoundCore) : void {
 			_soundCore = soundCore;
 		}
@@ -83,6 +84,10 @@ package fabis.wunderreise.games.wordsCapture {
 
 		public function set gameCore(gameCore : IGameCore) : void {
 			_gameCore = gameCore;
+		}
+		
+		public function hasCurrentSound() : Boolean {
+			return false;
 		}
 	}
 }

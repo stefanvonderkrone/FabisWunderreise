@@ -14,9 +14,10 @@ package fabis.wunderreise.gamesave {
 		public var finishedTajMahal : Boolean;
 		
 		public var stampArray : Array; 
-
 		public var _stampCounter : int;
-
+		public var currentGameScene : *;
+		
+		public var lastStop : int;
 
 		public function FabisGameSave() {
 			_stampCounter = 0;

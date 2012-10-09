@@ -47,6 +47,8 @@ package fabis.wunderreise.games.wordsCapture.petra {
 		
 		override public function skipIntro( event : MouseEvent ) : void {
 			_gameField.skipIntro();
+			_fabi._lips.gotoAndStop( 1 );
+			_gameOptions.skipButton.parent.removeChild( _gameOptions.skipButton );
 			_gameOptions.skipButton.removeEventListener( MouseEvent.CLICK, skipIntro);
 		}
 		
@@ -58,6 +60,14 @@ package fabis.wunderreise.games.wordsCapture.petra {
 		override public function stop() : void {
 			Cc.logch.apply( undefined, [ "stop in Petra "] );
 			super.stop();
+		}
+		
+		override public function hasCurrentSound() : Boolean {
+			if( _gameField._introSoundStarted || _gameField._feedbackSoundStarted || _gameField._pointsSoundStarted
+				|| _gameField._completionSoundStarted ){
+				return true;
+			}
+			return false;
 		}
 	}
 }

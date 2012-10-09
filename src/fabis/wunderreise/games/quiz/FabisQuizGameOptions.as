@@ -20,5 +20,8 @@ package fabis.wunderreise.games.quiz {
 		
 		public var lipSyncher : FabisLipSyncher;
 		public var eyeTwinkler : FabisEyeTwinkler;
+		
+		public var answerTimesTrue : Array;
+		public var answerTimesFalse : Array;
 	}
 }

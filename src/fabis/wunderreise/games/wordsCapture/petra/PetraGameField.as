@@ -12,9 +12,10 @@ package fabis.wunderreise.games.wordsCapture.petra {
 	public class PetraGameField extends FabisWordsCaptureGameField {
 		
 		protected var _introSound : ISoundItem;
-		protected var _introSoundStarted : Boolean = false;
+		public var _introSoundStarted : Boolean = false;
 		private var _currentFeedbackStone : PetraStone;
 		private var _feedbackNumber : int = 0;
+		protected var _buttonClickedSound : ISoundItem;
 		
 		public function PetraGameField() {
 			
@@ -29,6 +30,10 @@ package fabis.wunderreise.games.wordsCapture.petra {
 			super._gameField = gameField;
 			super._gameFieldObject = this;
 			super.init();
+		}
+		
+		override public function removeAllEventListener() : void {
+			super.removeAllEventListener();
 		}
 		
 		override public function startIntro() : void{
@@ -47,6 +52,8 @@ package fabis.wunderreise.games.wordsCapture.petra {
 			_introSoundStarted = false;
 			
 			_gameOptions.lipSyncher.stop();
+			_buttonClickedSound = _soundCore.getSoundByName("buttonClicked");
+			_buttonClickedSound.play();
 			removeEventListener( Event.ENTER_FRAME, handleDemoStart );	
 			stopIntro();
 		}
@@ -64,9 +71,6 @@ package fabis.wunderreise.games.wordsCapture.petra {
 		}
 		
 		override public function start() : void {
-			//TODO: remove eventlistener and start intro first
-			//gameField.addEventListener( MouseEvent.MOUSE_OVER, handleMouseOver );
-			//gameField.addEventListener( MouseEvent.MOUSE_OUT, handleMouseOut );
 			super._stone = new PetraStone();
 			super.start();
 		}
@@ -119,8 +123,10 @@ package fabis.wunderreise.games.wordsCapture.petra {
 		}
 		
 		override public function completeGame() : void {
-			super.completeGame();
 			TweenLite.delayedCall( 1, addStonesToWall );
+			var _addStonesSound : ISoundItem = _soundCore.getSoundByName("wordsCaptureAddStones");
+			TweenLite.delayedCall( 1, _addStonesSound.play );
+			super.completeGame();
 		}
 		
 		override public function removeBasketFront() : void {
@@ -195,10 +201,8 @@ package fabis.wunderreise.games.wordsCapture.petra {
 					}
 				}
 				else{
-					for each( _stone in _gameOptions.wrongStones ){
-						_stone.highlight();
-					}
-					TweenLite.delayedCall(2, removeWrongHighlights);
+					_removeSound = soundCore.getSoundByName("removeWrongStones");
+					removeWrongStones();
 					_gameOptions.gameField.removeEventListener( Event.ENTER_FRAME, handleFeedbackSound );
 				}
 			}
@@ -248,6 +252,18 @@ package fabis.wunderreise.games.wordsCapture.petra {
 					int( Math.random() * ( lips.totalFrames - 1 ) + 2 )
 				);
 			} else lips.gotoAndStop( 1 );
+		}
+		
+		protected function removeWrongStones() : void {
+			var _stone : PetraStone; 
+			
+			if( _gameOptions.wrongStones.length > 0 ){
+				_stone = _gameOptions.wrongStones.shift();
+				_stone.highlight();
+				TweenLite.delayedCall( 1, _removeSound.play );
+				TweenLite.delayedCall( 1, _stone.remove );
+				TweenLite.delayedCall( 1.5, removeWrongStones );
+			}
 		}
 	}
 }

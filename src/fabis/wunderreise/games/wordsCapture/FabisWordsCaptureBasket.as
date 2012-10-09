@@ -90,11 +90,11 @@ package fabis.wunderreise.games.wordsCapture {
 			}
 			
 			for each( _stone in _gameOptions.catched ){
-				
-				basket.parent.addChild( _stone.stone );
-				_stone.stone.x += x;
-				_stone.stone.y += y;
-				
+				if( _stone.bRight ){
+					basket.parent.addChild( _stone.stone );
+					_stone.stone.x += x;
+					_stone.stone.y += y;
+				}
 			}
 			basket.parent.removeChild, [ _basketFront ];
 			if( _gameOptions.catched.length > 0 ) 
@@ -113,7 +113,7 @@ package fabis.wunderreise.games.wordsCapture {
 				_stone = PetraStone( _stone );
 			}
 			
-			var xValue : int = 70;
+			var xValue : int = 47;
 			var yValue : int = 90;
 			var number : int = 0;
 			
@@ -122,17 +122,17 @@ package fabis.wunderreise.games.wordsCapture {
 				_basketFront.addChild( _stone.stone );
 				_stone.stone.x = xValue;
 				_stone.stone.y = yValue;
-				_stone.stone.width = 55;
-				_stone.stone.height = 45;
+				_stone.stone.width = 85;
+				_stone.stone.height = 65;
 				_stone.stone.visible = true;
 				number++;
 				
-				if( number == 5 ){
-					xValue = 70;
+				if( number == 4 ){
+					xValue = 47;
 					yValue = 160;
 				}
 				else{
-					xValue += 60;
+					xValue += 90;
 				}
 			}
 		}
@@ -149,7 +149,7 @@ package fabis.wunderreise.games.wordsCapture {
 			
 			if( _tmpCatched < _gameOptions.catched.length ){
 				_stone = _gameOptions.catched[ _tmpCatched ];
-				TweenLite.to( _stone.stone, 1, { y: 500, width: 154, height: 100} );
+				TweenLite.to( _stone.stone, 1, { y: 500, width: 124, height: 80} );
 				_tmpCatched++;
 				TweenLite.delayedCall( (1/10), stonesFallDown);
 			}

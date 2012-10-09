@@ -34,11 +34,12 @@ package fabis.wunderreise.games.wordsCapture {
 		protected var _gameCore : IGameCore;
 		protected var _stoneEffect : ISoundItem;
 		protected var _feedbackSound : ISoundItem;
-		protected var _feedbackSoundStarted : Boolean = false;
+		public var _feedbackSoundStarted : Boolean = false;
 		protected var _pointsSound : ISoundItem;
-		protected var _pointsSoundStarted : Boolean = false;
+		public var _pointsSoundStarted : Boolean = false;
 		protected var _completionSound : ISoundItem;
-		protected var _completionSoundStarted : Boolean = false;
+		public var _completionSoundStarted : Boolean = false;
+		public var _removeSound : ISoundItem;
 		protected var _frameNumber : int = 0;
 		protected var _feedbackTime : int;
 		
@@ -61,6 +62,11 @@ package fabis.wunderreise.games.wordsCapture {
 			_basket.basket.x = 0;
 			_basket.basket.y = _gameField.height - 130;
 			_gameField.addChild( _basket.basket );			
+		}
+		
+		public function removeAllEventListener() : void {
+			_gameField.removeEventListener(Event.ENTER_FRAME, handleEnterFrameDemo);
+			_gameField.removeEventListener(Event.ENTER_FRAME, handleEnterFrame);
 		}
 		
 		public function startIntro() : void{
@@ -154,7 +160,6 @@ package fabis.wunderreise.games.wordsCapture {
 				_stone.bRight = true;
 				
 				if( getroffen ){
-					//TODO: Audio-Ausgabe Punkte
 					_points++;
 				}
 				_gameOptions.rightStones.push( _stone );
@@ -162,7 +167,6 @@ package fabis.wunderreise.games.wordsCapture {
 			else if( _gameOptions.wrongPics.indexOf( _stone.id ) != -1 ){
 				_stone.bRight = false;
 				if( !getroffen ){
-					//TODO: Audio-Ausgabe Punkte
 					_points++;
 				}
 				_gameOptions.wrongStones.push( _stone );
