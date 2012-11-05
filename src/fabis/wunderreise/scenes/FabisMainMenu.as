@@ -195,6 +195,7 @@ package fabis.wunderreise.scenes {
 		}
 
 		protected function playHelpSound() : void {
+			// TODO _timedHelpSounds u.U. null
 			_timedHelpSounds[ int( Math.random() * _timedHelpSounds.length ) ].play();
 		}
 		

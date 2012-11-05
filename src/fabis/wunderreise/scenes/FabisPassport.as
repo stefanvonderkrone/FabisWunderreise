@@ -39,6 +39,7 @@ package fabis.wunderreise.scenes {
 		
 		public function FabisPassport() {
 			super();
+			// TODO what happens, when all trophies where achieved?
 		}
 		
 		private function get view() : FabisPassportView {

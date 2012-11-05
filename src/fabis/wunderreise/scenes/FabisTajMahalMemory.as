@@ -25,6 +25,7 @@ package fabis.wunderreise.scenes {
 
 		public function FabisTajMahalMemory() {
 			super();
+			// TODO stop help sound when start playing (by first click an memory when help sound is playing
 		}
 		
 		private function get view() : MemoryTajMahalGameView {

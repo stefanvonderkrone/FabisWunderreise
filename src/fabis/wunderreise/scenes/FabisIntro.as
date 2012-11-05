@@ -1,22 +1,17 @@
 package fabis.wunderreise.scenes {
-	
-	import com.junkbyte.console.Cc;
-	import flash.events.MouseEvent;
 	import fabis.wunderreise.sound.FabisEyeTwinkler;
 	import fabis.wunderreise.sound.FabisLipSyncher;
 	import fabis.wunderreise.sound.IFabisLipSyncherDelegate;
 
 	import com.flashmastery.as3.game.interfaces.core.IGameCore;
 	import com.flashmastery.as3.game.interfaces.core.IInteractiveGameObject;
-	import com.flashmastery.as3.game.interfaces.delegates.ISoundItemDelegate;
 	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
 	import com.greensock.TweenLite;
 
 	import flash.display.MovieClip;
-	import flash.events.ErrorEvent;
 	import flash.events.Event;
-	import flash.events.ProgressEvent;
-	import flash.events.SampleDataEvent;
+	import flash.events.MouseEvent;
+	
 
 	/**
 	 * @author Stefan von der Krone (2012)
@@ -33,17 +28,17 @@ package fabis.wunderreise.scenes {
 
 		protected var _plopSound : ISoundItem;
 		protected var _introSound : ISoundItem;
-		protected var _introSoundStarted : Boolean = false;
 		protected var _guideSound : ISoundItem;
+		protected var _buttonClickedSound : ISoundItem;
+		protected var _introSoundStarted : Boolean = false;
 		protected var _guideSoundStarted : Boolean = false;
+		protected var _symbolArray : Array;
+		protected var _currentMenuSymbol : MovieClip = null;
+		protected var _storage : *;
 		protected var _lipSyncher : FabisLipSyncher;
 		protected var _eyeTwinkler : FabisEyeTwinkler;
 		protected var _worldmap : FabisWorldMap;
-		protected var _symbolArray : Array;
 		protected var _menuButtons : FabisMenuButtons;
-		protected var _currentMenuSymbol : MovieClip = null;
-		protected var _storage : *;
-		protected var _buttonClickedSound : ISoundItem;
 		
 		
 		private var _frameCounter : int = 0;
@@ -73,8 +68,15 @@ package fabis.wunderreise.scenes {
 			_eyeTwinkler = new FabisEyeTwinkler();
 			_eyeTwinkler.initWithEyes( view._fabi._eyes );
 			
-			_symbolArray = [ _worldmap._chichenItza, _worldmap._machuPicchu, _worldmap._cristo, _worldmap._colosseum,
-									_worldmap._petra, _worldmap._tajMahal, _worldmap._chineseWall ];
+			_symbolArray = [
+				_worldmap._chichenItza,
+				_worldmap._machuPicchu,
+				_worldmap._cristo,
+				_worldmap._colosseum,
+				_worldmap._petra,
+				_worldmap._tajMahal,
+				_worldmap._chineseWall
+			];
 									
 			super.handleCreation();
 		}
@@ -83,6 +85,8 @@ package fabis.wunderreise.scenes {
 			super.initView( evt );
 			_plopSound = gameCore.soundCore.getSoundByName( "introPlop" );
 			_introSound = gameCore.soundCore.getSoundByName( "menuIntro" );
+			_guideSound = gameCore.soundCore.getSoundByName( "menuGuide" );
+			_buttonClickedSound = gameCore.soundCore.getSoundByName("buttonClicked");
 			_introSound.delegate = this;
 			_lipSyncher.gameCore = gameCore;
 			gameCore.juggler.addAnimatable( _lipSyncher );
@@ -131,10 +135,23 @@ package fabis.wunderreise.scenes {
 
 		override protected function handleDisposal() : void {
 			super.handleDisposal();
+			TweenLite.killDelayedCallsTo( startInstructions );
+			view._instructionButton.removeEventListener( MouseEvent.CLICK, skipToInstructions );
+			view._startButton.removeEventListener( MouseEvent.CLICK, skipToStart );
+			view._instructionButton.removeEventListener( MouseEvent.MOUSE_OVER, highlightButton );
+			view._startButton.removeEventListener( MouseEvent.MOUSE_OVER, highlightButton );
+			view._instructionButton.removeEventListener( MouseEvent.MOUSE_OUT, removeButtonHighlight );
+			view._startButton.removeEventListener( MouseEvent.MOUSE_OUT, removeButtonHighlight );
+			view._fabi.removeEventListener( Event.ENTER_FRAME, showSymbols );
+			_menuButtons.removeEventListener( Event.ENTER_FRAME, handleMenuInstructions );
 			_introSound.delegate = null;
 			_introSound = null;
 			_lipSyncher.gameCore = null;
 			_lipSyncher.dispose();
+			_guideSound.delegate = null;
+			_guideSound = null;
+			_plopSound = null;
+			_buttonClickedSound = null;
 			_eyeTwinkler.gameCore = null;
 			_eyeTwinkler.dispose();
 		}
@@ -169,7 +186,6 @@ package fabis.wunderreise.scenes {
 		}
 		
 		protected function playGuideSound() : void {
-			_guideSound = gameCore.soundCore.getSoundByName( "menuGuide" );
 			_guideSound.delegate = this;
 			_guideSound.play();
 			_guideSoundStarted = true;
@@ -234,7 +250,6 @@ package fabis.wunderreise.scenes {
 		}
 		
 		private function skipToInstructions( event : MouseEvent ) : void {
-			_buttonClickedSound = gameCore.soundCore.getSoundByName("buttonClicked");
 			_buttonClickedSound.play();
 			
 			if( _introSoundStarted ){
