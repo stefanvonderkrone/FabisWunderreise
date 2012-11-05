@@ -1,14 +1,12 @@
 package fabis.wunderreise.scenes {
-	import com.flashmastery.as3.game.interfaces.core.IGameScene;
-	import com.junkbyte.console.Cc;
-	import flash.utils.setInterval;
-	import flash.utils.clearInterval;
 	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
 	import com.greensock.TweenLite;
 
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.utils.clearInterval;
+	import flash.utils.setInterval;
 
 	/**
 	 * @author Stefan von der Krone (2012)
@@ -20,12 +18,12 @@ package fabis.wunderreise.scenes {
 		protected static const SHOW_MAP_TIME : int = 16;
 		protected static const SHOW_HELP_TIME : int = 19;
 		
+		protected var _buttonClickedSound : ISoundItem;
 		protected var _timedHelpSounds : Vector.<ISoundItem>;
 		protected var _timedHeldInterval : uint;
 		protected var _frameCounter : int = 0;
-		protected var _currentMenuSymbol : MovieClip = null;
 		protected var _storage : *;
-		protected var _buttonClickedSound : ISoundItem;
+		protected var _currentMenuSymbol : MovieClip = null;
 
 		public function FabisMainMenu() {
 			super();
@@ -58,7 +56,6 @@ package fabis.wunderreise.scenes {
 		}
 		
 		override protected function handleClick( evt : MouseEvent ) : void {
-			_buttonClickedSound = gameCore.soundCore.getSoundByName("buttonClicked");
 			_buttonClickedSound.play();
 			switch( evt.currentTarget ) {
 				case view._worldMap._chichenItza:
@@ -163,6 +160,7 @@ package fabis.wunderreise.scenes {
 		
 		override protected function initView( evt : Event ) : void {
 			super.initView( evt );
+			_buttonClickedSound = gameCore.soundCore.getSoundByName("buttonClicked");
 			_timedHelpSounds = Vector.<ISoundItem>( [
 					_gameCore.soundCore.getSoundByName( "menuTimedHelpA" ),
 					_gameCore.soundCore.getSoundByName( "menuTimedHelpB" ),
@@ -196,12 +194,17 @@ package fabis.wunderreise.scenes {
 
 		protected function playHelpSound() : void {
 			// TODO _timedHelpSounds u.U. null
-			_timedHelpSounds[ int( Math.random() * _timedHelpSounds.length ) ].play();
+			if ( _timedHelpSounds ) {
+				_timedHelpSounds[ int( Math.random() * _timedHelpSounds.length ) ].play();
+			}
 		}
 		
 		override protected function handleDisposal() : void {
 			super.handleDisposal();
+			TweenLite.killDelayedCallsTo( startTimer );
+			view.removeEventListener( Event.ENTER_FRAME, handleHelpSymbols);
 			_timedHelpSounds = null;
+			_buttonClickedSound = null;
 		}
 
 		override protected function handleClickOnHelp() : void {
@@ -248,8 +251,8 @@ package fabis.wunderreise.scenes {
 			TweenLite.to( symbol, numFrames / MOUSE_OUT_FPS, { frame: 1 } );
 		}
 		
-		override protected function handleClickOnPassport() : void {
-			super.handleClickOnPassport();
-		}
+//		override protected function handleClickOnPassport() : void {
+//			super.handleClickOnPassport();
+//		}
 	}
 }
