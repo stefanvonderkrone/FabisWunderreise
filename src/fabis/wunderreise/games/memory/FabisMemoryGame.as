@@ -132,6 +132,8 @@ package fabis.wunderreise.games.memory {
 			if( !_helpSoundStarted ){
 				if ( _locked || !( evt.target is FabisMemoryGameCard ) ) return;
 				const card : FabisMemoryGameCard = FabisMemoryGameCard( evt.target );
+				_buttonClickedSound = soundCore.getSoundByName("buttonClicked");
+				_buttonClickedSound.play();
 				card.mouseEnabled = false;
 				_selectedCards.push( card );
 				card.showCover( 0.25 );

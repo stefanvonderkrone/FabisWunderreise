@@ -35,6 +35,8 @@ package fabis.wunderreise.scenes {
 		protected var _soundCore : ISoundCore;
 		protected var _newStamp : Boolean = false;
 		protected var _fabi : FabiIntroComplete;
+		protected var _callFromGame : Boolean = false;
+		protected var _gameFinished : Boolean = false;
 		
 		
 		public function FabisPassport() {
@@ -48,13 +50,13 @@ package fabis.wunderreise.scenes {
 		override protected function handleCreation() : void {
 			_view = new FabisPassportView();
 			_menuButtons = new FabisMenuButtons();
-			_fabi = new FabiIntroComplete();
+			/*_fabi = new FabiIntroComplete();
 			_fabi._lips.gotoAndStop( 1 );
 			_fabi._eyes.gotoAndStop( 1 );
 			_lipSyncher = new FabisLipSyncher();
 			_lipSyncher.delegate = this;
 			_eyeTwinkler = new FabisEyeTwinkler();
-			_eyeTwinkler.initWithEyes( _fabi._eyes );
+			_eyeTwinkler.initWithEyes( _fabi._eyes );*/
 			
 			view._passportContainer._chichenItzaStamp.gotoAndStop( 1 );
 			view._passportContainer._chineseWallStamp.gotoAndStop( 1 );
@@ -79,17 +81,22 @@ package fabis.wunderreise.scenes {
 		
 		override protected function initView( evt : Event ) : void {
 			super.initView( evt );
-			_lipSyncher.gameCore = gameCore;
+			/*_lipSyncher.gameCore = gameCore;
 			gameCore.juggler.addAnimatable( _lipSyncher );
 			_eyeTwinkler.gameCore = gameCore;
-			gameCore.juggler.addAnimatable( _eyeTwinkler );
+			gameCore.juggler.addAnimatable( _eyeTwinkler );*/
 			_soundCore = gameCore.soundCore;
 			_storage = gameCore.localStorage.getStorageObject();
+			if( _storage.currentGameScene != null ){
+				_callFromGame = true;
+			}
 			initPassport();
+			_menuButtons.removeChild( _menuButtons._btnHelp );
+			_menuButtons.removeChild( _menuButtons._btnPassport );
 		}
 		
 		override protected function handleStop() : void {
-			if( _storage.currentGameScene != null ){
+			if( _storage.currentGameScene != null && !( _storage.currentGameScene is FabisMainMenu ) ){
 				_storage.currentGameScene = null;
 				gameCore.localStorage.saveStorage();
 				TweenLite.delayedCall(
@@ -114,12 +121,11 @@ package fabis.wunderreise.scenes {
 			_openSound.play();
 			TweenLite.fromTo(view._passportContainer, 1, 
 				{ x: 450, y: 300,width: 0, height: 0}, { x: 78, y: 13,width: 740, height: 565} );
-			
-			if( _newStamp == false ){
-				_menuButtons.removeChild( _menuButtons._btnHelp );
-				_menuButtons.removeChild( _menuButtons._btnPassport );
+			//Cc.logch.apply( undefined, [ _storage.currentGameScene ] );
+			if( !( _storage.currentGameScene is FabisMainMenu ) && ( _callFromGame || ( !_newStamp && _gameFinished ) ) ){
+				_menuButtons.removeChild( _menuButtons._btnMap );
 				TweenLite.delayedCall( 3, stop );
-			}
+			}			
 		}
 		
 		override protected function handleDisposal() : void {
@@ -156,6 +162,9 @@ package fabis.wunderreise.scenes {
 				_newStamp = true;
 				view.removeChild( _menuButtons );
 				playStampFeedback( _storage._stampCounter,  stamp );
+			}
+			else if( gameFinished ){
+				_gameFinished = true;
 			}
 		}
 		

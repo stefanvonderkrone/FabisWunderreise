@@ -35,8 +35,8 @@ package fabis.wunderreise.scenes {
 			_view = new MemoryTajMahalGameView();
 			_menuButtons = new FabisMenuButtons();
 			_fabi = new FabiView();
-			_fabi.x = 50;
-			_fabi.y = 270;
+			_fabi.x = 60;
+			_fabi.y = 310;
 			_fabi._arm.gotoAndStop( 1 );
 			_fabi._nose.gotoAndStop( 1 );
 			_fabi._eyes.gotoAndStop( 1 );

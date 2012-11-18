@@ -90,12 +90,12 @@ package fabis.wunderreise.scenes {
 			gameCore.juggler.addAnimatable( _eyeTwinkler );
 			view._instructionButton.addEventListener( MouseEvent.CLICK, skipToInstructions );
 			view._startButton.addEventListener( MouseEvent.CLICK, skipToStart );
-			view._instructionButton.addEventListener( MouseEvent.MOUSE_OVER, highlightButton );
+			/*view._instructionButton.addEventListener( MouseEvent.MOUSE_OVER, highlightButton );
 			view._startButton.addEventListener( MouseEvent.MOUSE_OVER, highlightButton );
 			view._instructionButton.addEventListener( MouseEvent.MOUSE_OUT, removeButtonHighlight );
 			view._startButton.addEventListener( MouseEvent.MOUSE_OUT, removeButtonHighlight );
 			view._instructionButton.buttonMode = true;
-			view._startButton.buttonMode = true;
+			view._startButton.buttonMode = true;*/
 		}
 
 		override protected function handleStart() : void {
@@ -164,6 +164,9 @@ package fabis.wunderreise.scenes {
 			_menuButtons._btnHelp.gotoAndStop( 1 );
 			_menuButtons._btnMap.gotoAndStop( 1 );
 			_menuButtons._btnPassport.gotoAndStop( 1 );
+			_menuButtons._btnHelp.visible = false;
+			_menuButtons._btnMap.visible = false;
+			_menuButtons._btnPassport.visible = false;
 			_menuButtons.addEventListener( Event.ENTER_FRAME, handleMenuInstructions );
 			playGuideSound();
 		}
@@ -186,14 +189,17 @@ package fabis.wunderreise.scenes {
 				TweenLite.delayedCall( 3, _worldmap._homePic.gotoAndStop, [ 1 ]);
 			}
 			if( _frameCounter == SHOW_PASSPORT_TIME * 60){
+				_menuButtons._btnPassport.visible = true;
 				popUpMenuSymbol( _menuButtons._btnPassport );
 				_plopSound.play();
 			}
 			if( _frameCounter == SHOW_MAP_TIME * 60){
+				_menuButtons._btnMap.visible = true;
 				popUpMenuSymbol(  _menuButtons._btnMap );
 				_plopSound.play();
 			}
 			if( _frameCounter == SHOW_HELP_TIME * 60){
+				_menuButtons._btnHelp.visible = true;
 				popUpMenuSymbol(  _menuButtons._btnHelp );
 				_plopSound.play();
 			}

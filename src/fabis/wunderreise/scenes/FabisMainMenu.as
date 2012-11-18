@@ -248,6 +248,8 @@ package fabis.wunderreise.scenes {
 		}
 		
 		override protected function handleClickOnPassport() : void {
+			_storage.currentGameScene = gameCore.director.currentScene;
+			gameCore.localStorage.saveStorage();
 			super.handleClickOnPassport();
 		}
 	}
