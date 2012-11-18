@@ -21,7 +21,7 @@ package fabis.wunderreise.games.wordsCapture.petra {
 		
 		// fall-down values
 		protected var _currentSpeed : Number = 0;
-		protected static const _gravity : int = 2;
+		protected static const _gravity : int = 1;
 		
 		public function PetraStone() {
 			

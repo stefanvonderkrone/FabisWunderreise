@@ -243,6 +243,11 @@ package fabis.wunderreise.games.memory {
 		
 		protected function handleClickOnCard( evt : MouseEvent ) : void {
 			if( !_feedbackSoundStarted ){
+				
+				_gameContainer.removeEventListener( MouseEvent.CLICK, clickHandler );
+				_gameContainer.removeEventListener( MouseEvent.MOUSE_OUT, mouseOutHandler );
+				_gameContainer.removeEventListener( MouseEvent.MOUSE_OVER, mouseOverHandler );
+				
 				_buttonClickedSound = soundCore.getSoundByName("buttonClicked");
 				_buttonClickedSound.play();
 				_currentCard = FabisMemoryGameCard( evt.currentTarget );
@@ -280,7 +285,7 @@ package fabis.wunderreise.games.memory {
 		}
 		
 		public function showMemory() : void {
-			_gameContainer.addEventListener( MouseEvent.CLICK, clickHandler );
+			//_gameContainer.addEventListener( MouseEvent.CLICK, clickHandler );
 			_gameContainer.addEventListener( MouseEvent.MOUSE_OUT, mouseOutHandler );
 			_gameContainer.addEventListener( MouseEvent.MOUSE_OVER, mouseOverHandler );
 			tweenIn();
@@ -335,6 +340,7 @@ package fabis.wunderreise.games.memory {
 
 		public function reactOnSoundItemSoundComplete(soundItem : ISoundItem) : void {
 			if( _introSoundStarted ){
+				_gameContainer.addEventListener( MouseEvent.CLICK, clickHandler );
 				_introSoundStarted = false;
 				_gameOptions.lipSyncher.stop();
 				_gameOptions.skipButton.removeEventListener( MouseEvent.CLICK, skipIntro);
@@ -346,6 +352,9 @@ package fabis.wunderreise.games.memory {
 				
 				if( _cardAlreadySelected ){
 					moveBackToSide( _currentCard, _lastX, _lastY );
+					_gameContainer.addEventListener( MouseEvent.CLICK, clickHandler );
+					_gameContainer.addEventListener( MouseEvent.MOUSE_OUT, mouseOutHandler );
+					_gameContainer.addEventListener( MouseEvent.MOUSE_OVER, mouseOverHandler );
 				}
 				else{
 					moveToSide( _currentCard );

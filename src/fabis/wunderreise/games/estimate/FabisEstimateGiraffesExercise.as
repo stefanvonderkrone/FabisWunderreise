@@ -156,13 +156,14 @@ package fabis.wunderreise.games.estimate {
 		
 		override public function reset() : void {
 			super.reset();
-			_pushedY = DRAGFIELD_FIRST_ELEMENT_Y;
-			_pushedX = DRAGFIELD_FIRST_ELEMENT_X;
-			_giraffes = new Vector.<CristoGiraffeView>();
+			//_pushedY = DRAGFIELD_FIRST_ELEMENT_Y;
+			//_pushedX = DRAGFIELD_FIRST_ELEMENT_X;
+			//_giraffes = new Vector.<CristoGiraffeView>();
 			
-			initGiraffes();
-			initStackField();
-			initDrag();
+			//initGiraffes();
+			//initStackField();
+			//initDrag();
+			super.activateDoneButton();
 		}
 		
 		override public function clean() : void {

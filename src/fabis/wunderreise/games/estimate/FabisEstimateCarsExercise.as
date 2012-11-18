@@ -147,13 +147,14 @@ package fabis.wunderreise.games.estimate {
 		
 		override public function reset() : void {
 			super.reset();
-			_pushedY = DRAGFIELD_FIRST_ELEMENT_Y;
-			_pushedX = DRAGFIELD_FIRST_ELEMENT_X;
-			_cars = new Vector.<CristoCarView>();
+			//_pushedY = DRAGFIELD_FIRST_ELEMENT_Y;
+			//_pushedX = DRAGFIELD_FIRST_ELEMENT_X;
+			//_cars = new Vector.<CristoCarView>();
 			
-			initCars();
-			initStackField();
-			initDrag();
+			//initCars();
+			//initStackField();
+			//initDrag();
+			super.activateDoneButton();
 		}
 		
 		override public function clean() : void {
