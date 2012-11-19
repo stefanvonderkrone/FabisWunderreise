@@ -362,6 +362,7 @@ package fabis.wunderreise.games.quiz {
 		}
 		
 		public function hasCurrentSound() : Boolean {
+			
 			if( _introSoundStarted || _feedbackSoundStarted || _pointsSoundStarted
 				|| _questionSoundStarted ){
 				return true;

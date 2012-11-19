@@ -251,8 +251,10 @@ package fabis.wunderreise.scenes {
 			TweenLite.to( symbol, numFrames / MOUSE_OUT_FPS, { frame: 1 } );
 		}
 		
-//		override protected function handleClickOnPassport() : void {
-//			super.handleClickOnPassport();
-//		}
+		override protected function handleClickOnPassport() : void {
+			_storage.currentGameScene = gameCore.director.currentScene;
+			gameCore.localStorage.saveStorage();
+			super.handleClickOnPassport();
+		}
 	}
 }

@@ -104,7 +104,8 @@ package fabis.wunderreise.scenes {
 				case _btnPassport:
 					const mc : MovieClip = MovieClip( evt.currentTarget );
 					const numFrames : uint = mc.totalFrames - mc.currentFrame;
-					TweenLite.to( evt.currentTarget, numFrames / MOUSE_OVER_FPS, { frame: mc.totalFrames, x: evt.currentTarget.x - 5, y: evt.currentTarget.y - 20} );
+					//TweenLite.to( evt.currentTarget, numFrames / MOUSE_OVER_FPS, { frame: mc.totalFrames, x: evt.currentTarget.x - 5, y: evt.currentTarget.y - 5} );
+					TweenLite.to( evt.currentTarget, numFrames / MOUSE_OVER_FPS, { frame: mc.totalFrames} );
 					mc.parent.setChildIndex( mc, mc.parent.numChildren - 1 );
 					break;
 				default:

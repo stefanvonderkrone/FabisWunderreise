@@ -63,6 +63,7 @@ package fabis.wunderreise.games.estimate {
 			_buttonClickedSound.play();
 			_mainView.removeChild( _gameOptions.fabiCristoSmallContainer );
 			_mainView.removeChild( _gameOptions.skipButton );
+			_smallView = false;
 			initFabi();
 		}
 		

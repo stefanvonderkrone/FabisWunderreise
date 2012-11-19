@@ -26,7 +26,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			_gameOptions.rightPics = new Array( 4, 5, 6, 7, 8 );
 			_gameOptions.feedbackOrder = new Array( 8, 7, 4, 6, 5 );
 			// time in seconds
-			_gameOptions.feedbackTimes = new Array( 11, 16, 26, 36, 41, 50 );
+			_gameOptions.feedbackTimes = new Array( 11, 16, 26, 33, 41, 50 );
 			
 			// coordinates for adding stones
 			_gameOptions.wallXCoordinates = new Array( 451, 385, 323, 264, 227 );

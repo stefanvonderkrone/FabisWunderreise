@@ -203,14 +203,14 @@ package fabis.wunderreise.games.estimate {
 		}
 		
 		public function reset() : void {
-			_pushedElementsNumber = 0;
+			//_pushedElementsNumber = 0;
 			_frameCounter = 0;
 			
-			_emptyXValues = new Array();
-			_emptyYValues = new Array();
+			//_emptyXValues = new Array();
+			//_emptyYValues = new Array();
 			
-			_mainView.removeChild( _dragContainer );
-			_mainView.removeChild( _stackField );
+			//_mainView.removeChild( _dragContainer );
+			//_mainView.removeChild( _stackField );
 			
 		}
 		

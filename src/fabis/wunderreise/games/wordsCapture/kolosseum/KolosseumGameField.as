@@ -35,6 +35,9 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		}
 		
 		override public function removeAllEventListener() : void {
+			removeListener();
+			removeEventListener( Event.ENTER_FRAME, handleDemoStart );	
+			_gameField.removeEventListener( Event.ENTER_FRAME, handleFeedbackSound );
 			super.removeAllEventListener();
 		}
 		
@@ -155,7 +158,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			if( _feedbackSoundStarted ){
 				_feedbackSoundStarted = false;
 				_gameOptions.lipSyncher.stop();
-				TweenLite.delayedCall(1, playPointsSound);
+				TweenLite.delayedCall(2, playPointsSound);
 			}
 			if( _pointsSoundStarted ){
 				_pointsSoundStarted = false;
@@ -175,7 +178,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			
 			_gameOptions.lipSyncher.start();
 			
-			_feedbackTime = _gameOptions.feedbackTimes.shift() * 60;
+			_feedbackTime = ( _gameOptions.feedbackTimes.shift() - 1 ) * 60 ;
 			
 			_gameField.addEventListener( Event.ENTER_FRAME, handleFeedbackSound );
 		}
@@ -200,7 +203,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 							
 							_currentFeedbackStone = _stone;
 							_currentFeedbackStone.highlight();
-							_feedbackTime = _gameOptions.feedbackTimes.shift() * 60;
+							_feedbackTime = ( _gameOptions.feedbackTimes.shift() - 1 ) * 60;
 							break;
 						}
 					}
