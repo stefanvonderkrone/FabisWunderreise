@@ -1,15 +1,16 @@
 package fabis.wunderreise.scenes {
-	import com.greensock.TweenLite;
+
+	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGameOptions;
+	import fabis.wunderreise.games.wordsCapture.petra.PetraGame;
+	import fabis.wunderreise.games.wordsCapture.petra.PetraGameField;
+	import fabis.wunderreise.games.wordsCapture.petra.PetraStone;
 	import fabis.wunderreise.sound.FabisEyeTwinkler;
 	import fabis.wunderreise.sound.FabisLipSyncher;
-	import flash.events.MouseEvent;
-	import flash.display.MovieClip;
-	import fabis.wunderreise.games.wordsCapture.petra.PetraStone;
-	import fabis.wunderreise.games.wordsCapture.petra.PetraGame;
-	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGameOptions;
-	import fabis.wunderreise.games.wordsCapture.petra.PetraGameField;
-	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGame;
+
+	import com.greensock.TweenLite;
+
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	
 	/**
 	 * @author Stefanie Drost
@@ -22,7 +23,7 @@ package fabis.wunderreise.scenes {
 		protected var _lipSyncher : FabisLipSyncher;
 		protected var _eyeTwinkler : FabisEyeTwinkler;
 		protected var _menuButtons : FabisMenuButtons;
-		protected var _storage : *;
+		protected var _storage : Object;
 		protected var wordsCaptureOptions : FabisWordsCaptureGameOptions;
 		
 		public function FabisPetraWordsCapture() {

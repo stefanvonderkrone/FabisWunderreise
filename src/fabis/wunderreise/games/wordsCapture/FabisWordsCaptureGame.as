@@ -1,19 +1,16 @@
 package fabis.wunderreise.games.wordsCapture {
-	import fabis.wunderreise.sound.FabisLipSyncher;
-	import com.flashmastery.as3.game.interfaces.core.IInteractiveGameObject;
-	import com.flashmastery.as3.game.interfaces.core.IGameCore;
-	import fabis.wunderreise.sound.IFabisLipSyncherDelegate;
-	import flash.events.MouseEvent;
-	import com.flashmastery.as3.game.interfaces.sound.ISoundCore;
-	import flash.events.ProgressEvent;
 
+	import com.flashmastery.as3.game.interfaces.core.IGameCore;
+	import com.flashmastery.as3.game.interfaces.delegates.ISoundItemDelegate;
+	import com.flashmastery.as3.game.interfaces.sound.ISoundCore;
 	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
 
-	import flash.events.Event;
-	import flash.events.ErrorEvent;
-	import flash.events.SampleDataEvent;
-	import com.flashmastery.as3.game.interfaces.delegates.ISoundItemDelegate;
 	import flash.display.Sprite;
+	import flash.events.ErrorEvent;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.events.ProgressEvent;
+	import flash.events.SampleDataEvent;
 	
 	/**
 	 * @author Stefanie Drost
@@ -75,8 +72,6 @@ package fabis.wunderreise.games.wordsCapture {
 
 		public function reactOnSoundItemSampleDataEvent(evt : SampleDataEvent, soundItem : ISoundItem) : void {
 		}
-
-		
 
 		public function get gameCore() : IGameCore {
 			return _gameCore;

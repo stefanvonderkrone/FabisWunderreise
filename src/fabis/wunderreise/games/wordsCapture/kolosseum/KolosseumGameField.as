@@ -1,12 +1,14 @@
 package fabis.wunderreise.games.wordsCapture.kolosseum {
-	import flash.display.MovieClip;
-	import fabis.wunderreise.sound.FabisLipSyncher;
+
+	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGameField;
+
 	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
 	import com.greensock.TweenLite;
-	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGameField;
-	import flash.ui.Mouse;
-	import flash.events.MouseEvent;
+
+	import flash.display.MovieClip;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.ui.Mouse;
 	
 	/**
 	 * @author Stefanie Drost
@@ -14,10 +16,10 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 	public class KolosseumGameField extends FabisWordsCaptureGameField {
 				
 		protected var _introSound : ISoundItem;
-		public var _introSoundStarted : Boolean = false;
+		protected var _buttonClickedSound : ISoundItem;
 		private var _currentFeedbackStone : KolosseumStone;
 		private var _feedbackNumber : int = 0;
-		protected var _buttonClickedSound : ISoundItem;
+		public var _introSoundStarted : Boolean = false;
 		
 		public function KolosseumGameField() {
 			

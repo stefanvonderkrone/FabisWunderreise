@@ -1,23 +1,20 @@
 package fabis.wunderreise.games.wordsCapture {
-	import com.junkbyte.console.Cc;
-	import com.flashmastery.as3.game.interfaces.core.IInteractiveGameObject;
-	import com.flashmastery.as3.game.interfaces.core.IGameCore;
+
 	import fabis.wunderreise.sound.IFabisLipSyncherDelegate;
-	import fabis.wunderreise.sound.FabisLipSyncher;
-	import com.flashmastery.as3.game.interfaces.sound.ISoundCore;
-	import flash.events.ProgressEvent;
 
-	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
-
-	import flash.events.ErrorEvent;
-	import flash.events.SampleDataEvent;
+	import com.flashmastery.as3.game.interfaces.core.IGameCore;
+	import com.flashmastery.as3.game.interfaces.core.IInteractiveGameObject;
 	import com.flashmastery.as3.game.interfaces.delegates.ISoundItemDelegate;
+	import com.flashmastery.as3.game.interfaces.sound.ISoundCore;
+	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
 	import com.greensock.TweenLite;
-	import flash.net.URLRequest;
-	import flash.media.Sound;
-	import flash.events.MouseEvent;
-	import flash.events.Event;
+
 	import flash.display.MovieClip;
+	import flash.display.Sprite;
+	import flash.events.ErrorEvent;
+	import flash.events.Event;
+	import flash.events.ProgressEvent;
+	import flash.events.SampleDataEvent;
 	/**
 	 * @author Stefanie Drost
 	 */
@@ -25,23 +22,23 @@ package fabis.wunderreise.games.wordsCapture {
 		
 		protected var _basket : FabisWordsCaptureBasket;
 		public var _gameOptions : FabisWordsCaptureGameOptions;
-		protected var _gameField :*;
-		protected var _gameFieldObject :*;
-		public var _game : *;
-		protected var _stone :*;
+		protected var _gameField :Sprite;
+		protected var _gameFieldObject :Object;
+		public var _game : FabisWordsCaptureGame;
+		protected var _stone :Object;
 		protected var _frameCounter : int = 0;
-		protected var _soundCore : ISoundCore;
-		protected var _gameCore : IGameCore;
-		protected var _stoneEffect : ISoundItem;
-		protected var _feedbackSound : ISoundItem;
 		public var _feedbackSoundStarted : Boolean = false;
-		protected var _pointsSound : ISoundItem;
 		public var _pointsSoundStarted : Boolean = false;
-		protected var _completionSound : ISoundItem;
 		public var _completionSoundStarted : Boolean = false;
-		public var _removeSound : ISoundItem;
 		protected var _frameNumber : int = 0;
 		protected var _feedbackTime : int;
+		protected var _gameCore : IGameCore;
+		protected var _soundCore : ISoundCore;
+		protected var _stoneEffect : ISoundItem;
+		protected var _feedbackSound : ISoundItem;
+		protected var _pointsSound : ISoundItem;
+		protected var _completionSound : ISoundItem;
+		public var _removeSound : ISoundItem;
 		
 		
 		
