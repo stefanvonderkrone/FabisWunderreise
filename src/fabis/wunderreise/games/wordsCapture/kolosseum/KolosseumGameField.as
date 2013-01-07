@@ -1,5 +1,7 @@
 package fabis.wunderreise.games.wordsCapture.kolosseum {
-
+	import com.junkbyte.console.Cc;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	import fabis.wunderreise.games.wordsCapture.FabisWordsCaptureGameField;
 
 	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
@@ -19,6 +21,9 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		protected var _buttonClickedSound : ISoundItem;
 		private var _currentFeedbackStone : KolosseumStone;
 		private var _feedbackNumber : int = 0;
+		
+		private var _feedbackTimer : Timer;
+		
 		public var _introSoundStarted : Boolean = false;
 		
 		public function KolosseumGameField() {
@@ -39,7 +44,8 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		override public function removeAllEventListener() : void {
 			removeListener();
 			removeEventListener( Event.ENTER_FRAME, handleDemoStart );	
-			_gameField.removeEventListener( Event.ENTER_FRAME, handleFeedbackSound );
+			//TODO re-add if timer isnt working
+			//_gameField.removeEventListener( Event.ENTER_FRAME, handleFeedbackSound );
 			super.removeAllEventListener();
 		}
 		
@@ -180,12 +186,60 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			
 			_gameOptions.lipSyncher.start();
 			
-			_feedbackTime = ( _gameOptions.feedbackTimes.shift() - 1 ) * 60 ;
+			//TODO using timer instead of handler
+			/*_feedbackTime = ( _gameOptions.feedbackTimes.shift() - 1 ) * 60 ;
 			
-			_gameField.addEventListener( Event.ENTER_FRAME, handleFeedbackSound );
+			_gameField.addEventListener( Event.ENTER_FRAME, handleFeedbackSound );*/
+			
+			_feedbackTime = _gameOptions.feedbackTimes.shift();
+			_feedbackTimer = new Timer(1000, 50); // _gameOptions.feedbackTimes[letztes Elemente]
+			// designates listeners for the interval and completion events 
+            _feedbackTimer.addEventListener(TimerEvent.TIMER, onTick); 
+            _feedbackTimer.addEventListener(TimerEvent.TIMER_COMPLETE, onTimerComplete); 
+			
+			// starts the timer ticking 
+            _feedbackTimer.start(); 
+			
 		}
 		
-		private function handleFeedbackSound( event: Event ) : void {
+		public function onTick(event:TimerEvent) : void { 
+			
+			if( event.target.currentCount == _feedbackTime ) {
+				Cc.logch.apply( undefined, [ "Zeit getroffen: " + event.target.currentCount + " sek"] );
+				
+				var _stone : KolosseumStone;
+				if( _currentFeedbackStone ) _currentFeedbackStone.removeHighlight();
+				
+				//if( _feedbackNumber < _gameOptions.numrightStones ){
+					
+					//_feedbackNumber++;
+					var _stoneId : int;
+					_stoneId = _gameOptions.feedbackOrder.shift();
+					
+					for each( _stone in _gameOptions.allPics){
+						if( _stone.id == _stoneId ){
+							
+							_currentFeedbackStone = _stone;
+							_currentFeedbackStone.highlight();
+							_feedbackTime = _gameOptions.feedbackTimes.shift();
+							break;
+						}
+					}
+				//}
+			}
+            // displays the tick count so far 
+            // The target of this event is the Timer instance itself. 
+            //trace("tick " + event.target.currentCount); 
+        } 
+ 
+        public function onTimerComplete(event:TimerEvent) : void { 
+			_feedbackTimer.stop();
+			_removeSound = soundCore.getSoundByName("removeWrongStones");
+			removeWrongStones();
+            Cc.logch.apply( undefined, [ "Timer abgelaufen" ] );
+        } 
+		
+		/*private function handleFeedbackSound( event: Event ) : void {
 			
 			_frameNumber++;
 			
@@ -216,7 +270,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 					_gameOptions.gameField.removeEventListener( Event.ENTER_FRAME, handleFeedbackSound );
 				}
 			}
-		}
+		}*/
 		
 		protected function removeWrongStones() : void {
 			var _stone : KolosseumStone; 
