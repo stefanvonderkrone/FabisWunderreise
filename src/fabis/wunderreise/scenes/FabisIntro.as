@@ -94,12 +94,6 @@ package fabis.wunderreise.scenes {
 			gameCore.juggler.addAnimatable( _eyeTwinkler );
 			view._instructionButton.addEventListener( MouseEvent.CLICK, skipToInstructions );
 			view._startButton.addEventListener( MouseEvent.CLICK, skipToStart );
-			/*view._instructionButton.addEventListener( MouseEvent.MOUSE_OVER, highlightButton );
-			view._startButton.addEventListener( MouseEvent.MOUSE_OVER, highlightButton );
-			view._instructionButton.addEventListener( MouseEvent.MOUSE_OUT, removeButtonHighlight );
-			view._startButton.addEventListener( MouseEvent.MOUSE_OUT, removeButtonHighlight );
-			view._instructionButton.buttonMode = true;
-			view._startButton.buttonMode = true;*/
 		}
 
 		override protected function handleStart() : void {

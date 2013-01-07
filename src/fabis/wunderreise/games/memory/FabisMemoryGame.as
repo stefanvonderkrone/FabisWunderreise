@@ -343,8 +343,11 @@ package fabis.wunderreise.games.memory {
 				_gameContainer.addEventListener( MouseEvent.CLICK, clickHandler );
 				_introSoundStarted = false;
 				_gameOptions.lipSyncher.stop();
-				_gameOptions.skipButton.removeEventListener( MouseEvent.CLICK, skipIntro);
-				_mainView.removeChild( _gameOptions.skipButton );
+				if( _gameOptions.skipButton != null ) {
+					_gameOptions.skipButton.removeEventListener( MouseEvent.CLICK, skipIntro);
+					_mainView.removeChild( _gameOptions.skipButton );
+				}
+				
 			}
 			if( _feedbackSoundStarted ){
 				_feedbackSoundStarted = false;

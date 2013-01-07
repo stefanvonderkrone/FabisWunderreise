@@ -51,13 +51,16 @@ package fabis.wunderreise.scenes {
 		override protected function handleCreation() : void {
 			_view = new FabisPassportView();
 			_menuButtons = new FabisMenuButtons();
-			/*_fabi = new FabiIntroComplete();
+			
+			_fabi = new FabiIntroComplete();
 			_fabi._lips.gotoAndStop( 1 );
 			_fabi._eyes.gotoAndStop( 1 );
 			_lipSyncher = new FabisLipSyncher();
 			_lipSyncher.delegate = this;
 			_eyeTwinkler = new FabisEyeTwinkler();
-			_eyeTwinkler.initWithEyes( _fabi._eyes );*/
+			_eyeTwinkler.initWithEyes( _fabi._eyes );
+			_fabi.height = 386;
+			_fabi.width = 202;
 			
 			view._passportContainer._chichenItzaStamp.gotoAndStop( 1 );
 			view._passportContainer._chineseWallStamp.gotoAndStop( 1 );
@@ -82,10 +85,12 @@ package fabis.wunderreise.scenes {
 		
 		override protected function initView( evt : Event ) : void {
 			super.initView( evt );
-			/*_lipSyncher.gameCore = gameCore;
+			
+			_lipSyncher.gameCore = gameCore;
 			gameCore.juggler.addAnimatable( _lipSyncher );
 			_eyeTwinkler.gameCore = gameCore;
-			gameCore.juggler.addAnimatable( _eyeTwinkler );*/
+			gameCore.juggler.addAnimatable( _eyeTwinkler );
+			
 			_soundCore = gameCore.soundCore;
 			_storage = gameCore.localStorage.getStorageObject();
 			if( _storage.currentGameScene != null ){
@@ -122,7 +127,7 @@ package fabis.wunderreise.scenes {
 			_openSound.play();
 			TweenLite.fromTo(view._passportContainer, 1, 
 				{ x: 450, y: 300,width: 0, height: 0}, { x: 78, y: 13,width: 740, height: 565} );
-			//Cc.logch.apply( undefined, [ _storage.currentGameScene ] );
+				
 			if( !( _storage.currentGameScene is FabisMainMenu ) && ( _callFromGame || ( !_newStamp && _gameFinished ) ) ){
 				_menuButtons.removeChild( _menuButtons._btnMap );
 				TweenLite.delayedCall( 3, stop );
@@ -134,7 +139,6 @@ package fabis.wunderreise.scenes {
 		}
 		
 		private function initPassport() : void {
-			//Cc.logch.apply( undefined, [ "test2" ] );
 			checkForNewStamp( "machuPicchuStamp", _storage.finishedMachuPicchu );
 			checkForNewStamp( "chichenItzaStamp", _storage.finishedChichenItza );
 			checkForNewStamp( "chineseWallStamp", _storage.finishedChineseWall );
@@ -155,6 +159,7 @@ package fabis.wunderreise.scenes {
 			checkRanks( _storage._stampCounter );
 		}
 		
+		
 		private function checkForNewStamp( stamp : String, gameFinished : Boolean ) : void {
 			if( !_storage.stampArray[ stamp ] && gameFinished ){
 				_storage._stampCounter++;
@@ -162,7 +167,7 @@ package fabis.wunderreise.scenes {
 				gameCore.localStorage.saveStorage();
 				_newStamp = true;
 				view.removeChild( _menuButtons );
-				playStampFeedback( _storage._stampCounter,  stamp );
+				playStampFeedback( _storage._stampCounter/*,  stamp */);
 			}
 			else if( gameFinished ){
 				_gameFinished = true;
@@ -178,11 +183,14 @@ package fabis.wunderreise.scenes {
 		
 		private function playEnd() : void {
 			_lipSyncher.start();
+			_eyeTwinkler.start();
 			_endSound  =_soundCore.getSoundByName("menuOutro");
+			_endSoundStarted = true;
+			_endSound.delegate = this;
 			_endSound.play();
 		}
 		
-		protected function playStampFeedback( stampNumber : int, stamp : String ) : void {
+		protected function playStampFeedback( stampNumber : int/*, stamp : String*/ ) : void {
 			switch( stampNumber ) {
 				case 1:
 					_feedbackSound = gameCore.soundCore.getSoundByName( "menuPassportStamp1" );
@@ -203,8 +211,6 @@ package fabis.wunderreise.scenes {
 					_feedbackSound = gameCore.soundCore.getSoundByName( "menuPassportStamp6" );
 					break;
 				case 7:
-					_fabi.height = 386;
-					_fabi.width = 202;
 					view.addChild( _fabi );
 					TweenLite.fromTo( _fabi, 1, { x : -_fabi.width, y : 620 - _fabi.height}, { x : 10, onComplete : playEnd });
 					break;
