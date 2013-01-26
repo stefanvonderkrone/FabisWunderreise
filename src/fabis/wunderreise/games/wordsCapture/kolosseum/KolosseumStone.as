@@ -23,7 +23,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		
 		// fall-down values
 		protected var _currentSpeed : Number = 0;
-		protected static const _gravity : Number = 1.3;
+		protected static const _gravity : Number = 1.8;
 		
 		public function KolosseumStone() {
 			

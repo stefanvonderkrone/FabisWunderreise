@@ -141,6 +141,11 @@ package fabis.wunderreise.scenes {
 			}
 		}
 		
+		override protected function handleClickOnMap() : void {
+			_game.removeAllEventListener();
+			super.handleClickOnMap();
+		}
+		
 		override protected function handleClickOnPassport() : void {
 			if( !( this is FabisPassport ) ){
 				_storage = gameCore.localStorage.getStorageObject();

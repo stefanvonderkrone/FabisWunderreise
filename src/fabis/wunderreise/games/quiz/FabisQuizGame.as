@@ -1,4 +1,7 @@
 package fabis.wunderreise.games.quiz {
+	import com.junkbyte.console.Cc;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	import flash.display.MovieClip;
 	import com.flashmastery.as3.game.interfaces.core.IInteractiveGameObject;
 	import com.flashmastery.as3.game.interfaces.core.IGameCore;
@@ -49,12 +52,14 @@ package fabis.wunderreise.games.quiz {
 		public var _helpSoundStarted : Boolean = false;
 		protected var _newQuestionSound : ISoundItem;
 		protected var _removeQuestionSound : ISoundItem;
-				
+		protected var _disableHelp : Boolean = false;
 		protected var _soundCore : ISoundCore;
 		protected var _frameCounter : int = 0;
 		protected var _frameNumber : int = 0;
 		
 		protected var _closeView : Boolean = false;
+		private var _viewTimer : Timer;
+		private var _buttonTimer : Timer;
 		
 		public function FabisQuizGame() {
 			
@@ -81,8 +86,10 @@ package fabis.wunderreise.games.quiz {
 			_introSoundStarted = false;
 			_buttonClickedSound = _soundCore.getSoundByName("buttonClicked");
 			_buttonClickedSound.play();
-			_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleSwitchViews );
-			_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleTrueButtonView );
+			_viewTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, handleSwitchViews);
+			_buttonTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, handleTrueButtonView); 
+			//_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleSwitchViews );
+			//_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleTrueButtonView );
 			switchToCloseView();
 			TweenLite.delayedCall( 0.7, startQuestion );
 			TweenLite.delayedCall( 0.7, initTrueButton );
@@ -90,6 +97,11 @@ package fabis.wunderreise.games.quiz {
 		
 		public function start() : void {
 			startIntro();
+		}
+		
+		public function removeAllEventListener() : void {
+			if( _viewTimer ) _viewTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, handleSwitchViews);
+			if( _buttonTimer ) _buttonTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, handleTrueButtonView); 
 		}
 		
 		public function switchToCloseView() : void {
@@ -112,10 +124,32 @@ package fabis.wunderreise.games.quiz {
 			_introSound.delegate = this;
 			_introSound.play();
 			
-			_gameOptions.fabi.addEventListener( Event.ENTER_FRAME, handleSwitchViews );
-			_gameOptions.fabi.addEventListener( Event.ENTER_FRAME, handleTrueButtonView );
+			_viewTimer = new Timer(1000, _gameOptions.switchTime);
+			_viewTimer.addEventListener(TimerEvent.TIMER_COMPLETE, handleSwitchViews); 
+			_viewTimer.start();
+			
+			_buttonTimer = new Timer(1000, _gameOptions.trueButtonStartTime);
+			_buttonTimer.addEventListener(TimerEvent.TIMER_COMPLETE, handleTrueButtonView); 
+			_buttonTimer.start();
+			
+			//_gameOptions.fabi.addEventListener( Event.ENTER_FRAME, handleSwitchViews );
+			//_gameOptions.fabi.addEventListener( Event.ENTER_FRAME, handleTrueButtonView );
 			
 			_gameOptions.lipSyncher.start();
+		}
+		
+		public function handleSwitchViews( event : TimerEvent ) : void {
+			Cc.logch.apply( undefined, [ "Wechsel zu Nahansicht" ] );
+			_viewTimer.stop();
+			_viewTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, handleSwitchViews); 
+			switchToCloseView();
+		}
+		
+		public function handleTrueButtonView( event : TimerEvent ) : void {
+			Cc.logch.apply( undefined, [ "Zeige Button" ] );
+			_buttonTimer.stop();
+			_buttonTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, handleTrueButtonView); 
+			initTrueButton();
 		}
 		
 		public function startQuestion() : void {
@@ -123,6 +157,9 @@ package fabis.wunderreise.games.quiz {
 			_fabiClose.resetNose();
 			
 			if( _currentQuestionNumber <= _gameOptions.questionNumber ){
+				if( _currentQuestionNumber == _gameOptions.questionNumber) {
+					_disableHelp = true;
+				}
 				_newQuestionSound.play();
 				_game.initImageContainer( _currentQuestionNumber );
 				_imageContainer.visible = true;
@@ -259,25 +296,7 @@ package fabis.wunderreise.games.quiz {
 		public function reactOnSoundItemSampleDataEvent(evt : SampleDataEvent, soundItem : ISoundItem) : void {
 		}
 		
-		public function handleSwitchViews( event : Event ) : void {
-			_frameCounter++;
-			
-			if( _frameCounter == (_gameOptions.switchTime * 60) ){
-				_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleSwitchViews );
-				switchToCloseView();
-				_frameCounter = 0;
-			}
-		}
 		
-		public function handleTrueButtonView( event : Event ) : void {
-			_frameNumber++;
-			
-			if( _frameNumber == (_gameOptions.trueButtonStartTime * 60) ){
-				_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleTrueButtonView );
-				initTrueButton();
-				_frameNumber = 0;
-			}
-		}
 		
 		public function playQuestion( questionNumber : int ) : void {
 			_questionSoundStarted = true;
@@ -364,7 +383,7 @@ package fabis.wunderreise.games.quiz {
 		public function hasCurrentSound() : Boolean {
 			
 			if( _introSoundStarted || _feedbackSoundStarted || _pointsSoundStarted
-				|| _questionSoundStarted ){
+				|| _questionSoundStarted || _disableHelp ){
 				return true;
 			}
 			return false;

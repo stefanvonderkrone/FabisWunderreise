@@ -159,6 +159,11 @@ package fabis.wunderreise.scenes {
 			}
 		}
 		
+		override protected function handleClickOnMap() : void {
+			_game.removeAllEventListener();
+			super.handleClickOnMap();
+		}
+		
 		override public function reactOnSoundItemSoundComplete(soundItem : ISoundItem) : void {
 			if( _game._helpSoundStarted ){
 				_game._helpSoundStarted = false;

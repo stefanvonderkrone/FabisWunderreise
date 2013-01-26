@@ -21,15 +21,15 @@ package fabis.wunderreise.games.wordsCapture.petra {
 			_gameField = PetraGameField( _gameOptions.gameField );
 			
 			//number of frames in mc
-			_gameOptions.wrongPics = new Array( 6, 7, 8 );
-			_gameOptions.rightPics = new Array( 1, 2, 3, 4, 5 );
-			_gameOptions.feedbackOrder = new Array( 1, 2, 3, 5, 4 );
+			_gameOptions.wrongPics = [ 6, 7, 8 ];
+			_gameOptions.rightPics = [ 1, 2, 3, 4, 5 ];
+			_gameOptions.feedbackOrder = [ 1, 2, 3, 5, 4 ];
 			// time in seconds
-			_gameOptions.feedbackTimes = new Array( 8, 13, 25, 32, 48, 55 );
+			_gameOptions.feedbackTimes = [ 8, 13, 25, 32, 48, 55 ];
 			
 			// coordinates for adding stones
-			_gameOptions.wallXCoordinates = new Array( 320, 390, 440, 500, 560 );
-			_gameOptions.wallYCoordinates = new Array( 20, 20, 23, 21, 21 );
+			_gameOptions.wallXCoordinates = [ 320, 390, 440, 500, 560 ];
+			_gameOptions.wallYCoordinates = [ 20, 20, 23, 21, 21 ];
 			
 			_gameOptions.frameArray = _gameOptions.initFrameArray();
 			_gameField._gameOptions = _gameOptions;
@@ -54,6 +54,7 @@ package fabis.wunderreise.games.wordsCapture.petra {
 		
 		override public function start() : void {
 			_gameField.soundCore = soundCore;
+			_gameField.gameCore = gameCore;
 			_gameField.startIntro();
 		}
 		

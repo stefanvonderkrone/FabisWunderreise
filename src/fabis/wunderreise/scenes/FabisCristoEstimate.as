@@ -1,4 +1,5 @@
 package fabis.wunderreise.scenes {
+	import flash.utils.Timer;
 	import com.junkbyte.console.Cc;
 	import com.greensock.TweenLite;
 	import fabis.wunderreise.sound.FabisEyeTwinkler;
@@ -162,6 +163,11 @@ package fabis.wunderreise.scenes {
 				_game._helpSoundStarted = true;
 				super.handleClickOnHelp();
 			}
+		}
+		
+		override protected function handleClickOnMap() : void {
+			_game.removeAllEventListener();
+			super.handleClickOnMap();
 		}
 		
 		override protected function handleClickOnPassport() : void {

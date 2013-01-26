@@ -1,4 +1,7 @@
 package fabis.wunderreise.games.wordsCapture.petra {
+	import com.junkbyte.console.Cc;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	import flash.display.MovieClip;
 	import com.greensock.TweenLite;
 	import com.flashmastery.as3.game.interfaces.sound.ISoundItem;
@@ -15,6 +18,8 @@ package fabis.wunderreise.games.wordsCapture.petra {
 		public var _introSoundStarted : Boolean = false;
 		private var _currentFeedbackStone : PetraStone;
 		private var _feedbackNumber : int = 0;
+		private var _feedbackTimer : Timer;
+		private var _demoTimer : Timer;
 		protected var _buttonClickedSound : ISoundItem;
 		
 		public function PetraGameField() {
@@ -34,8 +39,11 @@ package fabis.wunderreise.games.wordsCapture.petra {
 		
 		override public function removeAllEventListener() : void {
 			removeListener();
-			removeEventListener( Event.ENTER_FRAME, handleDemoStart );	
-			_gameField.removeEventListener( Event.ENTER_FRAME, handleFeedbackSound );
+			if( _demoTimer ) _demoTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, onDemoTimerComplete); 
+			if( _feedbackTimer ) _feedbackTimer.removeEventListener(TimerEvent.TIMER, onTick); 
+            if( _feedbackTimer ) _feedbackTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, onTimerComplete);
+			//removeEventListener( Event.ENTER_FRAME, handleDemoStart );	
+			//_gameField.removeEventListener( Event.ENTER_FRAME, handleFeedbackSound );
 			super.removeAllEventListener();
 		}
 		
@@ -47,8 +55,26 @@ package fabis.wunderreise.games.wordsCapture.petra {
 			super._stone = new PetraStone();
 			//super.startIntro();
 			playIntro();
-			addEventListener( Event.ENTER_FRAME, handleDemoStart );			
+			
+			
+			//_feedbackTime = _gameOptions.demoStartTime;
+			_demoTimer = new Timer(1000, _gameOptions.demoStartTime);
+			
+			// designates listeners for the interval and completion events 
+            //_feedbackTimer.addEventListener(TimerEvent.TIMER, onTick); 
+            _demoTimer.addEventListener(TimerEvent.TIMER_COMPLETE, onDemoTimerComplete); 
+			
+			// starts the timer ticking 
+            _demoTimer.start();
+			
+			//addEventListener( Event.ENTER_FRAME, handleDemoStart );			
 		}
+		
+		public function onDemoTimerComplete(event:TimerEvent) : void { 
+			_demoTimer.stop();
+			startDemo();
+            Cc.logch.apply( undefined, [ "Demo starten" ] );
+        } 
 		
 		override public function skipIntro() : void{
 			_introSound.stop();
@@ -57,18 +83,21 @@ package fabis.wunderreise.games.wordsCapture.petra {
 			_gameOptions.lipSyncher.stop();
 			_buttonClickedSound = _soundCore.getSoundByName("buttonClicked");
 			_buttonClickedSound.play();
-			removeEventListener( Event.ENTER_FRAME, handleDemoStart );	
+			
+			//_demoTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, onDemoTimerComplete); 
+			//removeEventListener( Event.ENTER_FRAME, handleDemoStart );	
 			stopIntro();
 		}
 		
-		private function handleDemoStart( event : Event ) : void {
+		/*private function handleDemoStart( event : Event ) : void {
 			_frameCounter++;
 			if( _frameCounter == (_gameOptions.demoStartTime * 60) ){
 				startDemo();
 			}
-		}
+		}*/
 		
 		override public function stopIntro() : void {
+			_demoTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, onDemoTimerComplete); 
 			super.stopIntro();
 			start();
 		}
@@ -141,14 +170,16 @@ package fabis.wunderreise.games.wordsCapture.petra {
 				_introSoundStarted = false;
 				_gameOptions.lipSyncher.stop();
 				stopIntro();
+				Cc.logch.apply( undefined, [ "Demo stoppen" ] );
 			}
 			if( _feedbackSoundStarted ){
 				_feedbackSoundStarted = false;
 				_gameOptions.lipSyncher.stop();
-				TweenLite.delayedCall(2, playPointsSound);
+				TweenLite.delayedCall(1, playPointsSound);
 			}
 			if( _pointsSoundStarted ){
 				_pointsSoundStarted = false;
+				Cc.logch.apply( undefined, [ "Points Sound Ende: "] );
 				removeBasketFront();
 				_gameOptions.lipSyncher.stop();
 			}
@@ -166,19 +197,63 @@ package fabis.wunderreise.games.wordsCapture.petra {
 		public function playFeedback( points : int ) : void {
 			_points = points;
 			
+			soundCore.stopAllSounds();
+			
 			_feedbackSound = soundCore.getSoundByName("petraDebriefing");
 			_feedbackSound.delegate = this;
 			_feedbackSoundStarted = true;
 			_feedbackSound.play();
 			_gameOptions.lipSyncher.start();
 			
-			_feedbackTime = ( _gameOptions.feedbackTimes.shift() - 1 ) * 60;
+			//_feedbackTime = ( _gameOptions.feedbackTimes.shift() - 1 ) * 60;
+			_feedbackTime = _gameOptions.feedbackTimes.shift();
+			_feedbackTimer = new Timer(1000, 55);
 			
-			_gameField.addEventListener( Event.ENTER_FRAME, handleFeedbackSound );
+			// designates listeners for the interval and completion events 
+            _feedbackTimer.addEventListener(TimerEvent.TIMER, onTick); 
+            _feedbackTimer.addEventListener(TimerEvent.TIMER_COMPLETE, onTimerComplete); 
+			
+			// starts the timer ticking 
+            _feedbackTimer.start();
+			//_gameField.addEventListener( Event.ENTER_FRAME, handleFeedbackSound );
 			
 		}
 		
-		private function handleFeedbackSound( event: Event ) : void {
+		public function onTick(event:TimerEvent) : void { 
+			
+			if( event.target.currentCount == _feedbackTime ) {
+				Cc.logch.apply( undefined, [ "Zeit getroffen: " + event.target.currentCount + " sek"] );
+				
+				var _stone : PetraStone;
+				if( _currentFeedbackStone ) _currentFeedbackStone.removeHighlight();
+				
+				//if( _feedbackNumber < _gameOptions.numrightStones ){
+					
+					//_feedbackNumber++;
+					var _stoneId : int;
+					_stoneId = _gameOptions.feedbackOrder.shift();
+					
+					for each( _stone in _gameOptions.allPics){
+						if( _stone.id == _stoneId ){
+							
+							_currentFeedbackStone = _stone;
+							_currentFeedbackStone.highlight();
+							_feedbackTime = _gameOptions.feedbackTimes.shift();
+							break;
+						}
+					}
+				//}
+			}
+        }
+		
+		public function onTimerComplete(event:TimerEvent) : void { 
+			_feedbackTimer.stop();
+			_removeSound = soundCore.getSoundByName("removeWrongStones");
+			removeWrongStones();
+            Cc.logch.apply( undefined, [ "Timer abgelaufen" ] );
+        } 
+		
+		/*private function handleFeedbackSound( event: Event ) : void {
 			
 			_frameNumber++;
 			
@@ -209,7 +284,7 @@ package fabis.wunderreise.games.wordsCapture.petra {
 					_gameOptions.gameField.removeEventListener( Event.ENTER_FRAME, handleFeedbackSound );
 				}
 			}
-		}
+		}*/
 		
 		protected function playPointsSound() : void {
 			
@@ -239,14 +314,15 @@ package fabis.wunderreise.games.wordsCapture.petra {
 			_pointsSound.delegate = this;
 			_pointsSound.play();
 			_gameOptions.lipSyncher.start();
+			Cc.logch.apply( undefined, [ "spielt Points Sound: "] );
 		}
 		
-		private function removeWrongHighlights() : void {
+		/*private function removeWrongHighlights() : void {
 			var _stone : PetraStone;
 			for each( _stone in _gameOptions.wrongStones ){
 				_stone.removeHighlight();
 			}
-		}
+		}*/
 		
 		override public function reactOnCumulatedSpectrum(cumulatedSpectrum : Number) : void {
 			const lips : MovieClip = _gameOptions.fabi._lips;

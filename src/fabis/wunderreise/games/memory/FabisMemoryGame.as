@@ -1,4 +1,6 @@
 package fabis.wunderreise.games.memory {
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	import com.junkbyte.console.Cc;
 	import flash.display.MovieClip;
 	import flash.events.ProgressEvent;
@@ -57,6 +59,8 @@ package fabis.wunderreise.games.memory {
 		private var _currentCardYCoordinate : int = 50;
 		private var _cardCounter : int = 0;
 		public var _helpSoundStarted : Boolean = false;
+		
+		private var _introTimer : Timer;
 
 		public function FabisMemoryGame() {
 		}
@@ -64,12 +68,18 @@ package fabis.wunderreise.games.memory {
 		public function skipIntro( event : MouseEvent ) : void {
 			_gameOptions.skipButton.removeEventListener( MouseEvent.CLICK, skipIntro);
 			_mainView.removeChild( _gameOptions.skipButton );
-			_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleShowMemory );
+			
+			_introTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, handleShowMemory); 
+			//_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleShowMemory );
 			_introSound.stop();
 			_introSoundStarted = false;
 			_buttonClickedSound = soundCore.getSoundByName("buttonClicked");
 			_buttonClickedSound.play();
 			showMemory();
+		}
+		
+		public function removeAllEventListener() : void {
+			if(_introTimer) _introTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, handleShowMemory); 
 		}
 		
 		public function initWithOptions( options : FabisMemoryGameOptions ) : void {
@@ -272,16 +282,28 @@ package fabis.wunderreise.games.memory {
 		public function start() : void {
 			_gameOptions.lipSyncher.delegate = this;
 			_gameOptions.lipSyncher.start();
-			_gameOptions.fabi.addEventListener( Event.ENTER_FRAME, handleShowMemory );
+			
+			_introTimer = new Timer(1000, _gameOptions.showMemoryTime);
+			_introTimer.addEventListener(TimerEvent.TIMER_COMPLETE, handleShowMemory); 
+			_introTimer.start();
+			
+			//_gameOptions.fabi.addEventListener( Event.ENTER_FRAME, handleShowMemory );
 		}
 		
-		public function handleShowMemory( event : Event ) : void {
+		/*public function handleShowMemory( event : Event ) : void {
 			_frameCounter++;
 			if( _frameCounter == (_gameOptions.showMemoryTime * 60) ){
 				_gameOptions.fabi.removeEventListener( Event.ENTER_FRAME, handleShowMemory );
 				showMemory();
 				_frameCounter = 0;
 			}
+		}*/
+		
+		public function handleShowMemory(event:TimerEvent) : void { 
+			Cc.logch.apply( undefined, [ "Zeige Karten" ] );
+			_introTimer.stop();
+			_introTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, handleShowMemory); 
+			showMemory();
 		}
 		
 		public function showMemory() : void {

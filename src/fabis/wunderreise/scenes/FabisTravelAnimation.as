@@ -101,15 +101,31 @@ package fabis.wunderreise.scenes {
 			_angle = getAngle();
 			Cc.logch.apply( undefined, [ _angle.toString() ] );
 			if ( _angle < 0 ) {
+				
 				_vehicle.scaleX = -1/3;
-				if( !_fromBottomToTop && _angle < -10 )
+				if( _fromBottomToTop ){
+					_vehicle.rotation = (_angle + 90) * (-1);
+					Cc.logch.apply( undefined, [ _vehicle.rotation.toString() ] );
+				}
+				else {
 					_vehicle.rotation = _angle + 90;
+					Cc.logch.apply( undefined, [ _vehicle.rotation.toString() ] );
+				}
+				//if( !_fromBottomToTop/* && _angle < -60 */)
+					
 			} 
 			else {
 				_vehicle.scaleX = 1/3;
-				if( !_fromBottomToTop )
+				if( _fromBottomToTop ){
+					_vehicle.rotation = 90 - _angle;
+					Cc.logch.apply( undefined, [ _vehicle.rotation.toString() ] );
+				}
+				else {
 					_vehicle.rotation = _angle - 90;
+					Cc.logch.apply( undefined, [ _vehicle.rotation.toString() ] );
+				}
 			}
+			//_vehicle.scaleX = 1/3;
 			_vehicle.scaleY = 1/3;
 			_vehicle.gotoAndStop( _target + 1 );
 			view._worldMap.cacheAsBitmap = true;
@@ -123,9 +139,9 @@ package fabis.wunderreise.scenes {
 			if( b < 0 ){
 				_fromBottomToTop = true;
 			}
-			if( Math.abs( a ) <= 20 ){
+			/*if( Math.abs( a ) <= 20 ){
 				_straightFromTop = true;
-			}
+			}*/
 			return Math.acos( a / Math.sqrt( a*a + b*b ) ) * 180 / Math.PI - 90;
 		}
 

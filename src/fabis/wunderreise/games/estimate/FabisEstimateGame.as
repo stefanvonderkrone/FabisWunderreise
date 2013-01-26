@@ -1,4 +1,6 @@
 package fabis.wunderreise.games.estimate {
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	import com.junkbyte.console.Cc;
 	import flash.display.MovieClip;
 	import com.flashmastery.as3.game.interfaces.core.IInteractiveGameObject;
@@ -44,6 +46,9 @@ package fabis.wunderreise.games.estimate {
 		
 		protected var _smallView : Boolean = true;
 		
+		private var _exerciseTimer : Timer;
+		private var _introTimer : Timer;
+		
 		public function FabisEstimateGame() {
 			
 		}
@@ -55,7 +60,11 @@ package fabis.wunderreise.games.estimate {
 		
 		public function skipIntro( event : MouseEvent ) : void {
 			_gameOptions.skipButton.removeEventListener( MouseEvent.CLICK, skipIntro);
-			_gameOptions.fabiSmall.removeEventListener( Event.ENTER_FRAME, handleFlip );
+			
+			_introTimer.stop();
+			_introTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, handleFlip);
+			//_gameOptions.fabiSmall.removeEventListener( Event.ENTER_FRAME, handleFlip );
+			
 			_gameOptions.lipSyncher.stop();
 			_introSound.stop();
 			_introSoundStarted = false;
@@ -65,6 +74,11 @@ package fabis.wunderreise.games.estimate {
 			_mainView.removeChild( _gameOptions.skipButton );
 			_smallView = false;
 			initFabi();
+		}
+		
+		public function removeAllEventListener() : void {
+			if( _introTimer ) _introTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, handleFlip);
+			if( _exerciseTimer ) _exerciseTimer.removeEventListener(TimerEvent.TIMER, _currentExercise.handleGameInstructions); 
 		}
 		
 		public function initFabi() : void {
@@ -100,8 +114,20 @@ package fabis.wunderreise.games.estimate {
 			_currentExercise.soundCore = soundCore;
 			playExercise();
 			_gameOptions.lipSyncher.start();
-			_gameOptions.fabiCristo.addEventListener( Event.ENTER_FRAME, _currentExercise.handleGameInstructions );
+			
+			_exerciseTimer = new Timer(1000, 32);
+			_exerciseTimer.addEventListener(TimerEvent.TIMER, _currentExercise.handleGameInstructions); 
+			_exerciseTimer.addEventListener(TimerEvent.TIMER_COMPLETE, onExerciseComplete); 
+			_exerciseTimer.start();
+			
+			//_gameOptions.fabiCristo.addEventListener( Event.ENTER_FRAME, _currentExercise.handleGameInstructions );
 		}
+		
+		public function onExerciseComplete(event:TimerEvent) : void { 
+			_exerciseTimer.stop();
+			_exerciseTimer.removeEventListener(TimerEvent.TIMER, _currentExercise.handleGameInstructions); 
+            Cc.logch.apply( undefined, [ "Exercise Timer abgelaufen" ] );
+        }
 		
 		protected function playExercise() : void {
 			_exerciseSound.delegate = this;
@@ -132,10 +158,26 @@ package fabis.wunderreise.games.estimate {
 			_introSound.play();
 			
 			_gameOptions.lipSyncher.start();
-			_gameOptions.fabiSmall.addEventListener( Event.ENTER_FRAME, handleFlip );
+			
+			_introTimer = new Timer(1000, _gameOptions.flipTime);
+			_introTimer.addEventListener(TimerEvent.TIMER_COMPLETE, handleFlip); 
+			_introTimer.start();
+			
+			//_gameOptions.fabiSmall.addEventListener( Event.ENTER_FRAME, handleFlip );
 		}
 		
-		private function handleFlip( event : Event ) : void {
+		public function handleFlip(event:TimerEvent) : void { 
+			Cc.logch.apply( undefined, [ "Flip" ] );
+			_introTimer.stop();
+			_introTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, handleFlip); 
+			//_gameOptions.fabiSmall.removeEventListener( Event.ENTER_FRAME, handleFlip );
+			_gameOptions.lipSyncher.stop();
+			TweenLite.to( _gameOptions.fabiSmall._fabi._arm, 1/2, {frame: _gameOptions.fabiSmall._fabi._arm.totalFrames} );
+			TweenLite.delayedCall( 1/2, _mainView.removeChild, [ _gameOptions.fabiCristoSmallContainer ] );
+			_smallView = false;
+		}
+		
+		/*private function handleFlip( event : Event ) : void {
 			
 			_frameCounter++;
 			
@@ -147,7 +189,7 @@ package fabis.wunderreise.games.estimate {
 				_smallView = false;
 				_frameCounter = 0;
 			}
-		}
+		}*/
 		
 		public function endOfExercise() : void {
 			_gameOptions.lipSyncher.stop();

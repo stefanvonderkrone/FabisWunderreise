@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.estimate {
+	import flash.events.TimerEvent;
 	import flash.events.ProgressEvent;
 	import flash.events.ErrorEvent;
 	import flash.events.SampleDataEvent;
@@ -80,7 +81,8 @@ package fabis.wunderreise.games.estimate {
 			_doneButton = new DoneButton();
 			_doneButton.x = 745;
 			_doneButton.y = 450;
-			_mainView.addChild( _doneButton );
+			_mainView.addChildAt(_doneButton, 1);
+			//_mainView.addChild( _doneButton );
 		}
 		
 		public function initDrag() : void {
@@ -199,7 +201,9 @@ package fabis.wunderreise.games.estimate {
 			
 		}
 		
-		public function handleGameInstructions( event : Event ) : void {
+		/*public function handleGameInstructions( event : Event ) : void {
+		}*/
+		public function handleGameInstructions(event:TimerEvent) : void {
 		}
 		
 		public function reset() : void {

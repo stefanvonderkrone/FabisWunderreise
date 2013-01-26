@@ -1,4 +1,5 @@
 package fabis.wunderreise.games.estimate {
+	import flash.events.TimerEvent;
 	import com.junkbyte.console.Cc;
 	import flash.events.Event;
 	import com.greensock.TweenLite;
@@ -131,7 +132,7 @@ package fabis.wunderreise.games.estimate {
 		}
 		
 		
-		override public function handleGameInstructions( event : Event ) : void {
+		/*override public function handleGameInstructions( event : Event ) : void {
 			_frameCounter++;
 			
 			
@@ -152,7 +153,34 @@ package fabis.wunderreise.games.estimate {
 				initDoneButton();
 				_gameOptions.fabiCristo.removeEventListener( Event.ENTER_FRAME, handleGameInstructions );
 			}
-		}
+		}*/
+		
+		override public function handleGameInstructions(event:TimerEvent) : void { 
+			
+			
+			if( event.target.currentCount == _gameOptions.showGiraffesTime  ){
+				Cc.logch.apply( undefined, [ "Zeit getroffen: " + event.target.currentCount + " sek"] );
+				initGiraffes();
+			}
+			
+			if( event.target.currentCount == _gameOptions.removeStatueTime ){
+				Cc.logch.apply( undefined, [ "Zeit getroffen: " + event.target.currentCount + " sek"] );
+				_game.flip();
+				TweenLite.delayedCall( 1/2 , removeStatue );
+			}
+			
+			if( event.target.currentCount == _gameOptions.showSockelTime ){
+				Cc.logch.apply( undefined, [ "Zeit getroffen: " + event.target.currentCount + " sek"] );
+				initGiraffesSockel();
+			}
+			
+			if( event.target.currentCount == _gameOptions.showDoneButtonTime ){
+				Cc.logch.apply( undefined, [ "Zeit getroffen: " + event.target.currentCount + " sek"] );
+				initDoneButton();
+				//_gameOptions.fabiCristo.removeEventListener( Event.ENTER_FRAME, handleGameInstructions );
+			}
+			
+        }
 		
 		override public function reset() : void {
 			super.reset();

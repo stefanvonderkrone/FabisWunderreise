@@ -23,7 +23,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		private var _feedbackNumber : int = 0;
 		
 		private var _feedbackTimer : Timer;
-		
+		private var _demoTimer : Timer;
 		public var _introSoundStarted : Boolean = false;
 		
 		public function KolosseumGameField() {
@@ -43,8 +43,10 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		
 		override public function removeAllEventListener() : void {
 			removeListener();
-			removeEventListener( Event.ENTER_FRAME, handleDemoStart );	
-			//TODO re-add if timer isnt working
+			if( _demoTimer ) _demoTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, onDemoTimerComplete); 
+			if( _feedbackTimer ) _feedbackTimer.removeEventListener(TimerEvent.TIMER, onTick); 
+            if( _feedbackTimer ) _feedbackTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, onTimerComplete);
+			//removeEventListener( Event.ENTER_FRAME, handleDemoStart );
 			//_gameField.removeEventListener( Event.ENTER_FRAME, handleFeedbackSound );
 			super.removeAllEventListener();
 		}
@@ -55,8 +57,24 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			gameField.addEventListener( MouseEvent.MOUSE_OUT, handleMouseOut );
 			super._stone = new KolosseumStone();
 			playIntro();
-			addEventListener( Event.ENTER_FRAME, handleDemoStart );
+			
+			_demoTimer = new Timer(1000, _gameOptions.demoStartTime);
+			
+			// designates listeners for the interval and completion events 
+            //_feedbackTimer.addEventListener(TimerEvent.TIMER, onTick); 
+            _demoTimer.addEventListener(TimerEvent.TIMER_COMPLETE, onDemoTimerComplete); 
+			
+			// starts the timer ticking 
+            _demoTimer.start();
+			
+			//addEventListener( Event.ENTER_FRAME, handleDemoStart );
 		}
+		
+		public function onDemoTimerComplete(event:TimerEvent) : void { 
+			_demoTimer.stop();
+			startDemo();
+            Cc.logch.apply( undefined, [ "Demo starten" ] );
+        } 
 		
 		override public function skipIntro() : void{
 			_introSound.stop();
@@ -65,23 +83,25 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			_gameOptions.lipSyncher.stop();
 			_buttonClickedSound =_soundCore.getSoundByName("buttonClicked");
 			_buttonClickedSound.play();
-			removeEventListener( Event.ENTER_FRAME, handleDemoStart );	
+			
+			//removeEventListener( Event.ENTER_FRAME, handleDemoStart );	
 			stopIntro();
 		}
 		
-		private function handleDemoStart( event : Event ) : void {
+		/*private function handleDemoStart( event : Event ) : void {
 			_frameCounter++;
 			if( _frameCounter == (_gameOptions.demoStartTime * 60) ){
 				startDemo();
 			}
-		}
+		}*/
 		
-		override public function startDemo() : void {
+		/*override public function startDemo() : void {
 			removeEventListener( Event.ENTER_FRAME, handleDemoStart );
 			super.startDemo();
-		}
+		}*/
 		
 		override public function stopIntro() : void {
+			_demoTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, onDemoTimerComplete); 
 			super.stopIntro();
 			start();
 		}
@@ -162,6 +182,7 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 				_introSoundStarted = false;
 				_gameOptions.lipSyncher.stop();
 				stopIntro();
+				Cc.logch.apply( undefined, [ "Demo stoppen" ] );
 			}
 			if( _feedbackSoundStarted ){
 				_feedbackSoundStarted = false;
@@ -179,6 +200,8 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 		public function playFeedback( points : int ) : void {
 			_points = points;
 			
+			soundCore.stopAllSounds();
+			
 			_feedbackSound = soundCore.getSoundByName("colosseumDebriefing");
 			_feedbackSound.delegate = this;
 			_feedbackSoundStarted = true;
@@ -186,12 +209,13 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			
 			_gameOptions.lipSyncher.start();
 			
-			//TODO using timer instead of handler
+			// using timer instead of handler
 			/*_feedbackTime = ( _gameOptions.feedbackTimes.shift() - 1 ) * 60 ;
 			
 			_gameField.addEventListener( Event.ENTER_FRAME, handleFeedbackSound );*/
 			
 			_feedbackTime = _gameOptions.feedbackTimes.shift();
+			//wird jede sekunde ausgeführt und das 50 Mal
 			_feedbackTimer = new Timer(1000, 50); // _gameOptions.feedbackTimes[letztes Elemente]
 			// designates listeners for the interval and completion events 
             _feedbackTimer.addEventListener(TimerEvent.TIMER, onTick); 
@@ -315,12 +339,12 @@ package fabis.wunderreise.games.wordsCapture.kolosseum {
 			_gameOptions.lipSyncher.start();
 		}
 		
-		private function removeWrongHighlights() : void {
+		/*private function removeWrongHighlights() : void {
 			var _stone : KolosseumStone;
 			for each( _stone in _gameOptions.wrongStones ){
 				_stone.removeHighlight();
 			}
-		}
+		}*/
 		
 		override public function reactOnCumulatedSpectrum(cumulatedSpectrum : Number) : void {
 			const lips : MovieClip = _gameOptions.fabi._lips;

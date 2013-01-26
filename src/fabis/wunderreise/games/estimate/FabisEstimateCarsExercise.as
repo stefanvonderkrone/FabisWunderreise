@@ -1,4 +1,6 @@
 package fabis.wunderreise.games.estimate {
+	import com.junkbyte.console.Cc;
+	import flash.events.TimerEvent;
 	import flash.events.MouseEvent;
 	import com.greensock.TweenLite;
 	import flash.events.Event;
@@ -125,7 +127,7 @@ package fabis.wunderreise.games.estimate {
 			}
 		}
 		
-		override public function handleGameInstructions( event : Event ) : void {
+		/*override public function handleGameInstructions( event : Event ) : void {
 			_frameCounter++;
 			
 			if( _frameCounter == _gameOptions.showRoadSign * 60  ){
@@ -143,7 +145,29 @@ package fabis.wunderreise.games.estimate {
 				TweenLite.delayedCall(1, removeStatue );
 				_gameOptions.fabiCristo.removeEventListener( Event.ENTER_FRAME, handleGameInstructions );
 			}
-		}
+		}*/
+		
+		override public function handleGameInstructions(event:TimerEvent) : void { 
+			
+			if( event.target.currentCount == _gameOptions.showRoadSign ){
+				Cc.logch.apply( undefined, [ "Zeit getroffen: " + event.target.currentCount + " sek"] );
+				initRoadSign();
+				initStackField();
+			}
+			
+			if( event.target.currentCount == _gameOptions.showCarsTime ){
+				Cc.logch.apply( undefined, [ "Zeit getroffen: " + event.target.currentCount + " sek"] );
+				initCars();
+				initDoneButton();
+			}
+			
+			if( event.target.currentCount == _gameOptions.removeCarsStatueTime ){
+				Cc.logch.apply( undefined, [ "Zeit getroffen: " + event.target.currentCount + " sek"] );
+				_game.flip();
+				TweenLite.delayedCall(1, removeStatue );
+				//_gameOptions.fabiCristo.removeEventListener( Event.ENTER_FRAME, handleGameInstructions );
+			}
+        }
 		
 		override public function reset() : void {
 			super.reset();
